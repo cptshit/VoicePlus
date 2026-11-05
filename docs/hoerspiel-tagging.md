@@ -151,8 +151,8 @@ egal) direkt im Buchordner. Das passiert vor dem eingebetteten Cover und unabhä
 - Hat ein Buch schon ein Cover, wird nicht neu gesucht. Ein später hinzugefügtes `Cover.jpg`
   ersetzt also kein früher gefundenes eingebettetes Cover.
 
-Ob jede Folge wirklich ein `Cover.jpg` hat, zeigt der Dump nicht (`dump-tags.sh` listet nur
-Audiodateien).
+Ob jede Folge wirklich ein `Cover.jpg` hat, zeigt der vorliegende Dump nicht (damals listete
+`dump-tags.sh` nur Audiodateien).
 
 ## Mapping ffprobe → ID3 → Media3
 
@@ -183,3 +183,7 @@ dem Dump `Metadata` bauen, müssen diese Tabelle verwenden.
 Lücke im Dump: ffprobe sagt nicht, ob ein Tag ID3v1 oder ID3v2 ist, und führt beide zusammen. Media3
 liest bei MP3 nur ID3v2. Sollte eine Folge nur ID3v1-Tags haben, sieht die App dort nichts. Bei
 den 80 Dateien mit `TLEN` ist es sicher ID3v2, bei den übrigen 109 getaggten Dateien ist es offen.
+
+Seit Schritt 0 schreibt `dump-tags.sh` pro MP3 `id3v2` (Version oder `null`) und `id3v1`
+(`true`/`false`) sowie eigene Zeilen `"kind":"image"` für Bilddateien. Ein neuer Dump klärt
+damit sowohl die ID3v1-Frage als auch, wo die Cover liegen.
