@@ -65,3 +65,6 @@ CLAUDE.md
 
 # Local device data pulls — never commit
 device-backup*/
+
+# Raw tag dumps of private collections (tools/dump-tags.sh) — stay local
+fixtures/tags/*.jsonl
