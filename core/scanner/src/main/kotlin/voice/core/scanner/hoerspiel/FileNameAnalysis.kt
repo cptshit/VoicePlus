@@ -19,11 +19,6 @@ internal data class FileNameAnalysis(
     // "Zwiespalt - 01"
     private val TRAILING_TRACK = Regex("""\s*[-–]\s*\d{1,3}$""")
 
-    private val GENERIC = Regex(
-      """^(?:audio\s*track|track|kapitel|chapter|teil|part|cd|disc|\p{L}+-kapitel)[\s_-]*\d+\p{L}?$""",
-      RegexOption.IGNORE_CASE,
-    )
-
     fun analyze(fileNames: List<String>): FileNameAnalysis {
       if (fileNames.isEmpty()) return FileNameAnalysis(null, null, null)
       val parsed = fileNames.map { EpisodeNameParser.parse(stripTrack(it.substringAfterLast('/'))) }
@@ -33,7 +28,7 @@ internal data class FileNameAnalysis(
       return FileNameAnalysis(
         series = parsed.commonValue { it.series },
         number = parsed.commonValue { it.number },
-        title = parsed.commonValue { it.title }?.takeUnless { GENERIC.matches(it) },
+        title = parsed.commonValue { it.title }?.takeUnless { isGenericTrackName(it) },
       )
     }
 
@@ -50,3 +45,12 @@ internal data class FileNameAnalysis(
     }
   }
 }
+
+// "Track 01", "AudioTrack 01", "Kapitel 01", "Angst-Kapitel 01". A letter suffix ("Kapitel 04a")
+// is not generic: it tells where a chapter was split across discs.
+private val GENERIC_TRACK_NAME = Regex(
+  """^(?:audio\s*track|track|kapitel|chapter|teil|part|cd|disc|\p{L}+-kapitel)[\s_-]*\d+$""",
+  RegexOption.IGNORE_CASE,
+)
+
+internal fun isGenericTrackName(name: String): Boolean = GENERIC_TRACK_NAME.matches(name.trim())

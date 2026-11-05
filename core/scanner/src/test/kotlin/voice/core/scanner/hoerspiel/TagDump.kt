@@ -15,7 +15,27 @@ import kotlin.time.Duration.Companion.seconds
  */
 internal object TagDump {
 
-  fun parse(jsonl: String): List<EpisodeSource> {
+  /** One dumped book folder: what the normalizer sees, plus every track's tags. */
+  data class Book(
+    val source: EpisodeSource,
+    val tracks: List<Track>,
+  )
+
+  data class Track(
+    val fileName: String,
+    val tags: Metadata?,
+  ) {
+    /** The chapter name the app derives today, mirroring ChapterParser.chapterName. */
+    val chapterName: String
+      get() {
+        val title = tags?.title
+        return if (title != null && title != tags.album) title else fileName.substringAfterLast('/')
+      }
+  }
+
+  fun parse(jsonl: String): List<EpisodeSource> = parseBooks(jsonl).map { it.source }
+
+  fun parseBooks(jsonl: String): List<Book> {
     val audio = jsonl.lineSequence()
       .filter { it.isNotBlank() }
       .map { Json.parseToJsonElement(it).jsonObject }
@@ -25,11 +45,17 @@ internal object TagDump {
       .groupBy { it.string("path")!!.substringBefore('/') }
       .map { (folder, files) ->
         val sorted = files.sortedBy { it.string("path") }
-        val fileNames = sorted.map { it.string("path")!!.substringAfter('/').substringBeforeLast('.') }
-        EpisodeSource(
-          folderName = folder,
-          fileNames = fileNames,
-          tags = sorted.first().toMetadata(fileNames.first().substringAfterLast('/')),
+        val tracks = sorted.map {
+          val fileName = it.string("path")!!.substringAfter('/').substringBeforeLast('.')
+          Track(fileName, it.toMetadata(fileName.substringAfterLast('/')))
+        }
+        Book(
+          source = EpisodeSource(
+            folderName = folder,
+            fileNames = tracks.map { it.fileName },
+            tags = tracks.first().tags,
+          ),
+          tracks = tracks,
         )
       }
   }
