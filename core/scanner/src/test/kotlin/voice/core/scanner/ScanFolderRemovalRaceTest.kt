@@ -29,6 +29,7 @@ import voice.core.documentfile.CachedDocumentFile
 import voice.core.documentfile.CachedDocumentFileFactory
 import voice.core.documentfile.FileBasedDocumentFactory
 import voice.core.documentfile.FileBasedDocumentFile
+import voice.core.featureflag.MemoryFeatureFlag
 import java.io.Closeable
 import java.io.File
 import java.nio.file.Files
@@ -190,6 +191,7 @@ class ScanFolderRemovalRaceTest {
         mediaAnalyzer = mediaAnalyzer,
         fileFactory = FileBasedDocumentFactory,
         ignoreFileTagsStore = mockk { every { data } returns ignoreFileTags },
+        hoerspielNormalizer = MemoryFeatureFlag(true),
       ),
       deviceHasPermissionBug = mockk(relaxed = true),
       audiobookFolders = folders,

@@ -14,6 +14,7 @@ import voice.core.data.BookId
 import voice.core.data.Chapter
 import voice.core.data.ChapterId
 import voice.core.documentfile.FileBasedDocumentFile
+import voice.core.featureflag.MemoryFeatureFlag
 import java.io.File
 import java.time.Instant
 
@@ -28,6 +29,7 @@ class BookParserTest {
     mediaAnalyzer = mockk(),
     fileFactory = mockk(),
     ignoreFileTagsStore = mockk { every { data } returns MutableStateFlow(false) },
+    hoerspielNormalizer = MemoryFeatureFlag(true),
   )
 
   @Test

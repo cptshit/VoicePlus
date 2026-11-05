@@ -28,6 +28,7 @@ import voice.core.data.repo.internals.AppDb
 import voice.core.data.toUri
 import voice.core.documentfile.FileBasedDocumentFactory
 import voice.core.documentfile.FileBasedDocumentFile
+import voice.core.featureflag.MemoryFeatureFlag
 import java.io.Closeable
 import java.io.File
 import java.nio.file.Files
@@ -483,6 +484,45 @@ class MediaScannerTest {
     )
   }
 
+  @Test
+  fun hoerspielEpisodesGetSeriesNumberTitleAndSharedAuthor() = test {
+    val root = folder("Hoerspiele")
+    val untagged = File(root, "GabrielBurns - 002 - Die Brut")
+    val untaggedChapters = listOf(audioFile(untagged, "01 - Die Brut.mp3"), audioFile(untagged, "02 - Die Brut.mp3"))
+    val tagged = File(root, "GabrielBurns - 031 - Rand der Gezeiten")
+    val taggedChapter = audioFile(tagged, "01-AudioTrack 01.mp3")
+    // audioFile() installs a catch-all answer; the more specific stubs below take precedence.
+    (untaggedChapters + taggedChapter).forEach { file ->
+      val isTagged = file == taggedChapter
+      coEvery { mediaAnalyzer.analyze(match { it.uri == file.toUri() }) } returns Metadata(
+        duration = 1000L,
+        artist = if (isTagged) "Gabriel Burns" else null,
+        album = if (isTagged) "Rand der Gezeiten" else null,
+        fileName = file.nameWithoutExtension,
+        chapters = emptyList(),
+        title = if (isTagged) "AudioTrack 01" else file.nameWithoutExtension,
+        genre = null,
+        narrator = null,
+        series = null,
+        part = null,
+      )
+    }
+
+    scan(FolderType.Root, root)
+
+    val episode2 = bookContentRepo.get(BookId(untagged.toUri()))!!
+    episode2.name shouldBe "Die Brut"
+    episode2.series shouldBe "Gabriel Burns"
+    episode2.part shouldBe "2"
+    episode2.author shouldBe "Gabriel Burns"
+
+    val episode31 = bookContentRepo.get(BookId(tagged.toUri()))!!
+    episode31.name shouldBe "Rand der Gezeiten"
+    episode31.series shouldBe "Gabriel Burns"
+    episode31.part shouldBe "31"
+    episode31.author shouldBe "Gabriel Burns"
+  }
+
   private fun test(test: suspend TestEnvironment.() -> Unit) {
     runTest {
       TestEnvironment().use { test(it) }
@@ -517,6 +557,7 @@ class MediaScannerTest {
         mediaAnalyzer = mediaAnalyzer,
         fileFactory = FileBasedDocumentFactory,
         ignoreFileTagsStore = mockk { every { data } returns ignoreFileTags },
+        hoerspielNormalizer = MemoryFeatureFlag(true),
       ),
       deviceHasPermissionBug = mockk(),
       audiobookFolders = configuredFolders,

@@ -92,6 +92,7 @@ internal class MediaScanner(
       .forEach { file ->
         scan(file, excludedIds, forceReParse)
       }
+    bookParser.fillMissingSeriesAuthors()
   }
 
   private fun List<CachedDocumentFile>.findProbeFile(): CachedDocumentFile? {
