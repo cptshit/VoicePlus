@@ -33,6 +33,8 @@ develocity {
   buildScan {
     termsOfUseUrl = "https://gradle.com/terms-of-service"
     termsOfUseAgree = "yes"
+    // Henrik's fork: never upload build scans to gradle.com (offline first).
+    publishing.onlyIf { false }
   }
 }
 
