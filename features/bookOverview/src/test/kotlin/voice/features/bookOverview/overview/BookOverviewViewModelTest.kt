@@ -75,6 +75,7 @@ class BookOverviewViewModelTest {
       folderPickerInSettingsFeatureFlag = MemoryFeatureFlag(false),
       experimentalPlaybackPersistenceFeatureFlag = MemoryFeatureFlag(true),
       organisationRepo = mockk { every { flow() } returns MutableStateFlow(voice.core.data.LibraryOrganisation()) },
+      episodePartRepo = mockk { every { flow() } returns MutableStateFlow(emptyMap()) },
     )
 
     backgroundScope.launchMolecule(RecompositionMode.Immediate) {

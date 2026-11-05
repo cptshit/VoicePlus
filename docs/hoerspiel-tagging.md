@@ -62,8 +62,10 @@ bleibt beim Ordnernamen und meldet die Alternative als Abweichung):
 | 25 | `Dem Winter folgte der Herbst` |
 | 34 | `Ich weiss, was Angst ist` |
 
-Bei 10 und 12 kommt kein `[Teil N]` aus den Dateinamen dazu, bei 15 und 16 fällt das
-`Teil N` aus dem Ordnernamen weg (wie bei MusicBrainz). Festgehalten in
+„Teil N“ gehört nie zum Titel: Der Normalizer schneidet `Teil 1`, `[Teil 2]`, `(Teil 2)` am
+Titelende ab und speichert die Nummer getrennt (`episode_parts` in `hoerspiel.db`). Nach dem Scan
+bekommen aufeinanderfolgende Folgen einer Serie, deren Teile ab 1 hochzählen, die Teil-Anzahl
+(10/11, 12/13, 15/16 → je 2). Die Karte zeigt dann „Zweiteiler · Teil 1 von 2“ unter dem Titel. Festgehalten in
 `HoerspielTagNormalizerTest.localGabrielBurnsTitleDecisions` (läuft nur mit dem lokalen Dump).
 
 ## Dateinamen

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import voice.core.data.Book
 import voice.core.data.BookContent
 import voice.core.data.BookId
+import voice.core.data.hoerspiel.EpisodePart
 import voice.core.logging.api.Logger
 import voice.core.ui.ImmutableFile
 import voice.core.ui.formatTime
@@ -28,6 +29,10 @@ data class BookOverviewItemViewState(
   val seriesPart: String? = null,
   val importedSeries: String? = null,
   val addedAt: Long = 0L,
+  /** Part of a multi-part story ("Teil 1"), cut off the title by the scanner. */
+  val titlePart: Int? = null,
+  /** Number of parts of that story, null while unknown. */
+  val titlePartCount: Int? = null,
 )
 
 /**
@@ -35,7 +40,10 @@ data class BookOverviewItemViewState(
  * Preferred over [BookContent.lastPlayedAt], which every play bumps: a finished book replayed for a
  * second would otherwise re-date its finish to today.
  */
-internal fun Book.toItemViewState(finishedAt: Instant? = null): BookOverviewItemViewState {
+internal fun Book.toItemViewState(
+  finishedAt: Instant? = null,
+  episodePart: EpisodePart? = null,
+): BookOverviewItemViewState {
   val finished = category == BookOverviewCategory.FINISHED
   return BookOverviewItemViewState(
     name = content.name,
@@ -51,6 +59,8 @@ internal fun Book.toItemViewState(finishedAt: Instant? = null): BookOverviewItem
     seriesPart = content.part,
     importedSeries = content.series,
     addedAt = content.addedAt.toEpochMilli(),
+    titlePart = episodePart?.part,
+    titlePartCount = episodePart?.partCount,
   )
 }
 

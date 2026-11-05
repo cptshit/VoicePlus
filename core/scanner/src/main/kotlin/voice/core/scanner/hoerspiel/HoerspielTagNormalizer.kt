@@ -38,6 +38,8 @@ internal data class NormalizedEpisode(
   val episodeNumber: Int,
   val episodeNumberSource: TagFindingSource,
   val episodeTitle: Candidate?,
+  /** Part of a multi-part story (`Teil 2`), cut off the end of the title. */
+  val titlePart: Int? = null,
   val findings: List<EpisodeFinding>,
 )
 
@@ -54,6 +56,9 @@ internal data class NormalizedEpisode(
  * - episode number: part tag (MVIN/PART) > folder > album > file names.
  * - title: folder > album > file names. If another source spells the same title with umlauts
  *   where the chosen one uses `ue`/`ss`, the umlaut spelling wins.
+ *   A trailing `Teil 2` / `[Teil 2]` is no part of the title but of a multi-part story: it is cut
+ *   off every candidate and becomes [NormalizedEpisode.titlePart], taken from the chosen title or,
+ *   if that has none, from the first source that has one.
  */
 internal object HoerspielTagNormalizer {
 
@@ -75,11 +80,15 @@ internal object HoerspielTagNormalizer {
       album?.number?.let { it to TagFindingSource.AlbumTag },
       files.number?.let { it to TagFindingSource.FileName },
     )
-    val titleCandidates = listOfNotNull(
+    val titlesWithParts = listOfNotNull(
       folder?.title?.takeIf { folder.number != null }?.let { Candidate(it, TagFindingSource.FolderName) },
       album?.title?.let { Candidate(it, TagFindingSource.AlbumTag) },
       files.title?.let { Candidate(it, TagFindingSource.FileName) },
-    )
+    ).map { candidate ->
+      val (title, part) = splitTitlePart(candidate.value)
+      candidate.copy(value = title) to part
+    }
+    val titleCandidates = titlesWithParts.map { it.first }
 
     val chosenSeries = seriesCandidates.firstOrNull() ?: return null
     val (number, numberSource) = numberCandidates.firstOrNull() ?: return null
@@ -110,6 +119,8 @@ internal object HoerspielTagNormalizer {
     }
 
     val title = chooseTitle(titleCandidates)
+    val titlePart = titlesWithParts.firstOrNull { it.first.source == title?.source }?.second
+      ?: titlesWithParts.firstNotNullOfOrNull { it.second }
     if (title != null) {
       titleCandidates.forEach { other ->
         if (other.value != title.value) {
@@ -124,8 +135,23 @@ internal object HoerspielTagNormalizer {
       episodeNumber = number,
       episodeNumberSource = numberSource,
       episodeTitle = title,
+      titlePart = titlePart,
       findings = findings.distinct(),
     )
+  }
+
+  // "Teil 1", "[Teil 2]", "(Teil 2)", "- Teil 2", "Teil 2 von 2"
+  private val TRAILING_TITLE_PART = Regex(
+    """\s*(?:[-–,]\s*)?[\[(]?\s*\bTeil\s+(\d{1,2})(?:\s+von\s+\d{1,2})?\s*[])]?$""",
+    RegexOption.IGNORE_CASE,
+  )
+
+  /** Splits `Ohne Bewusstsein Teil 1` into `Ohne Bewusstsein` and 1. A title that is only `Teil 1` stays. */
+  internal fun splitTitlePart(title: String): Pair<String, Int?> {
+    val match = TRAILING_TITLE_PART.find(title) ?: return title to null
+    val rest = title.substring(0, match.range.first).trim()
+    if (rest.isEmpty()) return title to null
+    return rest to match.groupValues[1].toInt()
   }
 
   private fun chooseTitle(candidates: List<Candidate>): Candidate? {

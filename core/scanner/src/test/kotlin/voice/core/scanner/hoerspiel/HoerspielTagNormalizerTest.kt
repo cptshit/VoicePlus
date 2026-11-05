@@ -70,7 +70,8 @@ class HoerspielTagNormalizerTest {
    *
    * The normalizer keeps the folder name and records the other spelling as a finding; the
    * decided title is then set by hand via "Edit book". So for every decision the normalizer
-   * must either pick it or offer it in a finding (a trailing " [Teil N]" is never wanted; 15 and 16 drop the "Teil N" of their folder, as on MusicBrainz).
+   * must either pick it or offer it in a finding. "Teil N" is never part of the title: it is
+   * split off into [NormalizedEpisode.titlePart].
    */
   @Test
   fun localGabrielBurnsTitleDecisions() {
@@ -83,14 +84,15 @@ class HoerspielTagNormalizerTest {
     data class Decision(
       val chosenByNormalizer: String,
       val decided: String,
+      val part: Int? = null,
     )
     val decisions = mapOf(
-      10 to Decision("Diesseits der Kuppeln", decided = "Diesseits der Kuppeln"),
-      11 to Decision("Welt der Dämmerung", decided = "Welt der Dämmerung"),
-      12 to Decision("Die erste Erinnerung", decided = "Die erste Erinnerung"),
-      13 to Decision("Die Komission", decided = "Die Kommission"),
-      15 to Decision("Ohne Bewusstsein Teil 1", decided = "Ohne Bewusstsein"),
-      16 to Decision("Infektiös Teil 2", decided = "Infektiös"),
+      10 to Decision("Diesseits der Kuppeln", decided = "Diesseits der Kuppeln", part = 1),
+      11 to Decision("Welt der Dämmerung", decided = "Welt der Dämmerung", part = 2),
+      12 to Decision("Die erste Erinnerung", decided = "Die erste Erinnerung", part = 1),
+      13 to Decision("Die Komission", decided = "Die Kommission", part = 2),
+      15 to Decision("Ohne Bewusstsein", decided = "Ohne Bewusstsein", part = 1),
+      16 to Decision("Infektiös", decided = "Infektiös", part = 2),
       24 to Decision("Der erste der zehn", decided = "Der erste der zehn"),
       25 to Decision("Dem Winter folgt der Herbst", decided = "Dem Winter folgte der Herbst"),
       34 to Decision("Ich weiss was Angst ist", decided = "Ich weiss, was Angst ist"),
@@ -98,11 +100,27 @@ class HoerspielTagNormalizerTest {
     decisions.forEach { (number, decision) ->
       val episode = episodes.getValue(number)
       episode.episodeTitle?.value shouldBe decision.chosenByNormalizer
+      episode.titlePart shouldBe decision.part
       val offered = listOfNotNull(episode.episodeTitle) + episode.findings
         .filter { it.field == TagFindingField.EpisodeTitle }
         .map { it.other }
-      offered.map { it.value.replace(TRAILING_PART, "") } shouldContain decision.decided
+      offered.map { it.value } shouldContain decision.decided
     }
+    episodes.filterKeys { it !in decisions }.values.mapNotNull { it.titlePart }.shouldBeEmpty()
+  }
+
+  @Test
+  fun splitTitlePart() {
+    HoerspielTagNormalizer.splitTitlePart("Ohne Bewusstsein Teil 1") shouldBe ("Ohne Bewusstsein" to 1)
+    HoerspielTagNormalizer.splitTitlePart("Die Kommission [Teil 2]") shouldBe ("Die Kommission" to 2)
+    HoerspielTagNormalizer.splitTitlePart("Welt der Dämmerung - Directors Cut [Teil 2]") shouldBe
+      ("Welt der Dämmerung - Directors Cut" to 2)
+    HoerspielTagNormalizer.splitTitlePart("Die Mauer (teil 3)") shouldBe ("Die Mauer" to 3)
+    HoerspielTagNormalizer.splitTitlePart("Die Mauer - Teil 2 von 3") shouldBe ("Die Mauer" to 2)
+    // Nothing left to be a title, or "Teil" is part of a word.
+    HoerspielTagNormalizer.splitTitlePart("Teil 1") shouldBe ("Teil 1" to null)
+    HoerspielTagNormalizer.splitTitlePart("Gegenteil 1") shouldBe ("Gegenteil 1" to null)
+    HoerspielTagNormalizer.splitTitlePart("Nachtzug") shouldBe ("Nachtzug" to null)
   }
 
   private fun JsonObject.folder(): String = getValue("folder").jsonPrimitive.content
@@ -119,6 +137,7 @@ class HoerspielTagNormalizerTest {
     put("numberSource", episodeNumberSource.name)
     put("title", episodeTitle?.value)
     put("titleSource", episodeTitle?.source?.name)
+    put("titlePart", titlePart)
     put(
       "findings",
       buildJsonArray {
@@ -134,9 +153,5 @@ class HoerspielTagNormalizerTest {
         }
       },
     )
-  }
-
-  private companion object {
-    val TRAILING_PART = Regex("""\s*\[Teil \d+]$""")
   }
 }

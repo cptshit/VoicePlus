@@ -19,4 +19,7 @@ public interface HoerspielPersistenceModule {
 
   @Provides
   private fun tagFindingDao(db: HoerspielDb): TagFindingDao = db.tagFindingDao()
+
+  @Provides
+  private fun episodePartDao(db: HoerspielDb): EpisodePartDao = db.episodePartDao()
 }

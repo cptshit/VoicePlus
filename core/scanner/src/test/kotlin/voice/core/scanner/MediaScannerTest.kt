@@ -557,8 +557,41 @@ class MediaScannerTest {
     finding.kind shouldBe TagFindingKind.Different
     finding.chosenValue shouldBe "Die Komission"
     finding.chosenSource shouldBe TagFindingSource.FolderName
-    finding.otherValue shouldBe "Die Kommission [Teil 2]"
+    finding.otherValue shouldBe "Die Kommission"
     finding.otherSource shouldBe TagFindingSource.FileName
+  }
+
+  @Test
+  fun hoerspielTwoPartersGetTitleWithoutPartAndPartCount() = test {
+    val root = folder("Hoerspiele")
+    val first = File(root, "GabrielBurns - 015 - Ohne Bewusstsein Teil 1")
+    val second = File(root, "GabrielBurns - 016 - Infektiös Teil 2")
+    val single = File(root, "GabrielBurns - 017 - Was ist das Leben")
+    listOf(first, second, single).forEach { episode ->
+      val chapter = audioFile(episode, "01 - Track 01.mp3")
+      coEvery { mediaAnalyzer.analyze(match { it.uri == chapter.toUri() }) } returns Metadata(
+        duration = 1000L,
+        artist = null,
+        album = null,
+        fileName = chapter.nameWithoutExtension,
+        chapters = emptyList(),
+        title = null,
+        genre = null,
+        narrator = null,
+        series = null,
+        part = null,
+      )
+    }
+
+    scan(FolderType.Root, root)
+
+    val books = bookContentRepo.all().associateBy { it.id }
+    books.getValue(BookId(first.toUri())).name shouldBe "Ohne Bewusstsein"
+    books.getValue(BookId(second.toUri())).name shouldBe "Infektiös"
+    episodePartRepo.parts.value.values.map { Triple(it.bookId, it.part, it.partCount) }.toSet() shouldBe setOf(
+      Triple(BookId(first.toUri()).value, 1, 2),
+      Triple(BookId(second.toUri()).value, 2, 2),
+    )
   }
 
   private fun test(test: suspend TestEnvironment.() -> Unit) {
@@ -578,6 +611,7 @@ class MediaScannerTest {
     val excludedBooks = MutableStateFlow<Set<String>>(emptySet())
     val mediaAnalyzer = mockk<MediaAnalyzer>()
     val tagFindingRepo = FakeTagFindingRepo()
+    val episodePartRepo = FakeEpisodePartRepo()
 
     // The scanner now gates activation on the LIVE folder set via AudiobookFolders.isManaged. These tests drive
     // scanner.scan(folders) with a literal folder map, so the fake simply mirrors that same set: every folder
@@ -600,6 +634,7 @@ class MediaScannerTest {
         ignoreFileTagsStore = mockk { every { data } returns ignoreFileTags },
         hoerspielNormalizer = MemoryFeatureFlag(true),
         tagFindingRepo = tagFindingRepo,
+        episodePartRepo = episodePartRepo,
       ),
       deviceHasPermissionBug = mockk(),
       audiobookFolders = configuredFolders,

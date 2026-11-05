@@ -144,4 +144,10 @@
     <string name="settings_analytics_consent_description">Erlaube die Freigabe anonymer Nutzungsdaten zur Verbesserung der App</string>
     <string name="pref_audiobook_folders_explanation">Ordner verwalten, die nach Hörbüchern durchsucht werden sollen</string>
     <string name="chapter_numbered">Kapitel %1$d</string>
+    <string name="multipart_2">Zweiteiler</string>
+    <string name="multipart_3">Dreiteiler</string>
+    <string name="multipart_4">Vierteiler</string>
+    <string name="multipart_n">Mehrteiler</string>
+    <string name="multipart_part_of">%1$s · Teil %2$d von %3$d</string>
+    <string name="multipart_part">Teil %1$d</string>
 </resources>

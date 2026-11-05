@@ -168,6 +168,12 @@
     <string name="unknown_chapter">Unknown chapter</string>
     <!-- Replaces meaningless chapter names such as "Track 01" in multi-file books. -->
     <string name="chapter_numbered">Chapter %1$d</string>
+    <string name="multipart_2">Two-parter</string>
+    <string name="multipart_3">Three-parter</string>
+    <string name="multipart_4">Four-parter</string>
+    <string name="multipart_n">Multi-parter</string>
+    <string name="multipart_part_of">%1$s · Part %2$d of %3$d</string>
+    <string name="multipart_part">Part %1$d</string>
     <string name="content_cover">Shows cover to choose</string>
     <string name="change_book_name">Name</string>
     <string name="download_book_cover">Cover from the Internet</string>

@@ -99,6 +99,15 @@ internal fun BookshelfBook(
         maxLines = 2,
         overflow = TextOverflow.Ellipsis,
       )
+      book.multiPartLabel()?.let { label ->
+        Text(
+          text = label,
+          style = MaterialTheme.typography.labelSmall,
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis,
+        )
+      }
       Spacer(Modifier.height(4.dp))
       Text(
         text = book.statusLabel(),

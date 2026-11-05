@@ -27,6 +27,8 @@ import voice.core.data.Book
 import voice.core.data.BookId
 import voice.core.data.GridMode
 import voice.core.data.ListeningSessionEndReason
+import voice.core.data.hoerspiel.EpisodePart
+import voice.core.data.hoerspiel.EpisodePartRepo
 import voice.core.data.repo.BookContentRepo
 import voice.core.data.repo.BookRepository
 import voice.core.data.repo.LibraryOrganisationRepo
@@ -76,6 +78,7 @@ class BookOverviewViewModel(
   @ExperimentalPlaybackPersistenceQualifier
   private val experimentalPlaybackPersistenceFeatureFlag: FeatureFlag<Boolean>,
   private val organisationRepo: LibraryOrganisationRepo,
+  private val episodePartRepo: EpisodePartRepo,
 ) : RetainedViewModel() {
   private var searchActive by mutableStateOf(false)
   private var query by mutableStateOf("")
@@ -110,6 +113,7 @@ class BookOverviewViewModel(
       .collectAsState(initial = null).value
     val booksPerRow = remember { booksPerRowStore.data }.collectAsState(initial = null).value?.coerceIn(2, 3)
     val organisation = remember { organisationRepo.flow() }.collectAsState(initial = null).value
+    val episodeParts = remember { episodePartRepo.flow() }.collectAsState(initial = emptyMap()).value
     // Show the saved layout on the first populated frame, without a two-to-three-column shuffle.
     if (gridMode == null || books == null || booksPerRow == null || organisation == null) return BookOverviewViewState.Loading
     val noBooks = !scannerActive && books.isEmpty()
@@ -147,6 +151,7 @@ class BookOverviewViewModel(
                 book.itemViewState(
                   currentBookId = currentBookId,
                   finishedAt = finishedAt[book.id],
+                  episodePart = episodeParts[book.id],
                   livePlaybackState = { livePlaybackState.value },
                 )
               }
@@ -280,20 +285,21 @@ class BookOverviewViewModel(
 private fun Book.itemViewState(
   currentBookId: BookId?,
   finishedAt: Instant?,
+  episodePart: EpisodePart?,
   livePlaybackState: () -> LivePlaybackState?,
 ): State<BookOverviewItemViewState> {
   if (id != currentBookId) {
-    return rememberUpdatedState(toItemViewState(finishedAt))
+    return rememberUpdatedState(toItemViewState(finishedAt, episodePart))
   }
   val currentPlaybackState by rememberUpdatedState(livePlaybackState)
-  return remember(this, currentBookId, finishedAt) {
+  return remember(this, currentBookId, finishedAt, episodePart) {
     derivedStateOf {
       val livePlayback = currentPlaybackState()
       if (livePlayback != null) {
         overlay(livePlayback)
       } else {
         this
-      }.toItemViewState(finishedAt)
+      }.toItemViewState(finishedAt, episodePart)
     }
   }
 }
