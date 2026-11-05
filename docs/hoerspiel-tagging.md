@@ -159,19 +159,28 @@ Folge 29 (`01-01` …) ist nur eine CD.
 
 ## Cover
 
-`CoverScanner.findAndSaveCoverFromDisc` nimmt die **erste lesbare Bilddatei** (`image/*`, Name
-egal) direkt im Buchordner. Das passiert vor dem eingebetteten Cover und unabhängig von
-„Datei-Tags ignorieren“. `Cover.jpg` im Folgenordner wird also schon genutzt. Einschränkungen:
+`CoverScanner` sucht in dieser Reihenfolge:
 
-- Gesucht wird nur auf oberster Ebene. Liegt das Bild bei Folge 41 nur in `CD1/`, wird es nicht
-  gefunden. Dann greift das eingebettete Cover der ersten 5 Tracks.
-- Bei mehreren Bildern (z. B. `Back.jpg`) entscheidet die Reihenfolge von `listFiles()`.
-  `cover.*`/`folder.*` werden nicht bevorzugt.
-- Hat ein Buch schon ein Cover, wird nicht neu gesucht. Ein später hinzugefügtes `Cover.jpg`
-  ersetzt also kein früher gefundenes eingebettetes Cover.
+1. Bilddateien (`image/*`) direkt im Buchordner. `cover.*`, `folder.*` und `front.*` gehen vor,
+   sonst entscheidet der Dateiname (vorher: Reihenfolge von `listFiles()`). Unabhängig von
+   „Datei-Tags ignorieren“.
+2. Eingebettetes Cover der ersten 5 Tracks (nicht bei „Datei-Tags ignorieren“).
+3. **Nur für Bücher mit Serie** (Feature-Flag `hoerspiel_normalizer`): Bilddateien im Ordner
+   darüber, solange der noch im freigegebenen Ordner liegt. Ohne die Serien-Bedingung würde ein
+   beliebiges Bild im Bibliotheksordner zum Cover jedes Buchs ohne Cover.
 
-Ob jede Folge wirklich ein `Cover.jpg` hat, zeigt der vorliegende Dump nicht (damals listete
-`dump-tags.sh` nur Audiodateien).
+Folge 1 (`Gabriel.Burns.01.-.Der.Fluesterer`, am 5. 11. neu kopiert) hat **kein** Bild im Ordner
+und kein eingebettetes Cover. Ein `Cover.jpg` (708 × 706) liegt stattdessen direkt in
+`~/Hörspiele`. Es gleicht keinem der 44 anderen Folgen-Cover und hat deren Datum (13. 10.), ist
+also sehr wahrscheinlich das Cover von Folge 1. Über Schritt 3 wird es jetzt gefunden. Sauberer
+wäre, es in den Folgenordner zu verschieben.
+
+Weiterhin gilt:
+
+- Gesucht wird nur auf oberster Ebene des Buchordners (`CD1/` nicht).
+- Hat ein Buch schon ein Cover, wird nicht neu gesucht.
+
+Der vorliegende Dump listet keine Bilder (damals listete `dump-tags.sh` nur Audiodateien).
 
 ## Mapping ffprobe → ID3 → Media3
 
