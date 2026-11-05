@@ -4,6 +4,7 @@ import voice.core.data.GridMode
 import voice.core.data.LockscreenSecondaryTextMode
 import voice.core.data.LockscreenSliderMode
 import voice.core.data.MediaButtonClickAction
+import voice.core.data.hoerspiel.CoverStyle
 import java.time.LocalTime
 
 interface SettingsListener {
@@ -11,6 +12,7 @@ interface SettingsListener {
   fun toggleDarkTheme()
   fun setLibraryView(mode: GridMode)
   fun setBooksPerRow(count: Int)
+  fun setCoverStyle(style: CoverStyle)
   fun seekAmountChanged(seconds: Int)
   fun onSeekAmountRowClick()
   fun autoRewindAmountChang(seconds: Int)
@@ -58,6 +60,7 @@ interface SettingsListener {
       override fun toggleDarkTheme() {}
       override fun setLibraryView(mode: GridMode) {}
       override fun setBooksPerRow(count: Int) {}
+      override fun setCoverStyle(style: CoverStyle) {}
       override fun seekAmountChanged(seconds: Int) {}
       override fun onSeekAmountRowClick() {}
       override fun autoRewindAmountChang(seconds: Int) {}

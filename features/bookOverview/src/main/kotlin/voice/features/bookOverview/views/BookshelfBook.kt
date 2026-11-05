@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import voice.core.data.BookId
+import voice.core.data.hoerspiel.CoverStyle
 import voice.core.ui.sharedBookCover
 import voice.features.bookOverview.overview.BookOverviewItemViewState
 
@@ -130,7 +131,7 @@ internal fun BookshelfBook(
   }
 }
 
-/** The same jacket, spine and page edge are used by individual books and series stacks. */
+/** The same jacket, spine and page edge (or CD case, see [CdCover]) are used by individual books and series stacks. */
 @Composable
 internal fun BookshelfCover(
   book: BookOverviewItemViewState,
@@ -139,6 +140,10 @@ internal fun BookshelfCover(
   onCoverReady: () -> Unit = {},
   compact: Boolean = false,
 ) {
+  if (book.coverStyle == CoverStyle.Cd) {
+    CdCover(book, modifier, sharedTransitionScope, onCoverReady, compact)
+    return
+  }
   val jacketShape = RoundedCornerShape(3.dp)
   val colors = MaterialTheme.colorScheme
   val dark = colors.surface.luminance() < 0.5f

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import voice.core.data.Book
 import voice.core.data.BookContent
 import voice.core.data.BookId
+import voice.core.data.hoerspiel.CoverStyle
 import voice.core.data.hoerspiel.EpisodePart
 import voice.core.logging.api.Logger
 import voice.core.ui.ImmutableFile
@@ -33,6 +34,8 @@ data class BookOverviewItemViewState(
   val titlePart: Int? = null,
   /** Number of parts of that story, null while unknown. */
   val titlePartCount: Int? = null,
+  /** The cover look chosen in Appearance; the same for every book. */
+  val coverStyle: CoverStyle = CoverStyle.Cd,
 )
 
 /**
@@ -43,6 +46,7 @@ data class BookOverviewItemViewState(
 internal fun Book.toItemViewState(
   finishedAt: Instant? = null,
   episodePart: EpisodePart? = null,
+  coverStyle: CoverStyle = CoverStyle.Cd,
 ): BookOverviewItemViewState {
   val finished = category == BookOverviewCategory.FINISHED
   return BookOverviewItemViewState(
@@ -61,6 +65,7 @@ internal fun Book.toItemViewState(
     addedAt = content.addedAt.toEpochMilli(),
     titlePart = episodePart?.part,
     titlePartCount = episodePart?.partCount,
+    coverStyle = coverStyle,
   )
 }
 

@@ -145,7 +145,12 @@ internal fun SeriesCard(
         Column(
           Modifier.padding(start = horizontalPadding, end = horizontalPadding, top = padding, bottom = if (booksMode) 8.dp else 0.dp),
         ) {
-          SeriesCovers(entry, { coverBounds = it }, Modifier.fillMaxWidth().aspectRatio(if (booksMode) 2f / 3f else 4f / 3f), compact)
+          SeriesCovers(
+            entry,
+            { coverBounds = it },
+            Modifier.fillMaxWidth().aspectRatio(if (booksMode) entry.coverAspectRatio else 4f / 3f),
+            compact,
+          )
           Spacer(Modifier.height(if (booksMode) 8.dp else 4.dp))
           SeriesLabel(entry, booksMode = booksMode, compact = compact)
           // Reserve the same status/progress space as an individual book.
@@ -203,7 +208,7 @@ private fun SeriesCovers(
   compact: Boolean = false,
 ) {
   BoxWithConstraints(modifier, contentAlignment = Alignment.Center) {
-    val coverWidth = minOf(maxWidth, maxHeight * (2f / 3f))
+    val coverWidth = minOf(maxWidth, maxHeight * entry.coverAspectRatio)
     entry.books.take(3).withIndex().reversed().forEach { (index, book) ->
       Box(
         Modifier
@@ -376,6 +381,7 @@ internal fun SeriesDetails(
                   // Respect the chosen density, but leave room for readable titles at larger text sizes.
                   val columns = booksColumnCount(maxWidth, booksPerRow, LocalDensity.current.fontScale)
                   val compact = columns >= 3 && maxWidth / columns < 144.dp
+                  val coverAspectRatio = entry.coverAspectRatio
                   var gridBounds by remember { mutableStateOf(Rect.Zero) }
                   LazyVerticalGrid(
                     columns = GridCells.Fixed(columns),
@@ -403,7 +409,7 @@ internal fun SeriesDetails(
                             val remaining = 1f - reveal.value
                             val padding = 8.dp.toPx()
                             val coverWidth = size.width - 8.dp.toPx()
-                            val coverCenterY = padding + coverWidth * 0.75f
+                            val coverCenterY = padding + coverWidth / coverAspectRatio / 2f
                             if (!bounds.isEmpty && !origin.isEmpty && coverWidth > 0f) {
                               transformOrigin = TransformOrigin(0.5f, coverCenterY / size.height)
                               val layer = index.coerceAtMost(2)

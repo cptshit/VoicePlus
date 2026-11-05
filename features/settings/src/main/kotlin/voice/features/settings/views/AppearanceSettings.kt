@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -32,6 +33,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import voice.core.data.GridMode
+import voice.core.data.hoerspiel.CoverStyle
 import voice.features.settings.SettingsListener
 import voice.features.settings.SettingsViewState
 import voice.core.strings.R as StringsR
@@ -153,6 +155,49 @@ internal fun AppearanceSettings(
                 Text(count.toString(), modifier = Modifier.clearAndSetSemantics { }, style = MaterialTheme.typography.labelLarge)
               }
             }
+          }
+        }
+      }
+      CoverStyleRow(state.coverStyle, listener::setCoverStyle)
+    }
+  }
+}
+
+@Composable
+private fun CoverStyleRow(
+  selectedStyle: CoverStyle,
+  onSelect: (CoverStyle) -> Unit,
+) {
+  Row(
+    Modifier.fillMaxWidth(),
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+    verticalAlignment = Alignment.CenterVertically,
+  ) {
+    Text(
+      stringResource(StringsR.string.pref_cover_style),
+      modifier = Modifier.weight(1f),
+      style = MaterialTheme.typography.bodyMedium,
+    )
+    Row(Modifier.selectableGroup(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+      listOf(
+        CoverStyle.Cd to StringsR.string.cover_style_cd,
+        CoverStyle.Book to StringsR.string.cover_style_book,
+      ).forEach { (style, label) ->
+        val selected = style == selectedStyle
+        Surface(
+          selected = selected,
+          onClick = { onSelect(style) },
+          shape = MaterialTheme.shapes.medium,
+          color = if (selected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surfaceContainerHigh,
+          contentColor = if (selected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurface,
+          border = BorderStroke(
+            if (selected) 2.dp else 1.dp,
+            if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
+          ),
+          modifier = Modifier.widthIn(min = 48.dp).heightIn(min = 48.dp).testTag("cover-style:${style.name}"),
+        ) {
+          Box(Modifier.padding(horizontal = 12.dp, vertical = 8.dp), contentAlignment = Alignment.Center) {
+            Text(stringResource(label), style = MaterialTheme.typography.labelLarge)
           }
         }
       }

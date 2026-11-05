@@ -13,6 +13,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
@@ -23,6 +24,7 @@ import voice.core.data.GridMode
 import voice.core.data.LockscreenSecondaryTextMode
 import voice.core.data.LockscreenSliderMode
 import voice.core.data.MediaButtonClickAction
+import voice.core.data.hoerspiel.CoverStyle
 import voice.core.data.sleeptimer.SleepTimerPreference
 import voice.core.featureflag.MemoryFeatureFlag
 import voice.core.scanner.MediaScanTrigger
@@ -37,6 +39,7 @@ class SettingsViewModelTest {
   private val seekTimeStore = MemoryDataStore(30)
   private val gridModeStore = MemoryDataStore(GridMode.GRID)
   private val booksPerRowStore = MemoryDataStore(2)
+  private val coverStyleStore = MemoryDataStore(CoverStyle.Cd)
   private val sleepTimerPreferenceStore = MemoryDataStore(SleepTimerPreference.Default)
   private val navigator = mockk<Navigator> {
     every { goTo(any()) } just Runs
@@ -61,6 +64,7 @@ class SettingsViewModelTest {
     appInfoProvider = appInfoProvider,
     gridModeStore = gridModeStore,
     booksPerRowStore = booksPerRowStore,
+    coverStyleStore = coverStyleStore,
     sleepTimerPreferenceStore = sleepTimerPreferenceStore,
     folderPickerInSettingsFeatureFlag = folderPickerFeatureFlag,
     mediaButtonDoubleClickHandlerStore = mediaButtonDoubleClickHandlerStore,
@@ -72,6 +76,16 @@ class SettingsViewModelTest {
     mediaScanTrigger = mediaScanTrigger,
     dispatcherProvider = DispatcherProvider(scope.coroutineContext, scope.coroutineContext, scope.coroutineContext),
   )
+
+  @Test
+  fun `cover style defaults to cd and can switch to book`() = scope.runTest {
+    backgroundScope.launchMolecule(RecompositionMode.Immediate) { viewModel.viewState() }.test {
+      awaitItem().coverStyle shouldBe CoverStyle.Cd
+      viewModel.setCoverStyle(CoverStyle.Book)
+      awaitItem().coverStyle shouldBe CoverStyle.Book
+      coverStyleStore.data.first() shouldBe CoverStyle.Book
+    }
+  }
 
   @Test
   fun `books per row persists independently of library view`() = scope.runTest {
