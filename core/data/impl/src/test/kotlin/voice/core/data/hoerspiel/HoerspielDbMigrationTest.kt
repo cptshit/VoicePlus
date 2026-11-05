@@ -37,6 +37,22 @@ class HoerspielDbMigrationTest {
     }
   }
 
+  @Test
+  fun version2To3AddsAutoGroupingMarks() {
+    helper.createDatabase(NAME, 2).use { db ->
+      db.execSQL("INSERT INTO episode_parts (bookId, part, partCount) VALUES ('book', 1, 2)")
+    }
+
+    helper.runMigrationsAndValidate(NAME, 3, true).use { db ->
+      db.query("SELECT part, partCount FROM episode_parts").use { cursor ->
+        cursor.moveToFirst() shouldBe true
+        cursor.getInt(0) shouldBe 1
+        cursor.getInt(1) shouldBe 2
+      }
+      db.execSQL("INSERT INTO series_auto_grouped (bookId) VALUES ('book')")
+    }
+  }
+
   private companion object {
     const val NAME = "hoerspiel-migration-test"
   }

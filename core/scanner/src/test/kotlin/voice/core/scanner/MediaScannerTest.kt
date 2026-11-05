@@ -28,11 +28,13 @@ import voice.core.data.hoerspiel.TagFindingSource
 import voice.core.data.repo.BookContentRepoImpl
 import voice.core.data.repo.BookRepositoryImpl
 import voice.core.data.repo.ChapterRepoImpl
+import voice.core.data.repo.LibraryOrganisationRepoImpl
 import voice.core.data.repo.internals.AppDb
 import voice.core.data.toUri
 import voice.core.documentfile.FileBasedDocumentFactory
 import voice.core.documentfile.FileBasedDocumentFile
 import voice.core.featureflag.MemoryFeatureFlag
+import voice.core.scanner.hoerspiel.SeriesAutoGrouper
 import java.io.Closeable
 import java.io.File
 import java.nio.file.Files
@@ -567,8 +569,9 @@ class MediaScannerTest {
     val first = File(root, "GabrielBurns - 015 - Ohne Bewusstsein Teil 1")
     val second = File(root, "GabrielBurns - 016 - Infektiös Teil 2")
     val single = File(root, "GabrielBurns - 017 - Was ist das Leben")
-    listOf(first, second, single).forEach { episode ->
-      val chapter = audioFile(episode, "01 - Track 01.mp3")
+    // audioFile() registers a catch-all analyzer answer, so create all files before the specific answers
+    val chapters = listOf(first, second, single).map { audioFile(it, "01 - Track 01.mp3") }
+    chapters.forEach { chapter ->
       coEvery { mediaAnalyzer.analyze(match { it.uri == chapter.toUri() }) } returns Metadata(
         duration = 1000L,
         artist = null,
@@ -594,6 +597,49 @@ class MediaScannerTest {
     )
   }
 
+  @Test
+  fun hoerspielSeriesBecomesAStackThatManualChangesSurvive() = test {
+    val root = folder("Hoerspiele")
+    val episodes = listOf(
+      "GabrielBurns - 010 - Diesseits der Kuppeln",
+      "GabrielBurns - 002 - Die Brut",
+      "Gabriel.Burns.01.-.Der.Fluesterer",
+    ).map { File(root, it) }
+    // audioFile() registers a catch-all analyzer answer, so create all files before the specific answers
+    val chapters = episodes.map { audioFile(it, "01 - Track 01.mp3") }
+    chapters.forEach { chapter ->
+      coEvery { mediaAnalyzer.analyze(match { it.uri == chapter.toUri() }) } returns Metadata(
+        duration = 1000L,
+        artist = null,
+        album = null,
+        fileName = chapter.nameWithoutExtension,
+        chapters = emptyList(),
+        title = null,
+        genre = null,
+        narrator = null,
+        series = null,
+        part = null,
+      )
+    }
+    val (ten, two, one) = episodes.map { BookId(it.toUri()) }
+
+    scan(FolderType.Root, root)
+
+    val organisation = organisationRepo.get()
+    val series = organisation.series.single()
+    series.name shouldBe "Gabriel Burns"
+    organisation.placements.filter { it.seriesId == series.id }.sortedBy { it.seriesPosition }.map { it.bookId } shouldBe
+      listOf(one, two, ten).map { it.value }
+
+    // the user takes episode 10 out of the stack; a rescan must not put it back
+    organisationRepo.removeFromSeries(ten)
+    scan(FolderType.Root, root, forceReParse = true)
+
+    organisationRepo.get().placements.single { it.bookId == ten.value }.seriesId shouldBe null
+    organisationRepo.get().placements.filter { it.seriesId == series.id }.map { it.bookId }.toSet() shouldBe
+      setOf(one.value, two.value)
+  }
+
   private fun test(test: suspend TestEnvironment.() -> Unit) {
     runTest {
       TestEnvironment().use { test(it) }
@@ -606,6 +652,8 @@ class MediaScannerTest {
       .allowMainThreadQueries()
       .build()
     val bookContentRepo = BookContentRepoImpl(db.bookContentDao())
+    val organisationRepo = LibraryOrganisationRepoImpl(db)
+    val autoGroupingRepo = FakeSeriesAutoGroupingRepo()
     val chapterRepo = ChapterRepoImpl(db.chapterDao())
     val ignoreFileTags = MutableStateFlow(false)
     val excludedBooks = MutableStateFlow<Set<String>>(emptySet())
@@ -635,6 +683,12 @@ class MediaScannerTest {
         hoerspielNormalizer = MemoryFeatureFlag(true),
         tagFindingRepo = tagFindingRepo,
         episodePartRepo = episodePartRepo,
+      ),
+      seriesAutoGrouper = SeriesAutoGrouper(
+        contentRepo = bookContentRepo,
+        organisationRepo = organisationRepo,
+        autoGroupingRepo = autoGroupingRepo,
+        hoerspielNormalizer = MemoryFeatureFlag(true),
       ),
       deviceHasPermissionBug = mockk(),
       audiobookFolders = configuredFolders,

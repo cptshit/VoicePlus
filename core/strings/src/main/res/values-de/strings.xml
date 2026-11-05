@@ -150,4 +150,9 @@
     <string name="multipart_n">Mehrteiler</string>
     <string name="multipart_part_of">%1$s · Teil %2$d von %3$d</string>
     <string name="multipart_part">Teil %1$d</string>
+    <string name="series_volume">Folge %1$s</string>
+    <plurals name="series_book_count">
+        <item quantity="one">%d Folge</item>
+        <item quantity="other">%d Folgen</item>
+    </plurals>
 </resources>

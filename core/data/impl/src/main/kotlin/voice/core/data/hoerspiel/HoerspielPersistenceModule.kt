@@ -22,4 +22,7 @@ public interface HoerspielPersistenceModule {
 
   @Provides
   private fun episodePartDao(db: HoerspielDb): EpisodePartDao = db.episodePartDao()
+
+  @Provides
+  private fun seriesAutoGroupingDao(db: HoerspielDb): SeriesAutoGroupingDao = db.seriesAutoGroupingDao()
 }

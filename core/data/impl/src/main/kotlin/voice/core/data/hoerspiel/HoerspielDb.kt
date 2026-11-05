@@ -9,10 +9,11 @@ import androidx.room.RoomDatabase
  * bumping AppDb versions without colliding with fork-only tables.
  */
 @Database(
-  entities = [TagFinding::class, EpisodePart::class],
+  entities = [TagFinding::class, EpisodePart::class, SeriesAutoGrouped::class],
   version = HoerspielDb.VERSION,
   autoMigrations = [
     AutoMigration(from = 1, to = 2),
+    AutoMigration(from = 2, to = 3),
   ],
 )
 public abstract class HoerspielDb : RoomDatabase() {
@@ -21,8 +22,10 @@ public abstract class HoerspielDb : RoomDatabase() {
 
   public abstract fun episodePartDao(): EpisodePartDao
 
+  public abstract fun seriesAutoGroupingDao(): SeriesAutoGroupingDao
+
   public companion object {
-    public const val VERSION: Int = 2
+    public const val VERSION: Int = 3
     public const val DATABASE_NAME: String = "hoerspiel.db"
   }
 }
