@@ -2,6 +2,7 @@ package voice.core.scanner
 
 import android.content.Context
 import android.net.Uri
+import androidx.annotation.VisibleForTesting
 import androidx.media3.common.C
 import androidx.media3.common.FileTypes
 import androidx.media3.common.MediaItem
@@ -169,7 +170,8 @@ internal class MediaAnalyzer(
     }
   }
 
-  private fun visitText(
+  @VisibleForTesting
+  internal fun visitText(
     entry: TextInformationFrame,
     builder: Metadata.Builder,
   ) {
@@ -183,8 +185,8 @@ internal class MediaAnalyzer(
       "TXXX" -> when (entry.description) {
         "MVNM" -> builder.series = value
         "MVIN" -> builder.part = if (builder.part.isNullOrBlank()) value else builder.part
-        "TXXX:PART" -> builder.part = value
-        "TXXX:NARRATOR" -> builder.narrator = if (builder.narrator.isNullOrBlank()) value else builder.narrator
+        "PART", "TXXX:PART" -> builder.part = value
+        "NARRATOR", "TXXX:NARRATOR" -> builder.narrator = if (builder.narrator.isNullOrBlank()) value else builder.narrator
         else -> Logger.v("Unknown TXXX frame description:  ${entry.description}, value: $value")
       }
       "TRCK", "TYER", "TSSE" -> {}

@@ -1,5 +1,6 @@
 package voice.core.scanner
 
+import androidx.media3.extractor.metadata.id3.TextInformationFrame
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.kotest.assertions.assertSoftly
@@ -196,6 +197,53 @@ internal class MediaAnalyzerTest {
         MarkData(startMs = 20000L, name = "Chapter 2"),
       )
     }
+  }
+
+  private fun visitTxxx(
+    builder: Metadata.Builder,
+    description: String,
+    value: String,
+  ) {
+    analyzer.visitText(TextInformationFrame("TXXX", description, listOf(value)), builder)
+  }
+
+  @Test
+  fun `txxx PART overrides MVIN`() {
+    val builder = Metadata.Builder("file")
+    visitTxxx(builder, "MVIN", "3")
+    visitTxxx(builder, "PART", "12")
+    builder.part shouldBe "12"
+  }
+
+  @Test
+  fun `txxx MVIN does not override PART`() {
+    val builder = Metadata.Builder("file")
+    visitTxxx(builder, "PART", "12")
+    visitTxxx(builder, "MVIN", "3")
+    builder.part shouldBe "12"
+  }
+
+  @Test
+  fun `txxx PART with prefixed description is read`() {
+    // Some taggers write the frame id into the description (see auphonic_chapters_demo.mp3).
+    val builder = Metadata.Builder("file")
+    visitTxxx(builder, "TXXX:PART", "2.1")
+    builder.part shouldBe "2.1"
+  }
+
+  @Test
+  fun `txxx NARRATOR is used when TCOM is missing`() {
+    val builder = Metadata.Builder("file")
+    visitTxxx(builder, "NARRATOR", "Jane Doe")
+    builder.narrator shouldBe "Jane Doe"
+  }
+
+  @Test
+  fun `txxx NARRATOR does not override TCOM`() {
+    val builder = Metadata.Builder("file")
+    analyzer.visitText(TextInformationFrame("TCOM", null, listOf("John Doe")), builder)
+    visitTxxx(builder, "NARRATOR", "Jane Doe")
+    builder.narrator shouldBe "John Doe"
   }
 
   companion object {
