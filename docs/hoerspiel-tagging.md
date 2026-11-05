@@ -159,26 +159,35 @@ Ob jede Folge wirklich ein `Cover.jpg` hat, zeigt der vorliegende Dump nicht (da
 `dump-tags.sh` zeigt ffprobe-Namen. Die App liest über Media3 die rohen ID3-Frames. Tests, die aus
 dem Dump `Metadata` bauen, müssen diese Tabelle verwenden.
 
-| ffprobe-Key | ID3v2-Frame | Media3-Eintrag | App heute |
+| ffprobe-Key | ID3v2-Frame | Media3-Eintrag | `Metadata`-Feld |
 |---|---|---|---|
 | `title` | `TIT2` | `TextInformationFrame(id="TIT2")` | `title` |
 | `artist` | `TPE1` | `TextInformationFrame(id="TPE1")` | `artist` (Autor) |
 | `album` | `TALB` | `TextInformationFrame(id="TALB")` | `album` (Buchname) |
-| `album_artist` | `TPE2` | `TextInformationFrame(id="TPE2")` | ignoriert |
+| `album_artist` | `TPE2` | `TextInformationFrame(id="TPE2")` | `albumArtist` |
 | `genre` | `TCON` | `TextInformationFrame(id="TCON")` | `genre` |
 | `composer` | `TCOM` | `TextInformationFrame(id="TCOM")` | `narrator` |
-| `track` | `TRCK` | `TextInformationFrame(id="TRCK")`, Wert `01/10` | ignoriert |
-| `disc` | `TPOS` | `TextInformationFrame(id="TPOS")`, Wert `1/4` | ignoriert |
-| `date` | `TYER` (v2.3) / `TDRC` (v2.4) | `TextInformationFrame(id="TYER"/"TDRC")` | ignoriert |
+| `track` | `TRCK` | `TextInformationFrame(id="TRCK")`, Wert `01/10` | `trackNumber` |
+| `disc` | `TPOS` | `TextInformationFrame(id="TPOS")`, Wert `1/4` | `discNumber`, `discCount` |
+| `date` | `TYER` (v2.3) / `TDRC` (v2.4) | `TextInformationFrame(id="TYER"/"TDRC")` | `year` |
 | `publisher` | `TPUB` | `TextInformationFrame(id="TPUB")` | ignoriert |
 | `encoder` | `TSSE` | `TextInformationFrame(id="TSSE")` | ignoriert |
 | `encoded_by` | `TENC` | `TextInformationFrame(id="TENC")` | ignoriert |
 | `language` | `TLAN` | `TextInformationFrame(id="TLAN")` | ignoriert |
 | `TLEN` | `TLEN` | `TextInformationFrame(id="TLEN")` | ignoriert |
 | `comment` | `COMM` | `CommentFrame` | ignoriert |
-| `grouping` | `TIT1` | `TextInformationFrame(id="TIT1")` | ignoriert (nicht im Dump) |
+| `grouping` | `TIT1` | `TextInformationFrame(id="TIT1")` | `grouping`, wenn kein `GRP1` |
+| – (ffprobe zeigt es nicht) | `GRP1` | **`BinaryFrame`** | `grouping` |
+| – (ffprobe zeigt es nicht) | `MVNM` / `MVIN` | **`BinaryFrame`** | `series` / `part` |
 | `<Beschreibung>`, z. B. `MVNM`, `DESCRIPTION` | `TXXX` | `TextInformationFrame(id="TXXX", description="<Beschreibung>")` | `MVNM`, `MVIN`, `PART`, `NARRATOR` |
 | `id3v2_priv.<owner>` | `PRIV` | `PrivFrame` | ignoriert |
+
+MP4/M4B: Media3 übersetzt iTunes-Atome in dieselben IDs (`©grp`→`TIT1`, `trkn`→`TRCK`,
+`disk`→`TPOS`, `aART`→`TPE2`, `©day`→`TDRC`). `©mvn`/`©mvi` kommen als
+`TextInformationFrame(id="MVNM"/"MVIN")`, also nicht als TXXX.
+
+Vorbis (FLAC/OGG/Opus): `ALBUMARTIST`, `TRACKNUMBER`, `DISCNUMBER`, `DISCTOTAL`, `GROUPING`,
+`DATE`, `SERIES`.
 
 Lücke im Dump: ffprobe sagt nicht, ob ein Tag ID3v1 oder ID3v2 ist, und führt beide zusammen. Media3
 liest bei MP3 nur ID3v2. Sollte eine Folge nur ID3v1-Tags haben, sieht die App dort nichts. Bei

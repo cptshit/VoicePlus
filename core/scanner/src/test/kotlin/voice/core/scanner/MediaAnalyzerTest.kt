@@ -199,6 +199,61 @@ internal class MediaAnalyzerTest {
     }
   }
 
+  @Test
+  fun `id3v24 hoerspiel tags`() {
+    val metadata = parse("hoerspiel_tags_id3v24.mp3").shouldNotBeNull()
+    assertSoftly {
+      metadata.trackNumber shouldBe 3
+      metadata.discNumber shouldBe 2
+      metadata.discCount shouldBe 4
+      metadata.albumArtist shouldBe "Gabriel Burns"
+      metadata.grouping shouldBe "Gabriel Burns Grouping"
+      metadata.year shouldBe 2014
+      metadata.series shouldBe "Gabriel Burns"
+      metadata.part shouldBe "41"
+    }
+  }
+
+  @Test
+  fun `id3v23 hoerspiel tags`() {
+    val metadata = parse("hoerspiel_tags_id3v23.mp3").shouldNotBeNull()
+    assertSoftly {
+      metadata.album shouldBe "(01) Der Flüsterer"
+      metadata.genre shouldBe "Hörspiel"
+      metadata.trackNumber shouldBe 7
+      metadata.discNumber shouldBe 1
+      metadata.discCount shouldBe null
+      metadata.grouping shouldBe "Gabriel Burns"
+      metadata.year shouldBe 2003
+    }
+  }
+
+  @Test
+  fun `m4a hoerspiel tags`() {
+    val metadata = parse("hoerspiel_tags.m4a").shouldNotBeNull()
+    assertSoftly {
+      metadata.trackNumber shouldBe 3
+      metadata.discNumber shouldBe 2
+      metadata.discCount shouldBe 4
+      metadata.albumArtist shouldBe "Gabriel Burns"
+      metadata.grouping shouldBe "Gabriel Burns"
+      metadata.year shouldBe 2014
+    }
+  }
+
+  @Test
+  fun `flac hoerspiel tags`() {
+    val metadata = parse("hoerspiel_tags.flac").shouldNotBeNull()
+    assertSoftly {
+      metadata.trackNumber shouldBe 3
+      metadata.discNumber shouldBe 2
+      metadata.albumArtist shouldBe "Gabriel Burns"
+      metadata.grouping shouldBe "Gabriel Burns"
+      metadata.year shouldBe 2014
+      metadata.series shouldBe "Gabriel Burns"
+    }
+  }
+
   private fun visitTxxx(
     builder: Metadata.Builder,
     description: String,

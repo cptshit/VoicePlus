@@ -10,6 +10,7 @@ import androidx.media3.container.MdtaMetadataEntry
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.source.TrackGroupArray
 import androidx.media3.extractor.DefaultExtractorsFactory
+import androidx.media3.extractor.metadata.id3.BinaryFrame
 import androidx.media3.extractor.metadata.id3.ChapterFrame
 import androidx.media3.extractor.metadata.id3.TextInformationFrame
 import androidx.media3.extractor.metadata.vorbis.VorbisComment
@@ -61,6 +62,7 @@ internal class MediaAnalyzer(
             repeat(metadata.length()) { metadataIndex ->
               when (val entry = metadata.get(metadataIndex)) {
                 is TextInformationFrame -> visitText(entry, builder)
+                is BinaryFrame -> visitBinary(entry, builder)
                 is ChapterFrame -> visitChapter(entry, builder)
                 is VorbisComment -> visitVorbis(entry, builder)
                 is MdtaMetadataEntry -> visitMdta(entry, builder)
@@ -136,6 +138,13 @@ internal class MediaAnalyzer(
       key == "ARTIST" -> builder.artist = value
       key == "ALBUM" -> builder.album = value
       key == "TITLE" -> builder.title = value
+      key == "ALBUMARTIST" || key == "ALBUM ARTIST" -> builder.albumArtist = value
+      key == "TRACKNUMBER" -> builder.setTrack(value)
+      key == "DISCNUMBER" -> builder.setDisc(value)
+      key == "DISCTOTAL" || key == "TOTALDISCS" -> builder.discCount = value.trim().toIntOrNull() ?: builder.discCount
+      key == "GROUPING" -> builder.grouping = value
+      key == "DATE" || key == "YEAR" -> builder.setYear(value)
+      key == "SERIES" -> builder.series = value
       key.startsWith("CHAPTER") -> {
         val withoutPrefix = key.removePrefix("CHAPTER")
         val isName = withoutPrefix.endsWith("NAME")
@@ -170,6 +179,17 @@ internal class MediaAnalyzer(
     }
   }
 
+  // Media3 only decodes frames starting with "T" as text. GRP1, MVNM and MVIN (iTunes, ID3v2.3/2.4)
+  // share the text frame layout but arrive as BinaryFrame.
+  private fun visitBinary(
+    entry: BinaryFrame,
+    builder: Metadata.Builder,
+  ) {
+    if (entry.id !in BINARY_TEXT_FRAME_IDS) return
+    val value = decodeId3Text(entry.data) ?: return
+    visitText(TextInformationFrame(entry.id, null, listOf(value)), builder)
+  }
+
   @VisibleForTesting
   internal fun visitText(
     entry: TextInformationFrame,
@@ -182,6 +202,16 @@ internal class MediaAnalyzer(
       "TALB" -> builder.album = value
       "TCON" -> builder.genre = value
       "TCOM" -> builder.narrator = value
+      "TPE2" -> builder.albumArtist = value
+      "TRCK" -> builder.setTrack(value)
+      "TPOS" -> builder.setDisc(value)
+      // GRP1 is the iTunes grouping frame; older taggers (and MP4 ©grp via Media3) use TIT1.
+      "GRP1" -> builder.grouping = value
+      "TIT1" -> if (builder.grouping.isNullOrBlank()) builder.grouping = value
+      "TYER", "TDRC", "TDRL" -> if (builder.year == null) builder.setYear(value)
+      // ID3v2.4 movement frames and MP4 ©mvn/©mvi arrive with these ids, not as TXXX.
+      "MVNM" -> builder.series = value
+      "MVIN" -> builder.part = if (builder.part.isNullOrBlank()) value else builder.part
       "TXXX" -> when (entry.description) {
         "MVNM" -> builder.series = value
         "MVIN" -> builder.part = if (builder.part.isNullOrBlank()) value else builder.part
@@ -189,7 +219,7 @@ internal class MediaAnalyzer(
         "NARRATOR", "TXXX:NARRATOR" -> builder.narrator = if (builder.narrator.isNullOrBlank()) value else builder.narrator
         else -> Logger.v("Unknown TXXX frame description:  ${entry.description}, value: $value")
       }
-      "TRCK", "TYER", "TSSE" -> {}
+      "TSSE" -> {}
       else -> Logger.v("Unknown frame ID: ${entry.id}, value: $value")
     }
   }
@@ -240,4 +270,21 @@ internal class MediaAnalyzer(
       null
     }
   }
+}
+
+private val BINARY_TEXT_FRAME_IDS = setOf("GRP1", "MVNM", "MVIN")
+
+/** Decodes the payload of an ID3v2 text frame (encoding byte + text) and returns its first value. */
+internal fun decodeId3Text(data: ByteArray): String? {
+  if (data.isEmpty()) return null
+  val charset = when (data[0].toInt()) {
+    0 -> Charsets.ISO_8859_1
+    1 -> Charsets.UTF_16
+    2 -> Charsets.UTF_16BE
+    3 -> Charsets.UTF_8
+    else -> return null
+  }
+  return String(data, 1, data.size - 1, charset)
+    .substringBefore('\u0000')
+    .takeIf { it.isNotBlank() }
 }
