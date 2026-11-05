@@ -49,6 +49,20 @@ Besonderheiten im Titelteil:
 Welche Schreibweise jeweils stimmt, kann die App nicht wissen. Das gehört in den Sammel-Editor
 (Roadmap 5).
 
+Entschieden (Abgleich mit MusicBrainz, gesetzt von Hand über „Buch bearbeiten“; der Normalizer
+bleibt beim Ordnernamen und meldet die Alternative als Abweichung):
+
+| Folge | Titel |
+|---:|---|
+| 11 | `Welt der Dämmerung` (Ordner) |
+| 13 | `Die Kommission` |
+| 24 | `Der erste der zehn` (Ordner) |
+| 25 | `Dem Winter folgte der Herbst` |
+| 34 | `Ich weiss, was Angst ist` |
+
+Bei 10, 12, 15 und 16 kommt kein `[Teil N]` aus den Dateinamen dazu. Festgehalten in
+`HoerspielTagNormalizerTest.localGabrielBurnsTitleDecisions` (läuft nur mit dem lokalen Dump).
+
 ## Dateinamen
 
 Pro Folge ist das Muster einheitlich. Platzhalter: `NN` = Tracknummer, `T` = Folgentitel.
