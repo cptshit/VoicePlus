@@ -194,6 +194,7 @@ class ScanFolderRemovalRaceTest {
         fileFactory = FileBasedDocumentFactory,
         ignoreFileTagsStore = mockk { every { data } returns ignoreFileTags },
         hoerspielNormalizer = MemoryFeatureFlag(true),
+        tagFindingRepo = FakeTagFindingRepo(),
       ),
       deviceHasPermissionBug = mockk(relaxed = true),
       audiobookFolders = folders,

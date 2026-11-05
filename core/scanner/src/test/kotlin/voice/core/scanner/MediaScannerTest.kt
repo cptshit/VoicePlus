@@ -5,6 +5,7 @@ import androidx.core.net.toUri
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
@@ -21,6 +22,9 @@ import org.junit.runner.RunWith
 import voice.core.data.BookId
 import voice.core.data.ChapterId
 import voice.core.data.folders.FolderType
+import voice.core.data.hoerspiel.TagFindingField
+import voice.core.data.hoerspiel.TagFindingKind
+import voice.core.data.hoerspiel.TagFindingSource
 import voice.core.data.repo.BookContentRepoImpl
 import voice.core.data.repo.BookRepositoryImpl
 import voice.core.data.repo.ChapterRepoImpl
@@ -522,6 +526,39 @@ class MediaScannerTest {
     episode31.series shouldBe "Gabriel Burns"
     episode31.part shouldBe "31"
     episode31.author shouldBe "Gabriel Burns"
+
+    // folder "Rand der Gezeiten" and album tag agree, file names carry no title: nothing to report
+    tagFindingRepo.findings.value.shouldBeEmpty()
+  }
+
+  @Test
+  fun hoerspielFindingsAreStored() = test {
+    val root = folder("Hoerspiele")
+    val episode = File(root, "GabrielBurns - 013 - Die Komission")
+    val chapter = audioFile(episode, "01 - Die Kommission [Teil 2].mp3")
+    coEvery { mediaAnalyzer.analyze(match { it.uri == chapter.toUri() }) } returns Metadata(
+      duration = 1000L,
+      artist = null,
+      album = null,
+      fileName = chapter.nameWithoutExtension,
+      chapters = emptyList(),
+      title = chapter.nameWithoutExtension,
+      genre = null,
+      narrator = null,
+      series = null,
+      part = null,
+    )
+
+    scan(FolderType.Root, root)
+
+    val finding = tagFindingRepo.findings.value.single()
+    finding.bookId shouldBe BookId(episode.toUri()).value
+    finding.field shouldBe TagFindingField.EpisodeTitle
+    finding.kind shouldBe TagFindingKind.Different
+    finding.chosenValue shouldBe "Die Komission"
+    finding.chosenSource shouldBe TagFindingSource.FolderName
+    finding.otherValue shouldBe "Die Kommission [Teil 2]"
+    finding.otherSource shouldBe TagFindingSource.FileName
   }
 
   private fun test(test: suspend TestEnvironment.() -> Unit) {
@@ -540,6 +577,7 @@ class MediaScannerTest {
     val ignoreFileTags = MutableStateFlow(false)
     val excludedBooks = MutableStateFlow<Set<String>>(emptySet())
     val mediaAnalyzer = mockk<MediaAnalyzer>()
+    val tagFindingRepo = FakeTagFindingRepo()
 
     // The scanner now gates activation on the LIVE folder set via AudiobookFolders.isManaged. These tests drive
     // scanner.scan(folders) with a literal folder map, so the fake simply mirrors that same set: every folder
@@ -561,6 +599,7 @@ class MediaScannerTest {
         fileFactory = FileBasedDocumentFactory,
         ignoreFileTagsStore = mockk { every { data } returns ignoreFileTags },
         hoerspielNormalizer = MemoryFeatureFlag(true),
+        tagFindingRepo = tagFindingRepo,
       ),
       deviceHasPermissionBug = mockk(),
       audiobookFolders = configuredFolders,

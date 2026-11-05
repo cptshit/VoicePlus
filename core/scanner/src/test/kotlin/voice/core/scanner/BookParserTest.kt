@@ -30,6 +30,7 @@ class BookParserTest {
     fileFactory = mockk(),
     ignoreFileTagsStore = mockk { every { data } returns MutableStateFlow(false) },
     hoerspielNormalizer = MemoryFeatureFlag(true),
+    tagFindingRepo = FakeTagFindingRepo(),
   )
 
   @Test

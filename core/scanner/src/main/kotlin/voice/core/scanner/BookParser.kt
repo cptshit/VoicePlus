@@ -8,6 +8,8 @@ import voice.core.data.Book
 import voice.core.data.BookContent
 import voice.core.data.BookId
 import voice.core.data.Chapter
+import voice.core.data.hoerspiel.TagFinding
+import voice.core.data.hoerspiel.TagFindingRepo
 import voice.core.data.repo.BookContentRepo
 import voice.core.data.store.IgnoreFileTagsStore
 import voice.core.data.toUri
@@ -16,6 +18,7 @@ import voice.core.documentfile.CachedDocumentFileFactory
 import voice.core.featureflag.FeatureFlag
 import voice.core.featureflag.HoerspielNormalizerFeatureFlagQualifier
 import voice.core.logging.api.Logger
+import voice.core.scanner.hoerspiel.EpisodeFinding
 import voice.core.scanner.hoerspiel.EpisodeSource
 import voice.core.scanner.hoerspiel.HoerspielTagNormalizer
 import voice.core.scanner.hoerspiel.NormalizedEpisode
@@ -31,6 +34,7 @@ internal class BookParser(
   private val ignoreFileTagsStore: DataStore<Boolean>,
   @HoerspielNormalizerFeatureFlagQualifier
   private val hoerspielNormalizer: FeatureFlag<Boolean>,
+  private val tagFindingRepo: TagFindingRepo,
 ) {
 
   suspend fun parseAndStore(
@@ -54,7 +58,9 @@ internal class BookParser(
         mediaAnalyzer.analyze(fileFactory.create(uri))
       }
     }
-    val parsed = parse(chapters, id, analyzed, file)
+    val episode = normalizeEpisode(chapters, analyzed, file)
+    val parsed = parse(chapters, id, analyzed, file, episode)
+    tagFindingRepo.replaceForBook(id, episode?.findings.orEmpty().map { it.toStored(id) })
 
     // When re-parsing an existing book (e.g. after toggling "ignore file tags"), only the
     // metadata derived from tags/file names is refreshed. Playback-related state such as the
@@ -94,8 +100,8 @@ internal class BookParser(
     id: BookId,
     analyzed: Metadata?,
     file: CachedDocumentFile,
+    episode: NormalizedEpisode? = normalizeEpisode(chapters, analyzed, file),
   ): BookContent {
-    val episode = if (hoerspielNormalizer.get()) normalizeEpisode(chapters, analyzed, file) else null
     return BookContent(
       id = id,
       isActive = true,
@@ -127,6 +133,7 @@ internal class BookParser(
     analyzed: Metadata?,
     file: CachedDocumentFile,
   ): NormalizedEpisode? {
+    if (!hoerspielNormalizer.get()) return null
     val source = EpisodeSource(
       folderName = file.name?.takeUnless { file.isFile },
       fileNames = chapters.map { it.id.toUri().fileNameWithoutExtension() },
@@ -170,7 +177,18 @@ internal fun Uri.filePath(): String? {
     ?.removePrefix(":")
 }
 
-private fun Uri.fileNameWithoutExtension(): String {
-  val path = filePath() ?: lastPathSegment ?: toString()
+internal fun Uri.fileNameWithoutExtension(): String {
+  // filePath() strips the SAF volume prefix ("primary:"), but is empty for plain file URIs
+  val path = filePath()?.takeIf { it.isNotEmpty() } ?: lastPathSegment ?: toString()
   return path.substringAfterLast('/').substringBeforeLast('.')
 }
+
+private fun EpisodeFinding.toStored(bookId: BookId) = TagFinding(
+  bookId = bookId.value,
+  field = field,
+  kind = kind,
+  chosenValue = chosen.value,
+  chosenSource = chosen.source,
+  otherValue = other.value,
+  otherSource = other.source,
+)

@@ -1,5 +1,8 @@
 package voice.core.scanner.hoerspiel
 
+import voice.core.data.hoerspiel.TagFindingField
+import voice.core.data.hoerspiel.TagFindingKind
+import voice.core.data.hoerspiel.TagFindingSource
 import voice.core.scanner.Metadata
 
 /** What the normalizer gets to see of one book. */
@@ -12,33 +15,18 @@ internal data class EpisodeSource(
   val tags: Metadata?,
 )
 
-internal enum class EpisodeField { Series, EpisodeNumber, EpisodeTitle }
-
-internal enum class TagSource { SeriesTag, PartTag, FolderName, AlbumTag, ArtistTag, FileName }
-
 internal data class Candidate(
   val value: String,
-  val source: TagSource,
+  val source: TagFindingSource,
 )
-
-internal enum class FindingKind {
-  /** Same text apart from case, punctuation, spacing or umlaut spelling (`Teil 1` / `[Teil 1]`). */
-  Formatting,
-
-  /** One value extends the other (`Die Kommission` / `Die Kommission [Teil 2]`). */
-  Extended,
-
-  /** The values really differ (`Komission` / `Kommission`, `folgt` / `folgte`). */
-  Different,
-}
 
 /**
  * A disagreement between two sources. The normalizer never resolves these silently: [chosen]
  * is what it picked, [other] what it dropped, so a "check tags" screen can show both.
  */
-internal data class TagFinding(
-  val field: EpisodeField,
-  val kind: FindingKind,
+internal data class EpisodeFinding(
+  val field: TagFindingField,
+  val kind: TagFindingKind,
   val chosen: Candidate,
   val other: Candidate,
 )
@@ -48,9 +36,9 @@ internal data class NormalizedEpisode(
   /** [comparisonKey] of the series name, used to group episodes of one series. */
   val seriesKey: String,
   val episodeNumber: Int,
-  val episodeNumberSource: TagSource,
+  val episodeNumberSource: TagFindingSource,
   val episodeTitle: Candidate?,
-  val findings: List<TagFinding>,
+  val findings: List<EpisodeFinding>,
 )
 
 /**
@@ -76,45 +64,45 @@ internal object HoerspielTagNormalizer {
     val files = FileNameAnalysis.analyze(source.fileNames)
 
     val seriesCandidates = listOfNotNull(
-      tags?.series?.trim()?.takeIf { it.isNotEmpty() }?.let { Candidate(it, TagSource.SeriesTag) },
-      folder?.series?.let { Candidate(it, TagSource.FolderName) },
-      album?.series?.let { Candidate(it, TagSource.AlbumTag) },
-      files.series?.let { Candidate(it, TagSource.FileName) },
+      tags?.series?.trim()?.takeIf { it.isNotEmpty() }?.let { Candidate(it, TagFindingSource.SeriesTag) },
+      folder?.series?.let { Candidate(it, TagFindingSource.FolderName) },
+      album?.series?.let { Candidate(it, TagFindingSource.AlbumTag) },
+      files.series?.let { Candidate(it, TagFindingSource.FileName) },
     )
     val numberCandidates = listOfNotNull(
-      tags?.part?.trim()?.toIntOrNull()?.let { it to TagSource.PartTag },
-      folder?.number?.let { it to TagSource.FolderName },
-      album?.number?.let { it to TagSource.AlbumTag },
-      files.number?.let { it to TagSource.FileName },
+      tags?.part?.trim()?.toIntOrNull()?.let { it to TagFindingSource.PartTag },
+      folder?.number?.let { it to TagFindingSource.FolderName },
+      album?.number?.let { it to TagFindingSource.AlbumTag },
+      files.number?.let { it to TagFindingSource.FileName },
     )
     val titleCandidates = listOfNotNull(
-      folder?.title?.takeIf { folder.number != null }?.let { Candidate(it, TagSource.FolderName) },
-      album?.title?.let { Candidate(it, TagSource.AlbumTag) },
-      files.title?.let { Candidate(it, TagSource.FileName) },
+      folder?.title?.takeIf { folder.number != null }?.let { Candidate(it, TagFindingSource.FolderName) },
+      album?.title?.let { Candidate(it, TagFindingSource.AlbumTag) },
+      files.title?.let { Candidate(it, TagFindingSource.FileName) },
     )
 
     val chosenSeries = seriesCandidates.firstOrNull() ?: return null
     val (number, numberSource) = numberCandidates.firstOrNull() ?: return null
     val seriesKey = comparisonKey(chosenSeries.value)
 
-    val findings = mutableListOf<TagFinding>()
+    val findings = mutableListOf<EpisodeFinding>()
 
     val displaySeries = listOfNotNull(tags?.albumArtist, tags?.artist)
       .map { it.trim() }
       .firstOrNull { comparisonKey(it) == seriesKey }
-      ?.let { Candidate(it, TagSource.ArtistTag) }
+      ?.let { Candidate(it, TagFindingSource.ArtistTag) }
       ?: chosenSeries
     seriesCandidates.forEach { other ->
       if (comparisonKey(other.value) != seriesKey) {
-        findings += TagFinding(EpisodeField.Series, FindingKind.Different, displaySeries, other)
+        findings += EpisodeFinding(TagFindingField.Series, TagFindingKind.Different, displaySeries, other)
       }
     }
 
     numberCandidates.drop(1).forEach { (otherNumber, otherSource) ->
       if (otherNumber != number) {
-        findings += TagFinding(
-          field = EpisodeField.EpisodeNumber,
-          kind = FindingKind.Different,
+        findings += EpisodeFinding(
+          field = TagFindingField.EpisodeNumber,
+          kind = TagFindingKind.Different,
           chosen = Candidate(number.toString(), numberSource),
           other = Candidate(otherNumber.toString(), otherSource),
         )
@@ -125,7 +113,7 @@ internal object HoerspielTagNormalizer {
     if (title != null) {
       titleCandidates.forEach { other ->
         if (other.value != title.value) {
-          findings += TagFinding(EpisodeField.EpisodeTitle, classify(title.value, other.value), title, other)
+          findings += EpisodeFinding(TagFindingField.EpisodeTitle, classify(title.value, other.value), title, other)
         }
       }
     }
@@ -150,13 +138,13 @@ internal object HoerspielTagNormalizer {
   private fun classify(
     chosen: String,
     other: String,
-  ): FindingKind {
+  ): TagFindingKind {
     val a = comparisonKey(chosen)
     val b = comparisonKey(other)
     return when {
-      a == b -> FindingKind.Formatting
-      a.startsWith(b) || b.startsWith(a) -> FindingKind.Extended
-      else -> FindingKind.Different
+      a == b -> TagFindingKind.Formatting
+      a.startsWith(b) || b.startsWith(a) -> TagFindingKind.Extended
+      else -> TagFindingKind.Different
     }
   }
 }
