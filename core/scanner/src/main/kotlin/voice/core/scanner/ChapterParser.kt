@@ -1,5 +1,6 @@
 package voice.core.scanner
 
+import android.content.Context
 import androidx.datastore.core.DataStore
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.first
@@ -10,7 +11,11 @@ import voice.core.data.repo.ChapterRepo
 import voice.core.data.repo.getOrPut
 import voice.core.data.store.IgnoreFileTagsStore
 import voice.core.documentfile.CachedDocumentFile
+import voice.core.featureflag.FeatureFlag
+import voice.core.featureflag.HoerspielNormalizerFeatureFlagQualifier
+import voice.core.scanner.hoerspiel.ChapterNameNormalizer
 import java.time.Instant
+import voice.core.strings.R as StringsR
 
 internal data class ChapterParseResult(
   val chapters: List<Chapter>,
@@ -23,6 +28,9 @@ internal class ChapterParser(
   private val mediaAnalyzer: MediaAnalyzer,
   @IgnoreFileTagsStore
   private val ignoreFileTagsStore: DataStore<Boolean>,
+  private val context: Context,
+  @HoerspielNormalizerFeatureFlagQualifier
+  private val hoerspielNormalizer: FeatureFlag<Boolean>,
 ) {
 
   // Use the filename when the title tag is identical to the album tag — this means
@@ -92,10 +100,30 @@ internal class ChapterParser(
     }
 
     parseChapters(file = documentFile)
-    val sortedChapters = result.sorted()
+    val sortedChapters = result.sorted().let { chapters ->
+      if (hoerspielNormalizer.get()) normalizeNames(chapters) else chapters
+    }
     return ChapterParseResult(
       chapters = sortedChapters,
       firstChapterMetadata = sortedChapters.firstOrNull()?.let { analyzedMetadata[it.id] },
     )
+  }
+
+  /**
+   * Replaces meaningless names ("Track 01", the episode title in every file) with a numbering,
+   * see [ChapterNameNormalizer]. Changed chapters are stored so the names survive cached scans.
+   * Names set in the chapter editor live in a separate table and are not affected.
+   */
+  private suspend fun normalizeNames(chapters: List<Chapter>): List<Chapter> {
+    val names = ChapterNameNormalizer.normalize(chapters.map { it.name }) { number ->
+      context.getString(StringsR.string.chapter_numbered, number)
+    }
+    return chapters.zip(names) { chapter, name ->
+      if (chapter.name == name) {
+        chapter
+      } else {
+        chapter.copy(name = name).also { chapterRepo.put(it) }
+      }
+    }
   }
 }

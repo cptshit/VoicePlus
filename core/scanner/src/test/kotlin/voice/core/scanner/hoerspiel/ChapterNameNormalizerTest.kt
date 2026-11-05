@@ -20,6 +20,24 @@ class ChapterNameNormalizerTest {
   }
 
   @Test
+  fun numbersInGenericNamesAreKept() {
+    normalize("Chapter 1", "Chapter 2", "Chapter 20", "Chapter 30") shouldContainExactly
+      listOf("Kapitel 1", "Kapitel 2", "Kapitel 20", "Kapitel 30")
+  }
+
+  @Test
+  fun repeatedNumbersAreNumberedByPosition() {
+    // every disc starts at "Track 01"
+    normalize("Track 01", "Track 02", "Track 01", "Track 02") shouldContainExactly
+      listOf("Kapitel 1", "Kapitel 2", "Kapitel 3", "Kapitel 4")
+  }
+
+  @Test
+  fun hugeNumbersDoNotCrash() {
+    normalize("Track 99999999999", "Track 1") shouldContainExactly listOf("Kapitel 1", "Kapitel 2")
+  }
+
+  @Test
   fun repeatedEpisodeTitleIsNumbered() {
     normalize("01 - Die Brut", "02 - Die Brut") shouldContainExactly listOf("Kapitel 1", "Kapitel 2")
     normalize("Am Ende aller Tage", "Am Ende aller Tage") shouldContainExactly listOf("Kapitel 1", "Kapitel 2")

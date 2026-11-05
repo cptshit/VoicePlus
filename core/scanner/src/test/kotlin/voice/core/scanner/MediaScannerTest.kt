@@ -515,6 +515,7 @@ class MediaScannerTest {
     episode2.series shouldBe "Gabriel Burns"
     episode2.part shouldBe "2"
     episode2.author shouldBe "Gabriel Burns"
+    untaggedChapters.map { chapterRepo.get(ChapterId(it.toUri()))?.name } shouldBe listOf("Chapter 1", "Chapter 2")
 
     val episode31 = bookContentRepo.get(BookId(tagged.toUri()))!!
     episode31.name shouldBe "Rand der Gezeiten"
@@ -551,6 +552,8 @@ class MediaScannerTest {
         chapterRepo = chapterRepo,
         mediaAnalyzer = mediaAnalyzer,
         ignoreFileTagsStore = mockk { every { data } returns ignoreFileTags },
+        context = ApplicationProvider.getApplicationContext(),
+        hoerspielNormalizer = MemoryFeatureFlag(true),
       ),
       bookParser = BookParser(
         contentRepo = bookContentRepo,

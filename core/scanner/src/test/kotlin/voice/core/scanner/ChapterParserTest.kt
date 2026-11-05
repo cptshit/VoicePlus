@@ -1,5 +1,6 @@
 package voice.core.scanner
 
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.kotest.matchers.collections.shouldContainExactly
 import io.mockk.Runs
@@ -24,6 +25,7 @@ import voice.core.data.repo.internals.dao.ChapterDao
 import voice.core.documentfile.CachedDocumentFile
 import voice.core.documentfile.FileBasedDocumentFile
 import voice.core.documentfile.nameWithoutExtension
+import voice.core.featureflag.MemoryFeatureFlag
 import java.time.Instant
 
 @RunWith(AndroidJUnit4::class)
@@ -79,6 +81,8 @@ class ChapterParserTest {
         }
       },
       ignoreFileTagsStore = mockk { every { data } returns MutableStateFlow(false) },
+      context = ApplicationProvider.getApplicationContext(),
+      hoerspielNormalizer = MemoryFeatureFlag(true),
     )
     chapterParser.parse(FileBasedDocumentFile(audiobook))
       .chapters
@@ -197,6 +201,8 @@ class ChapterParserTest {
       chapterRepo = ChapterRepoImpl(chapterDao),
       mediaAnalyzer = mediaAnalyzer,
       ignoreFileTagsStore = mockk { every { data } returns MutableStateFlow(false) },
+      context = ApplicationProvider.getApplicationContext(),
+      hoerspielNormalizer = MemoryFeatureFlag(true),
     ) to mediaAnalyzer
   }
 }

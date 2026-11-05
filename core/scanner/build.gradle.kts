@@ -11,6 +11,7 @@ dependencies {
   implementation(projects.core.data.api)
   implementation(projects.core.initializer)
   implementation(projects.core.featureflag)
+  implementation(projects.core.strings)
 
   implementation(libs.slf4j.noop)
   implementation(libs.jebml)
