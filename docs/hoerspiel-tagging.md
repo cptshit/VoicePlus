@@ -56,11 +56,14 @@ bleibt beim Ordnernamen und meldet die Alternative als Abweichung):
 |---:|---|
 | 11 | `Welt der Dämmerung` (Ordner) |
 | 13 | `Die Kommission` |
+| 15 | `Ohne Bewusstsein` |
+| 16 | `Infektiös` |
 | 24 | `Der erste der zehn` (Ordner) |
 | 25 | `Dem Winter folgte der Herbst` |
 | 34 | `Ich weiss, was Angst ist` |
 
-Bei 10, 12, 15 und 16 kommt kein `[Teil N]` aus den Dateinamen dazu. Festgehalten in
+Bei 10 und 12 kommt kein `[Teil N]` aus den Dateinamen dazu, bei 15 und 16 fällt das
+`Teil N` aus dem Ordnernamen weg (wie bei MusicBrainz). Festgehalten in
 `HoerspielTagNormalizerTest.localGabrielBurnsTitleDecisions` (läuft nur mit dem lokalen Dump).
 
 ## Dateinamen

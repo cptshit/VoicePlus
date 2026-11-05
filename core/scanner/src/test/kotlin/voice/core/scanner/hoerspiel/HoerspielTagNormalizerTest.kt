@@ -70,7 +70,7 @@ class HoerspielTagNormalizerTest {
    *
    * The normalizer keeps the folder name and records the other spelling as a finding; the
    * decided title is then set by hand via "Edit book". So for every decision the normalizer
-   * must either pick it or offer it in a finding (a trailing " [Teil N]" is never wanted).
+   * must either pick it or offer it in a finding (a trailing " [Teil N]" is never wanted; 15 and 16 drop the "Teil N" of their folder, as on MusicBrainz).
    */
   @Test
   fun localGabrielBurnsTitleDecisions() {
@@ -89,8 +89,8 @@ class HoerspielTagNormalizerTest {
       11 to Decision("Welt der Dämmerung", decided = "Welt der Dämmerung"),
       12 to Decision("Die erste Erinnerung", decided = "Die erste Erinnerung"),
       13 to Decision("Die Komission", decided = "Die Kommission"),
-      15 to Decision("Ohne Bewusstsein Teil 1", decided = "Ohne Bewusstsein Teil 1"),
-      16 to Decision("Infektiös Teil 2", decided = "Infektiös Teil 2"),
+      15 to Decision("Ohne Bewusstsein Teil 1", decided = "Ohne Bewusstsein"),
+      16 to Decision("Infektiös Teil 2", decided = "Infektiös"),
       24 to Decision("Der erste der zehn", decided = "Der erste der zehn"),
       25 to Decision("Dem Winter folgt der Herbst", decided = "Dem Winter folgte der Herbst"),
       34 to Decision("Ich weiss was Angst ist", decided = "Ich weiss, was Angst ist"),
