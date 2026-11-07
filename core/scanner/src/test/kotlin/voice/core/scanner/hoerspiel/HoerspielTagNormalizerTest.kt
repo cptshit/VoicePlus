@@ -15,6 +15,8 @@ import kotlinx.serialization.json.put
 import org.junit.Assume.assumeTrue
 import org.junit.Test
 import voice.core.data.hoerspiel.TagFindingField
+import voice.core.data.hoerspiel.TagFindingSource
+import voice.core.scanner.Metadata
 import java.io.File
 
 class HoerspielTagNormalizerTest {
@@ -107,6 +109,53 @@ class HoerspielTagNormalizerTest {
       offered.map { it.value } shouldContain decision.decided
     }
     episodes.filterKeys { it !in decisions }.values.mapNotNull { it.titlePart }.shouldBeEmpty()
+  }
+
+  private fun episode(
+    folder: String,
+    album: String? = null,
+  ) = HoerspielTagNormalizer.normalize(
+    EpisodeSource(
+      folderName = folder,
+      fileNames = listOf("01 - Kapitel 01"),
+      tags = album?.let {
+        Metadata(
+          duration = 1,
+          artist = "Gabriel Burns",
+          album = it,
+          title = "Kapitel 01",
+          fileName = "01 - Kapitel 01.mp3",
+          chapters = emptyList(),
+          genre = null,
+          narrator = null,
+          series = null,
+          part = null,
+        )
+      },
+    ),
+  )
+
+  @Test
+  fun titleTakesUmlautSpellingFromAnotherSourceOfTheSameEpisode() {
+    val result = episode("Gabriel.Burns.01.-.Der.Fluesterer", album = "(01) Der Flüsterer")!!
+    val title = result.episodeTitle!!
+    title.value shouldBe "Der Flüsterer"
+    title.source shouldBe TagFindingSource.AlbumTag
+  }
+
+  @Test
+  fun titleWithoutUmlautSourceIsLeftAlone() {
+    // Real Gabriel Burns 01: folder and album tag both say "Fluesterer", nothing to learn from.
+    episode("Gabriel.Burns.01.-.Der.Fluesterer", album = "(01) Der Fluesterer")!!.episodeTitle!!.value shouldBe "Der Fluesterer"
+    episode("Gabriel.Burns.01.-.Der.Fluesterer")!!.episodeTitle!!.value shouldBe "Der Fluesterer"
+  }
+
+  @Test
+  fun ueInsideRegularWordsIsNeverConverted() {
+    episode("Gabriel.Burns.07.-.Feuer", album = "(07) Feuer")!!.episodeTitle!!.value shouldBe "Feuer"
+    episode("GabrielBurns - 008 - Abenteuer im Dunkeln")!!.episodeTitle!!.value shouldBe "Abenteuer im Dunkeln"
+    // A different title never lends its spelling, even with umlauts.
+    episode("Gabriel.Burns.09.-.Feuer", album = "(09) Süßes Gift")!!.episodeTitle!!.value shouldBe "Feuer"
   }
 
   @Test
