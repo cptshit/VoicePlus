@@ -13,12 +13,14 @@ import voice.core.data.store.ExcludedBooksStore
 import voice.core.documentfile.CachedDocumentFile
 import voice.core.documentfile.walk
 import voice.core.logging.api.Logger
+import voice.core.scanner.hoerspiel.SeriesAutoGrouper
 
 @Inject
 internal class MediaScanner(
   private val contentRepo: BookContentRepo,
   private val chapterParser: ChapterParser,
   private val bookParser: BookParser,
+  private val seriesAutoGrouper: SeriesAutoGrouper,
   private val deviceHasPermissionBug: DeviceHasStoragePermissionBug,
   private val audiobookFolders: AudiobookFolders,
   @ExcludedBooksStore
@@ -92,6 +94,9 @@ internal class MediaScanner(
       .forEach { file ->
         scan(file, excludedIds, forceReParse)
       }
+    bookParser.fillMissingSeriesAuthors()
+    bookParser.updateEpisodePartCounts()
+    seriesAutoGrouper.groupNewEpisodes()
   }
 
   private fun List<CachedDocumentFile>.findProbeFile(): CachedDocumentFile? {

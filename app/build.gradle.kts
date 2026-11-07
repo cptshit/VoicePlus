@@ -38,7 +38,7 @@ android {
   }
 
   defaultConfig {
-    applicationId = "com.github.mistermo_vibecode.voiceplus"
+    applicationId = "de.henrik.voiceplus"
     // Keep these as literals so F-Droid's tag checker can discover releases.
     versionName = "1.29"
     versionCode = 5408022

@@ -5,6 +5,7 @@ import androidx.core.net.toUri
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
@@ -21,13 +22,19 @@ import org.junit.runner.RunWith
 import voice.core.data.BookId
 import voice.core.data.ChapterId
 import voice.core.data.folders.FolderType
+import voice.core.data.hoerspiel.TagFindingField
+import voice.core.data.hoerspiel.TagFindingKind
+import voice.core.data.hoerspiel.TagFindingSource
 import voice.core.data.repo.BookContentRepoImpl
 import voice.core.data.repo.BookRepositoryImpl
 import voice.core.data.repo.ChapterRepoImpl
+import voice.core.data.repo.LibraryOrganisationRepoImpl
 import voice.core.data.repo.internals.AppDb
 import voice.core.data.toUri
 import voice.core.documentfile.FileBasedDocumentFactory
 import voice.core.documentfile.FileBasedDocumentFile
+import voice.core.featureflag.MemoryFeatureFlag
+import voice.core.scanner.hoerspiel.SeriesAutoGrouper
 import java.io.Closeable
 import java.io.File
 import java.nio.file.Files
@@ -483,6 +490,156 @@ class MediaScannerTest {
     )
   }
 
+  @Test
+  fun hoerspielEpisodesGetSeriesNumberTitleAndSharedAuthor() = test {
+    val root = folder("Hoerspiele")
+    val untagged = File(root, "GabrielBurns - 002 - Die Brut")
+    val untaggedChapters = listOf(audioFile(untagged, "01 - Die Brut.mp3"), audioFile(untagged, "02 - Die Brut.mp3"))
+    val tagged = File(root, "GabrielBurns - 031 - Rand der Gezeiten")
+    val taggedChapter = audioFile(tagged, "01-AudioTrack 01.mp3")
+    // audioFile() installs a catch-all answer; the more specific stubs below take precedence.
+    (untaggedChapters + taggedChapter).forEach { file ->
+      val isTagged = file == taggedChapter
+      coEvery { mediaAnalyzer.analyze(match { it.uri == file.toUri() }) } returns Metadata(
+        duration = 1000L,
+        artist = if (isTagged) "Gabriel Burns" else null,
+        album = if (isTagged) "Rand der Gezeiten" else null,
+        fileName = file.nameWithoutExtension,
+        chapters = emptyList(),
+        title = if (isTagged) "AudioTrack 01" else file.nameWithoutExtension,
+        genre = null,
+        narrator = null,
+        series = null,
+        part = null,
+      )
+    }
+
+    scan(FolderType.Root, root)
+
+    val episode2 = bookContentRepo.get(BookId(untagged.toUri()))!!
+    episode2.name shouldBe "Die Brut"
+    episode2.series shouldBe "Gabriel Burns"
+    episode2.part shouldBe "2"
+    episode2.author shouldBe "Gabriel Burns"
+    untaggedChapters.map { chapterRepo.get(ChapterId(it.toUri()))?.name } shouldBe listOf("Chapter 1", "Chapter 2")
+
+    val episode31 = bookContentRepo.get(BookId(tagged.toUri()))!!
+    episode31.name shouldBe "Rand der Gezeiten"
+    episode31.series shouldBe "Gabriel Burns"
+    episode31.part shouldBe "31"
+    episode31.author shouldBe "Gabriel Burns"
+
+    // folder "Rand der Gezeiten" and album tag agree, file names carry no title: nothing to report
+    tagFindingRepo.findings.value.shouldBeEmpty()
+  }
+
+  @Test
+  fun hoerspielFindingsAreStored() = test {
+    val root = folder("Hoerspiele")
+    val episode = File(root, "GabrielBurns - 013 - Die Komission")
+    val chapter = audioFile(episode, "01 - Die Kommission [Teil 2].mp3")
+    coEvery { mediaAnalyzer.analyze(match { it.uri == chapter.toUri() }) } returns Metadata(
+      duration = 1000L,
+      artist = null,
+      album = null,
+      fileName = chapter.nameWithoutExtension,
+      chapters = emptyList(),
+      title = chapter.nameWithoutExtension,
+      genre = null,
+      narrator = null,
+      series = null,
+      part = null,
+    )
+
+    scan(FolderType.Root, root)
+
+    val finding = tagFindingRepo.findings.value.single()
+    finding.bookId shouldBe BookId(episode.toUri()).value
+    finding.field shouldBe TagFindingField.EpisodeTitle
+    finding.kind shouldBe TagFindingKind.Different
+    finding.chosenValue shouldBe "Die Komission"
+    finding.chosenSource shouldBe TagFindingSource.FolderName
+    finding.otherValue shouldBe "Die Kommission"
+    finding.otherSource shouldBe TagFindingSource.FileName
+  }
+
+  @Test
+  fun hoerspielTwoPartersGetTitleWithoutPartAndPartCount() = test {
+    val root = folder("Hoerspiele")
+    val first = File(root, "GabrielBurns - 015 - Ohne Bewusstsein Teil 1")
+    val second = File(root, "GabrielBurns - 016 - Infektiös Teil 2")
+    val single = File(root, "GabrielBurns - 017 - Was ist das Leben")
+    // audioFile() registers a catch-all analyzer answer, so create all files before the specific answers
+    val chapters = listOf(first, second, single).map { audioFile(it, "01 - Track 01.mp3") }
+    chapters.forEach { chapter ->
+      coEvery { mediaAnalyzer.analyze(match { it.uri == chapter.toUri() }) } returns Metadata(
+        duration = 1000L,
+        artist = null,
+        album = null,
+        fileName = chapter.nameWithoutExtension,
+        chapters = emptyList(),
+        title = null,
+        genre = null,
+        narrator = null,
+        series = null,
+        part = null,
+      )
+    }
+
+    scan(FolderType.Root, root)
+
+    val books = bookContentRepo.all().associateBy { it.id }
+    books.getValue(BookId(first.toUri())).name shouldBe "Ohne Bewusstsein"
+    books.getValue(BookId(second.toUri())).name shouldBe "Infektiös"
+    episodePartRepo.parts.value.values.map { Triple(it.bookId, it.part, it.partCount) }.toSet() shouldBe setOf(
+      Triple(BookId(first.toUri()).value, 1, 2),
+      Triple(BookId(second.toUri()).value, 2, 2),
+    )
+  }
+
+  @Test
+  fun hoerspielSeriesBecomesAStackThatManualChangesSurvive() = test {
+    val root = folder("Hoerspiele")
+    val episodes = listOf(
+      "GabrielBurns - 010 - Diesseits der Kuppeln",
+      "GabrielBurns - 002 - Die Brut",
+      "Gabriel.Burns.01.-.Der.Fluesterer",
+    ).map { File(root, it) }
+    // audioFile() registers a catch-all analyzer answer, so create all files before the specific answers
+    val chapters = episodes.map { audioFile(it, "01 - Track 01.mp3") }
+    chapters.forEach { chapter ->
+      coEvery { mediaAnalyzer.analyze(match { it.uri == chapter.toUri() }) } returns Metadata(
+        duration = 1000L,
+        artist = null,
+        album = null,
+        fileName = chapter.nameWithoutExtension,
+        chapters = emptyList(),
+        title = null,
+        genre = null,
+        narrator = null,
+        series = null,
+        part = null,
+      )
+    }
+    val (ten, two, one) = episodes.map { BookId(it.toUri()) }
+
+    scan(FolderType.Root, root)
+
+    val organisation = organisationRepo.get()
+    val series = organisation.series.single()
+    series.name shouldBe "Gabriel Burns"
+    organisation.placements.filter { it.seriesId == series.id }.sortedBy { it.seriesPosition }.map { it.bookId } shouldBe
+      listOf(one, two, ten).map { it.value }
+
+    // the user takes episode 10 out of the stack; a rescan must not put it back
+    organisationRepo.removeFromSeries(ten)
+    scan(FolderType.Root, root, forceReParse = true)
+
+    organisationRepo.get().placements.single { it.bookId == ten.value }.seriesId shouldBe null
+    organisationRepo.get().placements.filter { it.seriesId == series.id }.map { it.bookId }.toSet() shouldBe
+      setOf(one.value, two.value)
+  }
+
   private fun test(test: suspend TestEnvironment.() -> Unit) {
     runTest {
       TestEnvironment().use { test(it) }
@@ -495,10 +652,14 @@ class MediaScannerTest {
       .allowMainThreadQueries()
       .build()
     val bookContentRepo = BookContentRepoImpl(db.bookContentDao())
+    val organisationRepo = LibraryOrganisationRepoImpl(db)
+    val autoGroupingRepo = FakeSeriesAutoGroupingRepo()
     val chapterRepo = ChapterRepoImpl(db.chapterDao())
     val ignoreFileTags = MutableStateFlow(false)
     val excludedBooks = MutableStateFlow<Set<String>>(emptySet())
     val mediaAnalyzer = mockk<MediaAnalyzer>()
+    val tagFindingRepo = FakeTagFindingRepo()
+    val episodePartRepo = FakeEpisodePartRepo()
 
     // The scanner now gates activation on the LIVE folder set via AudiobookFolders.isManaged. These tests drive
     // scanner.scan(folders) with a literal folder map, so the fake simply mirrors that same set: every folder
@@ -511,12 +672,23 @@ class MediaScannerTest {
         chapterRepo = chapterRepo,
         mediaAnalyzer = mediaAnalyzer,
         ignoreFileTagsStore = mockk { every { data } returns ignoreFileTags },
+        context = ApplicationProvider.getApplicationContext(),
+        hoerspielNormalizer = MemoryFeatureFlag(true),
       ),
       bookParser = BookParser(
         contentRepo = bookContentRepo,
         mediaAnalyzer = mediaAnalyzer,
         fileFactory = FileBasedDocumentFactory,
         ignoreFileTagsStore = mockk { every { data } returns ignoreFileTags },
+        hoerspielNormalizer = MemoryFeatureFlag(true),
+        tagFindingRepo = tagFindingRepo,
+        episodePartRepo = episodePartRepo,
+      ),
+      seriesAutoGrouper = SeriesAutoGrouper(
+        contentRepo = bookContentRepo,
+        organisationRepo = organisationRepo,
+        autoGroupingRepo = autoGroupingRepo,
+        hoerspielNormalizer = MemoryFeatureFlag(true),
       ),
       deviceHasPermissionBug = mockk(),
       audiobookFolders = configuredFolders,

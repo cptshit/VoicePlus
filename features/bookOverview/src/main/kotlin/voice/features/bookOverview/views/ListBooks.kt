@@ -205,6 +205,14 @@ internal fun ListBookRow(
             color = MaterialTheme.colorScheme.onSurface,
             maxLines = 2,
           )
+          book.multiPartLabel()?.let { label ->
+            Text(
+              text = label,
+              style = MaterialTheme.typography.labelSmall,
+              color = MaterialTheme.colorScheme.onSurfaceVariant,
+              maxLines = 1,
+            )
+          }
 
           Row(
             modifier = Modifier

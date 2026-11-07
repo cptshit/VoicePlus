@@ -24,11 +24,14 @@ import voice.core.data.folders.FolderType
 import voice.core.data.repo.BookContentRepoImpl
 import voice.core.data.repo.BookRepositoryImpl
 import voice.core.data.repo.ChapterRepoImpl
+import voice.core.data.repo.LibraryOrganisationRepoImpl
 import voice.core.data.repo.internals.AppDb
 import voice.core.documentfile.CachedDocumentFile
 import voice.core.documentfile.CachedDocumentFileFactory
 import voice.core.documentfile.FileBasedDocumentFactory
 import voice.core.documentfile.FileBasedDocumentFile
+import voice.core.featureflag.MemoryFeatureFlag
+import voice.core.scanner.hoerspiel.SeriesAutoGrouper
 import java.io.Closeable
 import java.io.File
 import java.nio.file.Files
@@ -145,6 +148,8 @@ class ScanFolderRemovalRaceTest {
       .allowMainThreadQueries()
       .build()
     val bookContentRepo = BookContentRepoImpl(db.bookContentDao())
+    val organisationRepo = LibraryOrganisationRepoImpl(db)
+    val autoGroupingRepo = FakeSeriesAutoGroupingRepo()
     private val chapterRepo = ChapterRepoImpl(db.chapterDao())
     private val bookRepo = BookRepositoryImpl(chapterRepo, bookContentRepo)
     private val ignoreFileTags = MutableStateFlow(false)
@@ -184,12 +189,23 @@ class ScanFolderRemovalRaceTest {
         chapterRepo = chapterRepo,
         mediaAnalyzer = mediaAnalyzer,
         ignoreFileTagsStore = mockk { every { data } returns ignoreFileTags },
+        context = ApplicationProvider.getApplicationContext(),
+        hoerspielNormalizer = MemoryFeatureFlag(true),
       ),
       bookParser = BookParser(
         contentRepo = bookContentRepo,
         mediaAnalyzer = mediaAnalyzer,
         fileFactory = FileBasedDocumentFactory,
         ignoreFileTagsStore = mockk { every { data } returns ignoreFileTags },
+        hoerspielNormalizer = MemoryFeatureFlag(true),
+        tagFindingRepo = FakeTagFindingRepo(),
+        episodePartRepo = FakeEpisodePartRepo(),
+      ),
+      seriesAutoGrouper = SeriesAutoGrouper(
+        contentRepo = bookContentRepo,
+        organisationRepo = organisationRepo,
+        autoGroupingRepo = autoGroupingRepo,
+        hoerspielNormalizer = MemoryFeatureFlag(true),
       ),
       deviceHasPermissionBug = mockk(relaxed = true),
       audiobookFolders = folders,

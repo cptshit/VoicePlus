@@ -1,5 +1,6 @@
 package voice.core.scanner
 
+import androidx.media3.extractor.metadata.id3.TextInformationFrame
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.kotest.assertions.assertSoftly
@@ -196,6 +197,108 @@ internal class MediaAnalyzerTest {
         MarkData(startMs = 20000L, name = "Chapter 2"),
       )
     }
+  }
+
+  @Test
+  fun `id3v24 hoerspiel tags`() {
+    val metadata = parse("hoerspiel_tags_id3v24.mp3").shouldNotBeNull()
+    assertSoftly {
+      metadata.trackNumber shouldBe 3
+      metadata.discNumber shouldBe 2
+      metadata.discCount shouldBe 4
+      metadata.albumArtist shouldBe "Gabriel Burns"
+      metadata.grouping shouldBe "Gabriel Burns Grouping"
+      metadata.year shouldBe 2014
+      metadata.series shouldBe "Gabriel Burns"
+      metadata.part shouldBe "41"
+    }
+  }
+
+  @Test
+  fun `id3v23 hoerspiel tags`() {
+    val metadata = parse("hoerspiel_tags_id3v23.mp3").shouldNotBeNull()
+    assertSoftly {
+      metadata.album shouldBe "(01) Der Flüsterer"
+      metadata.genre shouldBe "Hörspiel"
+      metadata.trackNumber shouldBe 7
+      metadata.discNumber shouldBe 1
+      metadata.discCount shouldBe null
+      metadata.grouping shouldBe "Gabriel Burns"
+      metadata.year shouldBe 2003
+    }
+  }
+
+  @Test
+  fun `m4a hoerspiel tags`() {
+    val metadata = parse("hoerspiel_tags.m4a").shouldNotBeNull()
+    assertSoftly {
+      metadata.trackNumber shouldBe 3
+      metadata.discNumber shouldBe 2
+      metadata.discCount shouldBe 4
+      metadata.albumArtist shouldBe "Gabriel Burns"
+      metadata.grouping shouldBe "Gabriel Burns"
+      metadata.year shouldBe 2014
+    }
+  }
+
+  @Test
+  fun `flac hoerspiel tags`() {
+    val metadata = parse("hoerspiel_tags.flac").shouldNotBeNull()
+    assertSoftly {
+      metadata.trackNumber shouldBe 3
+      metadata.discNumber shouldBe 2
+      metadata.albumArtist shouldBe "Gabriel Burns"
+      metadata.grouping shouldBe "Gabriel Burns"
+      metadata.year shouldBe 2014
+      metadata.series shouldBe "Gabriel Burns"
+    }
+  }
+
+  private fun visitTxxx(
+    builder: Metadata.Builder,
+    description: String,
+    value: String,
+  ) {
+    analyzer.visitText(TextInformationFrame("TXXX", description, listOf(value)), builder)
+  }
+
+  @Test
+  fun `txxx PART overrides MVIN`() {
+    val builder = Metadata.Builder("file")
+    visitTxxx(builder, "MVIN", "3")
+    visitTxxx(builder, "PART", "12")
+    builder.part shouldBe "12"
+  }
+
+  @Test
+  fun `txxx MVIN does not override PART`() {
+    val builder = Metadata.Builder("file")
+    visitTxxx(builder, "PART", "12")
+    visitTxxx(builder, "MVIN", "3")
+    builder.part shouldBe "12"
+  }
+
+  @Test
+  fun `txxx PART with prefixed description is read`() {
+    // Some taggers write the frame id into the description (see auphonic_chapters_demo.mp3).
+    val builder = Metadata.Builder("file")
+    visitTxxx(builder, "TXXX:PART", "2.1")
+    builder.part shouldBe "2.1"
+  }
+
+  @Test
+  fun `txxx NARRATOR is used when TCOM is missing`() {
+    val builder = Metadata.Builder("file")
+    visitTxxx(builder, "NARRATOR", "Jane Doe")
+    builder.narrator shouldBe "Jane Doe"
+  }
+
+  @Test
+  fun `txxx NARRATOR does not override TCOM`() {
+    val builder = Metadata.Builder("file")
+    analyzer.visitText(TextInformationFrame("TCOM", null, listOf("John Doe")), builder)
+    visitTxxx(builder, "NARRATOR", "Jane Doe")
+    builder.narrator shouldBe "John Doe"
   }
 
   companion object {

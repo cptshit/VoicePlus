@@ -66,6 +66,17 @@ interface FeatureFlagBindingContainer {
 
   @Provides
   @SingleIn(AppScope::class)
+  @HoerspielNormalizerFeatureFlagQualifier
+  fun hoerspielNormalizerFeatureFlag(factory: FeatureFlagFactory): FeatureFlag<Boolean> {
+    return factory.boolean(
+      key = "hoerspiel_normalizer",
+      description = "Derives series, episode number and title of audio drama episodes from tags, folder and file names.",
+      defaultValue = true,
+    )
+  }
+
+  @Provides
+  @SingleIn(AppScope::class)
   @Media3AudioOffloadFeatureFlagQualifier
   fun media3AudioOffloadFeatureFlag(factory: FeatureFlagFactory): FeatureFlag<Boolean> {
     return factory.boolean(
@@ -77,6 +88,9 @@ interface FeatureFlagBindingContainer {
 
 @Qualifier
 annotation class ReviewEnabledFeatureFlagQualifier
+
+@Qualifier
+annotation class HoerspielNormalizerFeatureFlagQualifier
 
 @Qualifier
 annotation class UserAgentFeatureFlagQualifier

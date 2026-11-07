@@ -21,6 +21,8 @@ import voice.core.data.GridMode
 import voice.core.data.LockscreenSecondaryTextMode
 import voice.core.data.LockscreenSliderMode
 import voice.core.data.MediaButtonClickAction
+import voice.core.data.hoerspiel.CoverStyle
+import voice.core.data.hoerspiel.CoverStyleStore
 import voice.core.data.sleeptimer.SleepTimerPreference
 import voice.core.data.store.AutoRewindAmountStore
 import voice.core.data.store.BooksPerRowStore
@@ -59,6 +61,8 @@ class SettingsViewModel(
   private val gridModeStore: DataStore<GridMode>,
   @BooksPerRowStore
   private val booksPerRowStore: DataStore<Int>,
+  @CoverStyleStore
+  private val coverStyleStore: DataStore<CoverStyle>,
   @SleepTimerPreferenceStore
   private val sleepTimerPreferenceStore: DataStore<SleepTimerPreference>,
   @FolderPickerInSettingsFeatureFlagQualifier
@@ -90,6 +94,7 @@ class SettingsViewModel(
     val seekTime by remember { seekTimeStore.data }.collectAsState(initial = 0)
     val gridMode by remember { gridModeStore.data }.collectAsState(initial = GridMode.GRID)
     val booksPerRow by remember { booksPerRowStore.data }.collectAsState(initial = 2)
+    val coverStyle by remember { coverStyleStore.data }.collectAsState(initial = CoverStyle.Cd)
     val autoSleepTimer by remember { sleepTimerPreferenceStore.data }.collectAsState(
       initial = SleepTimerPreference.Default,
     )
@@ -120,6 +125,7 @@ class SettingsViewModel(
       dialog = dialog.value,
       appVersion = appInfoProvider.versionName,
       booksPerRow = booksPerRow.coerceIn(2, 3),
+      coverStyle = coverStyle,
       gridMode = when (gridMode) {
         GridMode.FOLLOW_DEVICE -> GridMode.BOOKS
         else -> gridMode
@@ -160,6 +166,10 @@ class SettingsViewModel(
   override fun setBooksPerRow(count: Int) {
     require(count in 2..3)
     scope.launch { booksPerRowStore.updateData { count } }
+  }
+
+  override fun setCoverStyle(style: CoverStyle) {
+    scope.launch { coverStyleStore.updateData { style } }
   }
 
   override fun seekAmountChanged(seconds: Int) {

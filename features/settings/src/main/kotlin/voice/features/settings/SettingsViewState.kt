@@ -4,6 +4,7 @@ import voice.core.data.GridMode
 import voice.core.data.LockscreenSecondaryTextMode
 import voice.core.data.LockscreenSliderMode
 import voice.core.data.MediaButtonClickAction
+import voice.core.data.hoerspiel.CoverStyle
 import java.time.LocalTime
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
@@ -26,6 +27,7 @@ data class SettingsViewState(
   val experimentalPlaybackPersistenceEnabled: Boolean,
   val sleepTimerAutoResetEnabled: Boolean,
   val ignoreFileTags: Boolean,
+  val coverStyle: CoverStyle = CoverStyle.Cd,
 ) {
 
   sealed interface Dialog {
