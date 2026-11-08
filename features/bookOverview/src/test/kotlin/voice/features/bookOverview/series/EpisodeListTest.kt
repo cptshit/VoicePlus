@@ -68,6 +68,23 @@ class EpisodeListTest {
   }
 
   @Test
+  fun aFilterThatHidesEpisodesDoesNotCreateGaps() {
+    val all = (1..6).map { book(it, finished = it <= 4) }
+    val unheard = all.filter { !it.finished }
+
+    describe(episodeList(unheard, "X", allBooks = all)) shouldBe listOf("Next(2)", "5", "6")
+    describe(episodeList(unheard, "X")) shouldBe listOf("Next(2)", "5", "6")
+  }
+
+  @Test
+  fun realGapsStillShowWhenAFilterIsActive() {
+    val all = listOf(book(1, finished = true), book(2, finished = true), book(5), book(6))
+    val unheard = all.filter { !it.finished }
+
+    describe(episodeList(unheard, "X", allBooks = all)) shouldBe listOf("Next(2)", "gap 3-4", "5", "6")
+  }
+
+  @Test
   fun booksWithoutNumbersNeverCauseGaps() {
     describe(episodeList(listOf(book(null, "Alpha"), book(null, "Beta")), "X")) shouldBe listOf("Next(2)", "?", "?")
   }

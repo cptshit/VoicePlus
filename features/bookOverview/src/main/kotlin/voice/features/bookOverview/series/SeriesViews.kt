@@ -243,7 +243,15 @@ internal fun SeriesDetails(
   var closing by remember { mutableStateOf(false) }
   var prepared by remember { mutableStateOf(false) }
   val episodes =
-    remember(entry.books.map { it.value }, entry.seriesName) { episodeList(entry.books.map { it.value }, entry.seriesName.orEmpty()) }
+    remember(
+      entry.books.map {
+        it.value
+      },
+      entry.allBooks.map {
+        it.value
+      },
+      entry.seriesName,
+    ) { episodeList(entry.books.map { it.value }, entry.seriesName.orEmpty(), entry.allBooks.map { it.value }) }
   val reveal = remember { Animatable(if (opened) 1f else 0f) }
   val prepare by rememberUpdatedState(onPrepare)
   val dismissCallback by rememberUpdatedState(onDismiss)

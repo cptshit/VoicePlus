@@ -41,19 +41,22 @@ internal fun BookOverviewItemViewState.section(): EpisodeSection = when {
 
 /**
  * Orders the episodes of a series like a concert list: running, up next, heard. The order of
- * [books] is kept inside a section. Holes in the episode numbers become [EpisodeListItem.Gap] rows
+ * [books] is kept inside a section. Holes in the episode numbers of [allBooks] (the whole series, also
+ * what a filter hides) become [EpisodeListItem.Gap] rows
  * right above the episode that follows the hole; nothing is guessed before the first or after the
  * last known episode.
  */
 internal fun episodeList(
   books: List<BookOverviewItemViewState>,
   seriesName: String,
+  allBooks: List<BookOverviewItemViewState> = books,
 ): List<EpisodeListItem> {
   val episodes = books.map { book ->
     val label = seriesBookLabel(book, seriesName)
     EpisodeListItem.Episode(book, label.part, label.title)
   }
-  val known = episodes.mapNotNull { it.number?.trim()?.toIntOrNull() }.distinct().sorted()
+  // Gaps are measured against the whole series: a library filter hides episodes, it does not remove them.
+  val known = allBooks.mapNotNull { seriesBookLabel(it, seriesName).part?.trim()?.toIntOrNull() }.distinct().sorted()
   val gapBefore = known.zipWithNext().filter { (a, b) -> b - a > 1 }.associate { (a, b) -> b to EpisodeListItem.Gap(a + 1, b - 1) }
   val shownGaps = mutableSetOf<Int>()
   return EpisodeSection.entries.flatMap { section ->
