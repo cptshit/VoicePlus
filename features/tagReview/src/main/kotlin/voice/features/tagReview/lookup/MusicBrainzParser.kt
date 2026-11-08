@@ -44,3 +44,7 @@ fun parseMusicBrainz(
     CatalogEpisode(match.groupValues[2].toIntOrNull() ?: return@mapNotNull null, title)
   }.sortedBy { it.number }
 }
+
+/** How many release groups an answer holds; a full page means there may be more. */
+internal fun musicBrainzGroupCount(body: String): Int =
+  runCatching { json.decodeFromString<ReleaseGroupSearch>(body) }.getOrNull()?.`release-groups`?.size ?: 0
