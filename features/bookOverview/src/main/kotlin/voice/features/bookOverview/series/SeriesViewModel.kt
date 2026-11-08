@@ -15,6 +15,7 @@ import voice.core.common.comparator.NaturalOrderComparator
 import voice.core.data.BookContent
 import voice.core.data.BookId
 import voice.core.data.LibraryOrganisation
+import voice.core.data.hoerspiel.EpisodeNumberRepo
 import voice.core.data.repo.BookContentRepo
 import voice.core.data.repo.LibraryOrganisationRepo
 import voice.core.logging.api.Logger
@@ -58,6 +59,8 @@ internal data class SeriesBulkState(
   val find: String = "",
   val replacement: String = "",
   val tidy: Boolean = false,
+  val renumber: Boolean = false,
+  val start: String = "1",
   val applying: Boolean = false,
   val failed: Boolean = false,
 ) {
@@ -65,12 +68,13 @@ internal data class SeriesBulkState(
     if (prefix.isNotBlank()) add(BulkRule.StripPrefix(prefix))
     if (find.isNotEmpty()) add(BulkRule.Replace(find, replacement))
     if (tidy) add(BulkRule.TidyWhitespace)
+    start.trim().toIntOrNull()?.takeIf { renumber && it >= 0 }?.let { add(BulkRule.Renumber(it)) }
   }
 }
 
 /** What the bulk correction would do to the books currently in the series; changes nothing. */
 internal fun SeriesEditorState.bulkPreview(bulk: SeriesBulkState): List<EpisodeChange> =
-  previewBulkEdit(selectedBooks.map { EpisodeDraft(it.id, it.name) }, bulk.rules)
+  previewBulkEdit(selectedBooks.map { EpisodeDraft(it.id, it.name, it.part) }, bulk.rules)
 
 private val seriesNumberOrder = compareBy<BookContent, String?>(nullsLast(NaturalOrderComparator.stringComparator)) {
   it.part?.takeIf(String::isNotBlank)
@@ -85,6 +89,7 @@ private val seriesBookOrder = compareBy<BookContent, Int?>(nullsLast()) { it.ser
 class SeriesViewModel(
   private val contentRepo: BookContentRepo,
   private val organisationRepo: LibraryOrganisationRepo,
+  private val episodeNumberRepo: EpisodeNumberRepo,
 ) : RetainedViewModel(),
   BottomSheetItemViewModel {
   internal var state: SeriesEditorState? by mutableStateOf(null)
@@ -179,10 +184,14 @@ class SeriesViewModel(
       try {
         changes.forEach { change ->
           // Keep the title across re-scans, like a title edited in "Edit book".
-          contentRepo.update(change.id) { it.copy(name = change.newName, nameOverridden = true) }
+          contentRepo.update(change.id) { it.copy(name = change.newName, nameOverridden = true, part = change.newPart) }
+          // The scanner re-reads the number on every scan; the override keeps the corrected one.
+          if (change.partChanged) episodeNumberRepo.set(change.id, change.newPart?.toIntOrNull())
         }
-        val names = changes.associate { it.id to it.newName }
-        state = state?.copy(books = state?.books.orEmpty().map { book -> names[book.id]?.let { book.copy(name = it) } ?: book })
+        val byId = changes.associateBy { it.id }
+        state = state?.copy(
+          books = state?.books.orEmpty().map { book -> byId[book.id]?.let { book.copy(name = it.newName, part = it.newPart) } ?: book },
+        )
         bulk = SeriesBulkState()
       } catch (e: CancellationException) {
         throw e

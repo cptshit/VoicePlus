@@ -165,6 +165,25 @@ class MediaScannerTest {
   }
 
   @Test
+  fun forceReParseKeepsAnEpisodeNumberChosenByTheUser() = test {
+    val root = folder("Hoerspiele")
+    val episode = File(root, "GabrielBurns - 002 - Die Brut")
+    val id = BookId(episode.toUri())
+    audioFile(episode, "01 - Track 01.mp3")
+
+    scan(FolderType.Root, root)
+    bookContentRepo.get(id)!!.part shouldBe "2"
+    episodeNumberRepo.set(id, 12)
+
+    scan(FolderType.Root, root, forceReParse = true)
+
+    bookContentRepo.get(id)!!.part shouldBe "12"
+    episodeNumberRepo.set(id, null)
+    scan(FolderType.Root, root, forceReParse = true)
+    bookContentRepo.get(id)!!.part shouldBe "2"
+  }
+
+  @Test
   fun editedTitleAndCoverSurviveRemovalRestoreAndRescan() = test {
     val audiobookFolder = folder("audiobooks")
     val book = File(audiobookFolder, "book1")
@@ -677,6 +696,7 @@ class MediaScannerTest {
     val mediaAnalyzer = mockk<MediaAnalyzer>()
     val tagFindingRepo = FakeTagFindingRepo()
     val episodePartRepo = FakeEpisodePartRepo()
+    val episodeNumberRepo = FakeEpisodeNumberRepo()
 
     // The scanner now gates activation on the LIVE folder set via AudiobookFolders.isManaged. These tests drive
     // scanner.scan(folders) with a literal folder map, so the fake simply mirrors that same set: every folder
@@ -692,6 +712,7 @@ class MediaScannerTest {
         hoerspielNormalizer = MemoryFeatureFlag(true),
         tagFindingRepo = tagFindingRepo,
         episodePartRepo = episodePartRepo,
+        episodeNumberRepo = episodeNumberRepo,
       ),
     )
     private val scanner = MediaScanner(

@@ -224,3 +224,12 @@ den 80 Dateien mit `TLEN` ist es sicher ID3v2, bei den übrigen 109 getaggten Da
 Seit Schritt 0 schreibt `dump-tags.sh` pro MP3 `id3v2` (Version oder `null`) und `id3v1`
 (`true`/`false`) sowie eigene Zeilen `"kind":"image"` für Bilddateien. Ein neuer Dump klärt
 damit sowohl die ID3v1-Frage als auch, wo die Cover liegen.
+
+## Folgennummer korrigieren
+
+„Serie bearbeiten → Titel korrigieren → Folgen in dieser Reihenfolge nummerieren“ setzt die
+Nummern ab einem Startwert. Weil der Scanner die Nummer bei jedem Scan neu aus Tags und Dateinamen
+liest, steht die korrigierte Nummer zusätzlich in `episode_number_overrides` (`hoerspiel.db`);
+`BookParser` bevorzugt sie. Grenzen: Die Überschreibung ist nicht im Backup-Snapshot (nach einem
+Restore gilt der gesicherte Wert bis zum nächsten Rescan mit „Datei-Tags neu lesen“), und es gibt
+noch keine Oberfläche, um sie wieder zu löschen.

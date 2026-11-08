@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Add
@@ -61,6 +62,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -475,6 +477,29 @@ private fun BulkCorrection(
       Checkbox(bulk.tidy, onCheckedChange = null)
       Text(stringResource(StringsR.string.series_correct_tidy))
     }
+    Row(
+      Modifier.fillMaxWidth().toggleable(
+        bulk.renumber,
+        role = Role.Checkbox,
+        onValueChange = { value -> onChange { it.copy(renumber = value) } },
+      ).padding(vertical = 8.dp),
+      verticalAlignment = Alignment.CenterVertically,
+      horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+      Checkbox(bulk.renumber, onCheckedChange = null)
+      Text(stringResource(StringsR.string.series_correct_renumber), Modifier.weight(1f))
+      if (bulk.renumber) {
+        OutlinedTextField(
+          value = bulk.start,
+          onValueChange = { value -> onChange { it.copy(start = value.filter(Char::isDigit).take(4)) } },
+          singleLine = true,
+          enabled = !bulk.applying,
+          label = { Text(stringResource(StringsR.string.series_correct_start)) },
+          keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+          modifier = Modifier.width(112.dp),
+        )
+      }
+    }
     Text(stringResource(StringsR.string.series_correct_preview), style = MaterialTheme.typography.titleMedium)
     LazyColumn(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
       items(changes, key = { it.id.value }) { change ->
@@ -495,6 +520,12 @@ private fun BulkCorrection(
             )
           }
           Text(change.newName, style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
+          if (change.partChanged) {
+            Text(
+              stringResource(StringsR.string.series_correct_number_change, change.oldPart ?: "–", change.newPart ?: "–"),
+              style = MaterialTheme.typography.labelMedium,
+            )
+          }
         }
       }
     }

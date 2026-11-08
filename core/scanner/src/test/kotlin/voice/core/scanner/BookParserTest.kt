@@ -32,6 +32,7 @@ class BookParserTest {
     hoerspielNormalizer = MemoryFeatureFlag(true),
     tagFindingRepo = FakeTagFindingRepo(),
     episodePartRepo = FakeEpisodePartRepo(),
+    episodeNumberRepo = FakeEpisodeNumberRepo(),
   )
 
   @Test
