@@ -197,19 +197,6 @@ internal fun ShelfLibraryBar(
         Modifier.padding(horizontal = 16.dp),
         style = MaterialTheme.typography.bodyMedium,
       )
-    } else if (model.filter != ShelfFilter.ALL) {
-      Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
-        Text(
-          when (model.filter) {
-            ShelfFilter.COMPLETED -> stringResource(StringsR.string.library_completed_filter)
-            ShelfFilter.IN_PROGRESS -> stringResource(StringsR.string.library_in_progress_filter)
-            else -> stringResource(StringsR.string.library_not_started_filter)
-          },
-          Modifier.weight(1f),
-          style = MaterialTheme.typography.labelLarge,
-        )
-        TextButton(onClick = { model.filter = ShelfFilter.ALL }) { Text(stringResource(StringsR.string.library_reset)) }
-      }
     }
   }
 }

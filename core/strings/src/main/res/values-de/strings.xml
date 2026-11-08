@@ -264,7 +264,6 @@
     <string name="series_gap_one">Folge %d fehlt</string>
     <string name="series_gap_range">Folgen %1$d–%2$d fehlen</string>
     <string name="library_in_progress">Läuft</string>
-    <string name="library_in_progress_filter">Angefangene auf den Regalen</string>
     <string name="library_continue_listening">Weiterhören</string>
     <string name="library_continue">Abspielen</string>
     <string name="tag_review_source_local">deine Bibliothek</string>
@@ -521,9 +520,6 @@
     <string name="library_reorder_shelves">Regale umsortieren</string>
     <string name="library_add_to_series">Zur Serie hinzufügen</string>
     <string name="library_add_to_shelf">Zu %1$s hinzufügen</string>
-    <string name="library_completed_filter">Gehörte in den Regalen</string>
-    <string name="library_not_started_filter">Nicht begonnene in den Regalen</string>
-    <string name="library_reset">Zurücksetzen</string>
     <string name="library_rename_shelf">Regal umbenennen</string>
     <string name="library_shelf_name">Name des Regals</string>
     <string name="library_create">Anlegen</string>
