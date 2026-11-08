@@ -37,7 +37,6 @@
     <string name="pref_suggest_idea">Eine Idee vorschlagen</string>
     <string name="pref_use_grid">Raster-Layout verwenden</string>
     <string name="pref_report_issue">Ein Problem melden</string>
-    <string name="pref_help_translating">Helfen, Voice zu übersetzen</string>
     <string name="pref_get_support">Hilfe erhalten</string>
     <string name="pref_app_version">App-Version</string>
     <string name="popup_edit">Bearbeiten</string>
@@ -56,7 +55,8 @@
         <item quantity="other">%d Audiodateien</item>
     </plurals>
     <string name="folder_type_book_example_header">Damit würden diese Folgen erkannt</string>
-    <string name="folder_type_no_books">Voice konnte keine Folgen erkennen. Gibt es hier Audio-Dateien?</string>
+    <string name="pref_help_translating">Beim Übersetzen helfen</string>
+    <string name="folder_type_no_books">Folgenreich konnte keine Folgen erkennen. Gibt es hier Audio-Dateien?</string>
     <string name="folder_type_title">Wie sind deine Dateien organisiert?</string>
     <string name="bookmark_just_now">Gerade eben</string>
     <string name="voice_intro_first_book">Füge Deinen Hörspiel-Ordner hinzu, damit Du mit dem Hören beginnen kannst!</string>
@@ -96,7 +96,7 @@
     <string name="cover_search_template_with_author">%1$s von %2$s Hörspiel Cover</string>
     <string name="cover_search_template_no_author">%s Hörspiel Cover</string>
     <string name="storage_bug_title">Berechtigung benötigt</string>
-    <string name="storage_bug_subtitle">Für bestimmte Geräte fehlt einer System-App die notwendige Berechtigung, auf den externen Speicher zuzugreifen. Dieser Zugriff ist jedoch für Voice essentiell, um Deine Hörspiele lesen zu können.</string>
+    <string name="storage_bug_subtitle">Für bestimmte Geräte fehlt einer System-App die notwendige Berechtigung, auf den externen Speicher zuzugreifen. Dieser Zugriff ist jedoch für Folgenreich essentiell, um Deine Hörspiele lesen zu können.</string>
     <string name="storage_bug_button">Berechtigung erteilen</string>
     <string name="folder_mode_author">Autor-Modus: Unterordner sind Autoren oder Serien, Unter-Unterordner sind Folgen.</string>
     <string name="cover_search.author">Autor</string>
@@ -105,20 +105,20 @@
     <string name="select_folder_type_file">Datei</string>
     <string name="select_folder_type_folder">Ordner</string>
     <string name="select_folder_subtitle">Möchtest Du eine einzelne Datei als Folge oder einen Ordner hinzufügen?</string>
-    <string name="onboarding_welcome_title">Willkommen bei Voice!</string>
+    <string name="onboarding_welcome_title">Willkommen bei Folgenreich!</string>
     <string name="onboarding.explanation.title">Deine Bibliothek, Deine Wahl</string>
     <string name="onboarding.completion.title">Du bist fertig!</string>
-    <string name="onboarding.completion.subtitle">Dein erstes Hörspiel ist bereit zum Abspielen. Viel Spaß auf Deiner Reise mit Voice!</string>
+    <string name="onboarding.completion.subtitle">Dein erstes Hörspiel ist bereit zum Abspielen. Viel Spaß auf Deiner Reise mit Folgenreich!</string>
     <string name="onboarding.completion.next_button">Start</string>
     <string name="cover_search.icon_recent">Zuletzt gesucht</string>
     <string name="onboarding_welcome_subtitle">Dein persönlicher Hörspiel-Player. Beginne mit dem Einrichten.</string>
     <string name="onboarding.button_next">Weiter</string>
-    <string name="onboarding.explanation.subtitle">Mit Voice kannst Du Hörspiele als einzelne Dateien hinzufügen oder in Ordnern organisieren. Du entscheidest!</string>
+    <string name="onboarding.explanation.subtitle">Mit Folgenreich kannst Du Hörspiele als einzelne Dateien hinzufügen oder in Ordnern organisieren. Du entscheidest!</string>
     <string name="review.request.button.yes">Jetzt bewerten</string>
     <string name="review.request.button.no">Nein, danke</string>
     <string name="review.feedback.button.yes">Feedback senden</string>
     <string name="review.feedback.button.no">Abbrechen</string>
-    <string name="review.request.title">Gefällt Dir Voice?</string>
+    <string name="review.request.title">Gefällt Dir Folgenreich?</string>
     <string name="review.request.content">Deine Meinung ist uns wichtig! Wenn Du einen Moment Zeit hast, bewerte uns und teile Deine Erfahrungen. Das hilft uns dabei, Verbesserungen vorzunehmen und ein besseres Hörerlebnis zu bieten.</string>
     <string name="review.feedback.title">Es tut uns leid, das zu hören!</string>
     <string name="review.feedback.content">Kannst Du uns mitteilen, was schiefgelaufen ist? Wir schätzen Dein Feedback sehr und es hilft uns, Dein Erlebnis zu verbessern.</string>
@@ -135,7 +135,7 @@
     <string name="auto_sleep_timer.end">Endzeit</string>
     <string name="playback.current_chapter">Aktuelles Kapitel</string>
     <string name="pref_faq">Häufige Fragen</string>
-    <string name="onboarding_analytics_consent_title">Hilf dabei, Voice zu verbessern</string>
+    <string name="onboarding_analytics_consent_title">Hilf dabei, Folgenreich zu verbessern</string>
     <string name="onboarding_analytics_consent_description">Erlaube uns, anonyme Nutzungsdaten zu sammeln, um die App zu verbessern. Du kannst dies später in den Einstellungen ändern.</string>
     <string name="onboarding_analytics_consent_button_enable">Mit Datenfreigabe fortfahren</string>
     <string name="onboarding_analytics_consent_button_disable">Ohne Datenfreigabe fortfahren</string>
@@ -411,7 +411,7 @@
     <string name="edit_book_choose_cover">Bild wählen</string>
     <string name="edit_book_embedded_cover">Eingebettetes Cover verwenden</string>
     <string name="edit_book_no_embedded_cover">Es wurde kein eingebettetes Cover gefunden.</string>
-    <string name="edit_book_local_description">Wird in VoicePlus gespeichert und in Deinen eingerichteten Sicherungen berücksichtigt. Die Audiodateien bleiben unverändert.</string>
+    <string name="edit_book_local_description">Wird in Folgenreich gespeichert und in Deinen eingerichteten Sicherungen berücksichtigt. Die Audiodateien bleiben unverändert.</string>
     <string name="sleep_resume_confirmation">Drücke erneut auf Abspielen, um nach dem Einschlafen fortzusetzen</string>
     <string name="bookmark_type_manual">Manuell</string>
     <string name="bookmark_type_sleep_timer">Einschlaf-Timer</string>
@@ -566,4 +566,5 @@
     <string name="library_not_started">Nicht begonnen</string>
     <string name="library_empty_shelf">Leeres Regal</string>
     <string name="library_series_saved">Serie gespeichert</string>
+    <string name="app_origin_notice">Folgenreich basiert auf VoicePlus und Voice von Paul Woitaschek (GPL-3.0)</string>
 </resources>
