@@ -377,8 +377,6 @@ fun BookOverviewScreen(
         SeriesDetails(
           entry = if (showEntireSeries) seriesEntry.copy(books = seriesEntry.allBooks) else seriesEntry,
           onShowAll = if (!showEntireSeries && seriesEntry.books.size < seriesEntry.allBooks.size) ({ showEntireSeries = true }) else null,
-          booksPerRow = viewState.booksPerRow,
-          origin = Rect(seriesOrigin[0], seriesOrigin[1], seriesOrigin[2], seriesOrigin[3]),
           onPrepare = { seriesPrepared = true },
           onDismiss = { openSeries = null },
           onEdit = {

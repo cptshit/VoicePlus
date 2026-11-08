@@ -257,4 +257,10 @@
         <item quantity="other">%d Folgen haben unsichere Tags</item>
     </plurals>
     <string name="tag_review_open">Prüfen</string>
+    <string name="series_section_running">Läuft</string>
+    <string name="series_section_next">Als Nächstes</string>
+    <string name="series_section_heard">Gehört</string>
+    <string name="series_episode_label">Folge</string>
+    <string name="series_gap_one">Folge %d fehlt</string>
+    <string name="series_gap_range">Folgen %1$d–%2$d fehlen</string>
 </resources>

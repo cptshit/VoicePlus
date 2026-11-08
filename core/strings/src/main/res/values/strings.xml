@@ -542,4 +542,10 @@
     <item quantity="other">%d episodes have doubtful tags</item>
   </plurals>
   <string name="tag_review_open">Check</string>
+  <string name="series_section_running">Playing</string>
+  <string name="series_section_next">Up next</string>
+  <string name="series_section_heard">Heard</string>
+  <string name="series_episode_label">Episode</string>
+  <string name="series_gap_one">Episode %d is missing</string>
+  <string name="series_gap_range">Episodes %1$d–%2$d are missing</string>
 </resources>
