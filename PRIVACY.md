@@ -1,6 +1,6 @@
 # Privacy Policy — VoicePlus
 
-**Effective date:** 2026-10-04
+**Effective date:** 2026-11-08
 
 VoicePlus is an open-source Android audiobook player maintained by Mistermo. This policy describes what data the app handles, when data can leave your device, and what permissions the app uses and why.
 
@@ -36,7 +36,7 @@ External folder backups include edited book titles and cover images, alongside l
 
 ## Other data that leaves your device
 
-Apart from the encrypted Android system backup described above, the only data VoicePlus itself sends is an explicitly initiated DuckDuckGo book title/author cover query.
+Apart from the encrypted Android system backup described above, the only data VoicePlus itself sends is the result of two explicitly initiated actions: a DuckDuckGo book title/author cover query, and (in this fork) the optional online comparison of an audio drama or audiobook series with MusicBrainz and Apple's iTunes Search API, described below.
 
 **Details:**
 
@@ -47,6 +47,17 @@ Apart from the encrypted Android system backup described above, the only data Vo
 - DuckDuckGo receives the query and your IP address and handles them under its privacy policy at https://duckduckgo.com/privacy. Opening an image result also makes a request to the site hosting that image.
 
 VoicePlus does not attach device identifiers, account tokens, or persistent identifiers to these requests. DuckDuckGo and the selected image host can see your IP address through the HTTPS connection.
+
+### Optional: compare a series online (MusicBrainz, iTunes Search)
+
+This fork can compare a series in your library with public catalogue data, to suggest corrections for episode numbers and titles. It is off unless you ask for it.
+
+- It only happens when you tap **Compare online** for one series. It never runs in the background, during a scan, or at app start.
+- **MusicBrainz** (`https://musicbrainz.org/`): receives the **series name** as stored in the app (for example `Gabriel Burns`) in a search request for release groups. The request carries a User-Agent that names the app and its version (`VoicePlus/<version> (de.henrik.voiceplus)`), no email address and no device or account identifier. VoicePlus sends at most one request per second, as MusicBrainz asks. MusicBrainz handles requests under its privacy policy at https://metabrainz.org/privacy.
+- **iTunes Search API** (`https://itunes.apple.com/`): used only as a fallback for audiobooks when MusicBrainz has nothing suitable. It receives the **series name, or the title and author** of the book, as stored in the app, with the search restricted to audiobooks in the German store. Apple handles requests under its privacy policy at https://www.apple.com/legal/privacy/.
+- Both services also see your IP address through the HTTPS connection. No audio files, file names, folder paths, listening history or other library data are sent.
+- The answers are kept on your device for later reuse, so the same series is not requested again. You can delete them by clearing the app's data.
+- A suggestion is **never applied automatically.** It appears in the "Check tags" screen, where you choose whether to use it, edit it or ignore it. The audiobook files are never changed.
 
 **VoicePlus sends no other data itself.** It still has no telemetry, no crash reporting, no analytics, and no advertising network.
 
@@ -69,7 +80,7 @@ Except for the Android system backup described above or a backup you manually ex
 
 | Permission | Why the app needs it |
 |------------|---------------------|
-| `INTERNET` | Required to fetch cover art images from DuckDuckGo when you use the online cover search feature. |
+| `INTERNET` | Required to fetch cover art images from DuckDuckGo when you use the online cover search feature, and to ask MusicBrainz and the iTunes Search API when you tap **Compare online** for a series. |
 | `ACCESS_NETWORK_STATE` | Lets the app check whether a network connection is available before attempting a cover art search, so it can show you a useful error instead of silently failing. |
 | `FOREGROUND_SERVICE` | Required by Android to keep the playback service running when the app is in the background. |
 | `FOREGROUND_SERVICE_MEDIA_PLAYBACK` | Declares the type of the foreground service to Android (audio playback), which is required by Android 14+. |
@@ -86,7 +97,7 @@ Except for the Android system backup described above or a backup you manually ex
 
 ## Third-party services
 
-For optional cover art search, VoicePlus communicates with **DuckDuckGo** and, when you choose a result, the site hosting that image. Android system backup may transfer the eligible app data described above to your configured backup provider.
+For optional cover art search, VoicePlus communicates with **DuckDuckGo** and, when you choose a result, the site hosting that image. For the optional series comparison, it communicates with **MusicBrainz** and, as a fallback, the **iTunes Search API** (Apple). Android system backup may transfer the eligible app data described above to your configured backup provider.
 
 There are no analytics SDKs, no crash-reporting services, no advertising networks, and no Google/Firebase services included in this app.
 
@@ -106,7 +117,7 @@ VoicePlus does not knowingly collect personal information from anyone, including
 
 ## Retention and deletion
 
-VoicePlus keeps its local library records, listening history, notes, bookmarks, and settings until you delete them in the app or remove the app's data. Uninstalling the app removes local data, subject to any Android system backup or external backup you have enabled. You control external backup copies in the folder you selected. Android and its configured backup provider control the retention and deletion of system backup copies; VoicePlus does not operate that service.
+VoicePlus keeps its local library records, listening history, notes, bookmarks, and settings until you delete them in the app or remove the app's data. Answers cached from the optional series comparison are kept in the app's local database until you clear the app's data. Uninstalling the app removes local data, subject to any Android system backup or external backup you have enabled. You control external backup copies in the folder you selected. Android and its configured backup provider control the retention and deletion of system backup copies; VoicePlus does not operate that service.
 
 ---
 

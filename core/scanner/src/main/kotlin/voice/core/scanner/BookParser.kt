@@ -8,6 +8,7 @@ import voice.core.data.Book
 import voice.core.data.BookContent
 import voice.core.data.BookId
 import voice.core.data.Chapter
+import voice.core.data.hoerspiel.EpisodeNumberRepo
 import voice.core.data.hoerspiel.EpisodePartRepo
 import voice.core.data.hoerspiel.TagFinding
 import voice.core.data.hoerspiel.TagFindingRepo
@@ -38,6 +39,7 @@ internal class BookParser(
   private val hoerspielNormalizer: FeatureFlag<Boolean>,
   private val tagFindingRepo: TagFindingRepo,
   private val episodePartRepo: EpisodePartRepo,
+  private val episodeNumberRepo: EpisodeNumberRepo,
 ) {
 
   suspend fun parseAndStore(
@@ -62,7 +64,9 @@ internal class BookParser(
       }
     }
     val episode = normalizeEpisode(chapters, analyzed, file)
+    // A number corrected by the user wins over whatever the tags and file names say.
     val parsed = parse(chapters, id, analyzed, file, episode)
+      .let { content -> episodeNumberRepo.get(id)?.let { content.copy(part = it.toString()) } ?: content }
     tagFindingRepo.replaceForBook(id, episode?.findings.orEmpty().map { it.toStored(id) })
     episodePartRepo.setPart(id, episode?.titlePart)
 

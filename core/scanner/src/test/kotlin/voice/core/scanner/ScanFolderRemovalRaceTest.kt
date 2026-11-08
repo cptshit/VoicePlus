@@ -200,6 +200,7 @@ class ScanFolderRemovalRaceTest {
         hoerspielNormalizer = MemoryFeatureFlag(true),
         tagFindingRepo = FakeTagFindingRepo(),
         episodePartRepo = FakeEpisodePartRepo(),
+        episodeNumberRepo = FakeEpisodeNumberRepo(),
       ),
       seriesAutoGrouper = SeriesAutoGrouper(
         contentRepo = bookContentRepo,

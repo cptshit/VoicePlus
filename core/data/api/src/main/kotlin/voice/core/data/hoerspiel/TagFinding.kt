@@ -8,7 +8,24 @@ import androidx.room.PrimaryKey
 public enum class TagFindingField { Series, EpisodeNumber, EpisodeTitle }
 
 /** Where a value came from. */
-public enum class TagFindingSource { SeriesTag, PartTag, FolderName, AlbumTag, ArtistTag, FileName }
+public enum class TagFindingSource {
+  SeriesTag,
+  PartTag,
+  FolderName,
+  AlbumTag,
+  ArtistTag,
+  FileName,
+
+  /** The value the library holds now, when the other value comes from an online catalogue. */
+  Local,
+
+  /** Suggestions from the optional online comparison; they are kept when a book is re-scanned. */
+  MusicBrainz,
+  ITunes,
+  ;
+
+  public val isOnline: Boolean get() = this == MusicBrainz || this == ITunes
+}
 
 public enum class TagFindingKind {
   /** Same text apart from case, punctuation, spacing or umlaut spelling. */

@@ -76,6 +76,7 @@ class BookOverviewViewModelTest {
       experimentalPlaybackPersistenceFeatureFlag = MemoryFeatureFlag(true),
       organisationRepo = mockk { every { flow() } returns MutableStateFlow(voice.core.data.LibraryOrganisation()) },
       episodePartRepo = mockk { every { flow() } returns MutableStateFlow(emptyMap()) },
+      tagFindingRepo = mockk { every { flow() } returns MutableStateFlow(emptyList()) },
       coverStyleStore = MemoryDataStore(voice.core.data.hoerspiel.CoverStyle.Cd),
     )
 

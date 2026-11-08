@@ -45,6 +45,8 @@ class BackupRestorerTest {
   @After
   fun teardown() = db.close()
 
+  private val episodeNumbers = FakeEpisodeNumberRepo()
+
   private fun restorer() = BackupRestorer(
     organisationDao = db.libraryOrganisationDao(),
     ring = ring,
@@ -60,6 +62,7 @@ class BackupRestorerTest {
     contentRepo = contentRepo,
     settingsSnapshotter = testSettingsSnapshotter(),
     restoreGate = RestoreGate(),
+    episodeNumberRepo = episodeNumbers,
   )
 
   private fun book(
@@ -84,6 +87,13 @@ class BackupRestorerTest {
     slot0.updateData { snapshotOf("a", "b") }
     restorer().restoreIfNeeded()
     db.bookContentDao().all().map { it.id.value } shouldContainExactlyInAnyOrder listOf("a", "b")
+  }
+
+  @Test
+  fun `restores corrected episode numbers of restored books`() = runTest {
+    slot0.updateData { snapshotOf("a", "b").copy(episodeNumbers = mapOf("a" to 12)) }
+    restorer().restoreIfNeeded()
+    episodeNumbers.numbers shouldBe mapOf(BookId("a") to 12)
   }
 
   @Test

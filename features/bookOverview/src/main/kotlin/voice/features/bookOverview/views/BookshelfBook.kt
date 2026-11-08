@@ -197,12 +197,16 @@ internal fun BookshelfCover(
         .clip(jacketShape)
         .background(MaterialTheme.colorScheme.surfaceContainerHighest),
     ) {
-      Icon(
-        imageVector = Icons.Outlined.Book,
-        contentDescription = null,
-        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier.align(Alignment.Center).size(48.dp),
-      )
+      if (book.cover == null && book.seriesLabel != null) {
+        GeneratedCover(book)
+      } else {
+        Icon(
+          imageVector = Icons.Outlined.Book,
+          contentDescription = null,
+          tint = MaterialTheme.colorScheme.onSurfaceVariant,
+          modifier = Modifier.align(Alignment.Center).size(48.dp),
+        )
+      }
       AsyncImage(
         model = book.cover?.file,
         contentDescription = null,

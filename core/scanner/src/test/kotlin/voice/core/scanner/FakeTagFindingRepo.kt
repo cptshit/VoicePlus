@@ -23,6 +23,14 @@ internal class FakeTagFindingRepo : TagFindingRepo {
       findings.map { it.copy(bookId = bookId.value) }
   }
 
+  override suspend fun replaceOnlineForBook(
+    bookId: BookId,
+    findings: List<TagFinding>,
+  ) {
+    this.findings.value = this.findings.value.filter { it.bookId != bookId.value || !it.otherSource.isOnline } +
+      findings.map { it.copy(bookId = bookId.value) }
+  }
+
   override suspend fun setDismissed(
     id: Long,
     dismissed: Boolean,

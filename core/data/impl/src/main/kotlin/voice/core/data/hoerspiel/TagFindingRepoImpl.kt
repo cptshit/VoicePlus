@@ -19,6 +19,13 @@ public class TagFindingRepoImpl(private val dao: TagFindingDao) : TagFindingRepo
     dao.replaceForBook(bookId.value, findings)
   }
 
+  override suspend fun replaceOnlineForBook(
+    bookId: BookId,
+    findings: List<TagFinding>,
+  ) {
+    dao.replaceOnlineForBook(bookId.value, findings)
+  }
+
   override suspend fun setDismissed(
     id: Long,
     dismissed: Boolean,

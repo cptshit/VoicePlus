@@ -21,6 +21,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import voice.core.data.BookContent
+import voice.core.data.hoerspiel.EpisodeNumberRepo
 import voice.core.data.repo.BookContentRepo
 import voice.core.data.repo.internals.AppDb
 import voice.core.data.repo.internals.dao.BookCharacterDao
@@ -57,6 +58,7 @@ internal class SnapshotWriter(
   private val restoreGate: RestoreGate,
   private val clock: Clock,
   private val appDb: AppDb,
+  private val episodeNumberRepo: EpisodeNumberRepo,
 ) {
 
   private val dirty = AtomicBoolean(false)
@@ -173,6 +175,7 @@ internal class SnapshotWriter(
           hiddenBooks = excludedIds,
           settings = settingsSnapshotter.capture(),
           organisation = appDb.libraryOrganisationDao().get(),
+          episodeNumbers = episodeNumberRepo.all().mapKeys { it.key.value },
         )
         if (RotationGuard.isSuspiciousShrink(ring.best(), snapshot, excludedIds)) {
           Logger.w(

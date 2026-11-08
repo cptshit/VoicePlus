@@ -53,6 +53,21 @@ class HoerspielDbMigrationTest {
     }
   }
 
+  @Test
+  fun version4To5AddsTheCatalogCache() {
+    helper.createDatabase(NAME, 4).use { db ->
+      db.execSQL("INSERT INTO episode_number_overrides (bookId, number) VALUES ('book', 7)")
+    }
+
+    helper.runMigrationsAndValidate(NAME, 5, true).use { db ->
+      db.query("SELECT number FROM episode_number_overrides").use { cursor ->
+        cursor.moveToFirst() shouldBe true
+        cursor.getInt(0) shouldBe 7
+      }
+      db.execSQL("INSERT INTO catalog_cache (series, source, json, fetchedAtEpochMillis) VALUES ('gabriel burns', 'MusicBrainz', '[]', 1)")
+    }
+  }
+
   private companion object {
     const val NAME = "hoerspiel-migration-test"
   }

@@ -15,6 +15,7 @@ import voice.core.data.ChapterId
 import voice.core.data.ListeningEvent
 import voice.core.data.ListeningSession
 import voice.core.data.MediaScanWaiter
+import voice.core.data.hoerspiel.EpisodeNumberRepo
 import voice.core.data.repo.BookContentRepo
 import voice.core.data.repo.internals.dao.BookCharacterDao
 import voice.core.data.repo.internals.dao.BookContentDao
@@ -64,6 +65,7 @@ internal class OsWipeRestorer(
   private val appDb: RoomDatabase,
   private val restoreGate: RestoreGate,
   private val organisationDao: LibraryOrganisationDao,
+  private val episodeNumberRepo: EpisodeNumberRepo,
 ) {
 
   @IgnorableReturnValue
@@ -199,6 +201,11 @@ internal class OsWipeRestorer(
       .map { it.content.id.value }
     if (hiddenNewIds.isNotEmpty()) {
       excludedBooksStore.updateData { it + hiddenNewIds }
+    }
+
+    // The corrected episode numbers are keyed by book id too, so they follow the books to their new ids.
+    result.matched.forEach { matched ->
+      snapshot.episodeNumbers[matched.sourceId]?.let { episodeNumberRepo.set(matched.content.id, it) }
     }
 
     // 6. Refresh the fill-once content cache so the restored books render this session, not after a restart.

@@ -9,7 +9,7 @@ import voice.core.data.ShelfSort
 import voice.features.bookOverview.overview.BookOverviewItemViewState
 import voice.features.bookOverview.series.LibraryEntry
 
-internal enum class ShelfFilter { ALL, NOT_STARTED, COMPLETED }
+internal enum class ShelfFilter { ALL, IN_PROGRESS, NOT_STARTED, COMPLETED }
 
 internal data class LibrarySection(
   val id: String,
@@ -58,6 +58,7 @@ internal fun librarySections(
         val visible = ordered.filter { book ->
           when (filter) {
             ShelfFilter.ALL -> true
+            ShelfFilter.IN_PROGRESS -> !book.value.finished && book.value.progress > 0f
             ShelfFilter.NOT_STARTED -> !book.value.finished && book.value.progress == 0f
             ShelfFilter.COMPLETED -> book.value.finished
           }

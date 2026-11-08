@@ -25,6 +25,7 @@ import dev.zacsweers.metro.IntoSet
 import dev.zacsweers.metro.Provides
 import voice.core.common.rootGraphAs
 import voice.core.data.BookId
+import voice.core.ui.VoiceTheme
 import voice.features.playbackScreen.view.BookPlayView
 import voice.features.playbackScreen.view.PlaybackToolbarDialog
 import voice.features.sleepTimer.SleepTimerDialog
@@ -145,10 +146,13 @@ interface BookPlayProvider {
         NavDisplay.popTransitionSpec { playerBackTransition() } +
         NavDisplay.predictivePopTransitionSpec { _ -> playerBackTransition() },
     ) {
-      BookPlayScreen(
-        bookId = key.bookId,
-        sharedTransitionScope = scope,
-      )
+      // The player is dark by default, whatever the library uses.
+      VoiceTheme(dark = true) {
+        BookPlayScreen(
+          bookId = key.bookId,
+          sharedTransitionScope = scope,
+        )
+      }
     }
   }
 }

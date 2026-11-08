@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Add
@@ -61,6 +62,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -81,7 +83,12 @@ internal fun SeriesEditorSheet(
   onSave: () -> Unit,
   onUngroup: () -> Unit,
   onShelfChange: (String) -> Unit = {},
+  bulk: SeriesBulkState = SeriesBulkState(),
+  onBulkChange: ((SeriesBulkState) -> SeriesBulkState) -> Unit = {},
+  onBulkApply: () -> Unit = {},
+  onResetNumbers: () -> Unit = {},
 ) {
+  var correcting by rememberSaveable { mutableStateOf(false) }
   var adding by rememberSaveable { mutableStateOf(false) }
   var query by rememberSaveable { mutableStateOf("") }
   var confirmUngroup by rememberSaveable { mutableStateOf(false) }
@@ -94,19 +101,33 @@ internal fun SeriesEditorSheet(
     if (!adding) listState.scrollToItem(0)
   }
   ModalBottomSheet(
-    onDismissRequest = { if (adding) adding = false else onDismiss() },
+    onDismissRequest = {
+      if (adding) {
+        adding = false
+      } else if (correcting) {
+        correcting = false
+      } else {
+        onDismiss()
+      }
+    },
     sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
     sheetGesturesEnabled = false,
     dragHandle = null,
   ) {
-    BackHandler(enabled = adding) { adding = false }
+    BackHandler(enabled = adding || correcting) {
+      adding = false
+      correcting = false
+    }
     Column(
       Modifier.fillMaxHeight(0.92f).imePadding().padding(horizontal = 16.dp),
       verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
       Row(Modifier.fillMaxWidth().padding(top = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-        if (adding) {
-          IconButton(onClick = { adding = false }) {
+        if (adding || correcting) {
+          IconButton(onClick = {
+            adding = false
+            correcting = false
+          }) {
             Icon(Icons.AutoMirrored.Outlined.ArrowBack, stringResource(StringsR.string.series_back_to_editor))
           }
         }
@@ -114,6 +135,8 @@ internal fun SeriesEditorSheet(
           stringResource(
             if (adding) {
               StringsR.string.series_add_books
+            } else if (correcting) {
+              StringsR.string.series_correct
             } else if (editing) {
               StringsR.string.series_manage
             } else {
@@ -123,13 +146,15 @@ internal fun SeriesEditorSheet(
           style = MaterialTheme.typography.titleLarge,
           modifier = Modifier.weight(1f),
         )
-        if (!adding) {
+        if (!adding && !correcting) {
           IconButton(onClick = onDismiss, enabled = !state.saving) {
             Icon(Icons.Outlined.Close, stringResource(StringsR.string.close))
           }
         }
       }
-      if (adding) {
+      if (correcting) {
+        BulkCorrection(state, bulk, onBulkChange, onBulkApply, onResetNumbers, Modifier.weight(1f))
+      } else if (adding) {
         Text(
           stringResource(
             StringsR.string.library_books_move_to,
@@ -360,9 +385,14 @@ internal fun SeriesEditorSheet(
           verticalAlignment = Alignment.CenterVertically,
         ) {
           if (editing) {
-            TextButton(onClick = {
-              confirmUngroup = true
-            }, enabled = !state.saving) { Text(stringResource(StringsR.string.series_ungroup)) }
+            Row {
+              TextButton(onClick = { correcting = true }, enabled = !state.saving) {
+                Text(stringResource(StringsR.string.series_correct))
+              }
+              TextButton(onClick = {
+                confirmUngroup = true
+              }, enabled = !state.saving) { Text(stringResource(StringsR.string.series_ungroup)) }
+            }
           } else {
             Text(pluralStringResource(StringsR.plurals.series_book_count, state.selected.size, state.selected.size))
           }
@@ -400,4 +430,123 @@ private fun EditorCover(book: BookContent) {
     error = painterResource(UiR.drawable.album_art),
     modifier = Modifier.size(40.dp, 56.dp).clip(MaterialTheme.shapes.extraSmall),
   )
+}
+
+@Composable
+private fun BulkCorrection(
+  state: SeriesEditorState,
+  bulk: SeriesBulkState,
+  onChange: ((SeriesBulkState) -> SeriesBulkState) -> Unit,
+  onApply: () -> Unit,
+  onResetNumbers: () -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  val changes = state.bulkPreview(bulk)
+  val changed = changes.count { it.changed }
+  Column(modifier.testTag("series-correct"), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    OutlinedTextField(
+      value = bulk.prefix,
+      onValueChange = { value -> onChange { it.copy(prefix = value) } },
+      singleLine = true,
+      enabled = !bulk.applying,
+      label = { Text(stringResource(StringsR.string.series_correct_prefix)) },
+      modifier = Modifier.fillMaxWidth(),
+    )
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+      OutlinedTextField(
+        value = bulk.find,
+        onValueChange = { value -> onChange { it.copy(find = value) } },
+        singleLine = true,
+        enabled = !bulk.applying,
+        label = { Text(stringResource(StringsR.string.series_correct_find)) },
+        modifier = Modifier.weight(1f),
+      )
+      OutlinedTextField(
+        value = bulk.replacement,
+        onValueChange = { value -> onChange { it.copy(replacement = value) } },
+        singleLine = true,
+        enabled = !bulk.applying,
+        label = { Text(stringResource(StringsR.string.series_correct_replace)) },
+        modifier = Modifier.weight(1f),
+      )
+    }
+    Row(
+      Modifier.fillMaxWidth().toggleable(bulk.tidy, role = Role.Checkbox, onValueChange = { value -> onChange { it.copy(tidy = value) } })
+        .padding(vertical = 8.dp),
+      verticalAlignment = Alignment.CenterVertically,
+      horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+      Checkbox(bulk.tidy, onCheckedChange = null)
+      Text(stringResource(StringsR.string.series_correct_tidy))
+    }
+    Row(
+      Modifier.fillMaxWidth().toggleable(
+        bulk.renumber,
+        role = Role.Checkbox,
+        onValueChange = { value -> onChange { it.copy(renumber = value) } },
+      ).padding(vertical = 8.dp),
+      verticalAlignment = Alignment.CenterVertically,
+      horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+      Checkbox(bulk.renumber, onCheckedChange = null)
+      Text(stringResource(StringsR.string.series_correct_renumber), Modifier.weight(1f))
+      if (bulk.renumber) {
+        OutlinedTextField(
+          value = bulk.start,
+          onValueChange = { value -> onChange { it.copy(start = value.filter(Char::isDigit).take(4)) } },
+          singleLine = true,
+          enabled = !bulk.applying,
+          label = { Text(stringResource(StringsR.string.series_correct_start)) },
+          keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+          modifier = Modifier.width(112.dp),
+        )
+      }
+    }
+    TextButton(onClick = onResetNumbers, enabled = !bulk.applying) {
+      Text(stringResource(StringsR.string.series_correct_reset_numbers))
+    }
+    Text(stringResource(StringsR.string.series_correct_preview), style = MaterialTheme.typography.titleMedium)
+    LazyColumn(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+      items(changes, key = { it.id.value }) { change ->
+        Column(
+          Modifier.fillMaxWidth().clip(MaterialTheme.shapes.large)
+            .background(
+              if (change.changed) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surfaceContainerLow,
+            )
+            .padding(8.dp),
+        ) {
+          if (change.changed) {
+            Text(
+              change.oldName,
+              style = MaterialTheme.typography.bodySmall,
+              color = MaterialTheme.colorScheme.onSurfaceVariant,
+              maxLines = 2,
+              overflow = TextOverflow.Ellipsis,
+            )
+          }
+          Text(change.newName, style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
+          if (change.partChanged) {
+            Text(
+              stringResource(StringsR.string.series_correct_number_change, change.oldPart ?: "–", change.newPart ?: "–"),
+              style = MaterialTheme.typography.labelMedium,
+            )
+          }
+        }
+      }
+    }
+    if (bulk.failed) Text(stringResource(StringsR.string.series_correct_error), color = MaterialTheme.colorScheme.error)
+    Row(Modifier.fillMaxWidth().padding(bottom = 16.dp), verticalAlignment = Alignment.CenterVertically) {
+      Text(
+        if (changed ==
+          0
+        ) {
+          stringResource(StringsR.string.series_correct_none)
+        } else {
+          pluralStringResource(StringsR.plurals.series_correct_count, changed, changed)
+        },
+        Modifier.weight(1f),
+      )
+      Button(onClick = onApply, enabled = changed > 0 && !bulk.applying) { Text(stringResource(StringsR.string.series_correct_apply)) }
+    }
+  }
 }

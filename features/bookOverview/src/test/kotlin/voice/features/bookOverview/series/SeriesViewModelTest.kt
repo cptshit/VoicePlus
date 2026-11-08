@@ -28,7 +28,7 @@ class SeriesViewModelTest {
   private val dispatcher = StandardTestDispatcher()
   private val repo = mockk<BookContentRepo>(relaxed = true)
   private val organisation = mockk<LibraryOrganisationRepo>(relaxed = true)
-  private val model = SeriesViewModel(repo, organisation)
+  private val model = SeriesViewModel(repo, organisation, mockk(relaxed = true), mockk(relaxed = true))
   private val first = book(name = "One").let { it.copy(content = it.content.copy(series = "Chrysalis")) }
   private val second = book(name = "Two").let { it.copy(content = it.content.copy(seriesGroup = "Existing")) }
 

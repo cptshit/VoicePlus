@@ -76,6 +76,7 @@ internal fun ShelfLibraryBar(
   onSettings: () -> Unit,
   onImport: () -> Unit,
   onAddToSeries: () -> Unit,
+  onTagReview: () -> Unit = {},
 ) {
   var menu by remember { mutableStateOf(false) }
   Column {
@@ -171,6 +172,7 @@ internal fun ShelfLibraryBar(
                 Text(stringResource(StringsR.string.library_organise))
               }, onClick = action(model::beginOrganising))
               DropdownMenuItem(text = { Text(stringResource(StringsR.string.series_add_books)) }, onClick = action(onImport))
+              DropdownMenuItem(text = { Text(stringResource(StringsR.string.tag_review)) }, onClick = action(onTagReview))
               DropdownMenuItem(text = { Text(stringResource(StringsR.string.action_settings)) }, onClick = action(onSettings))
             }
           }
@@ -198,12 +200,10 @@ internal fun ShelfLibraryBar(
     } else if (model.filter != ShelfFilter.ALL) {
       Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
         Text(
-          if (model.filter ==
-            ShelfFilter.COMPLETED
-          ) {
-            stringResource(StringsR.string.library_completed_filter)
-          } else {
-            stringResource(StringsR.string.library_not_started_filter)
+          when (model.filter) {
+            ShelfFilter.COMPLETED -> stringResource(StringsR.string.library_completed_filter)
+            ShelfFilter.IN_PROGRESS -> stringResource(StringsR.string.library_in_progress_filter)
+            else -> stringResource(StringsR.string.library_not_started_filter)
           },
           Modifier.weight(1f),
           style = MaterialTheme.typography.labelLarge,
@@ -336,6 +336,7 @@ internal fun ShelfControls(
             Text(stringResource(StringsR.string.library_filter), Modifier.padding(16.dp), style = MaterialTheme.typography.titleLarge)
             listOf(
               ShelfFilter.ALL to stringResource(StringsR.string.library_all),
+              ShelfFilter.IN_PROGRESS to stringResource(StringsR.string.library_in_progress),
               ShelfFilter.NOT_STARTED to stringResource(StringsR.string.library_not_started),
               ShelfFilter.COMPLETED to stringResource(StringsR.string.book_header_completed),
             ).forEach { (filter, label) ->

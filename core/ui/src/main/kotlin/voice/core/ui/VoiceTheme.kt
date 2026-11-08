@@ -1,31 +1,40 @@
 package voice.core.ui
 
-import android.os.Build
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.staticCompositionLocalOf
 
+private val LocalExtraColors = staticCompositionLocalOf { LightExtraColors }
+
+private val LocalExtraTextStyles = staticCompositionLocalOf { DefaultExtraTextStyles }
+
+/** Colors outside Material's scheme, e.g. the beige note box: `VoiceTheme.extraColors`. */
+object VoiceTheme {
+  val extraColors: VoiceExtraColors
+    @Composable @ReadOnlyComposable
+    get() = LocalExtraColors.current
+  val extraTextStyles: VoiceExtraTextStyles
+    @Composable @ReadOnlyComposable
+    get() = LocalExtraTextStyles.current
+}
+
+/** @param dark forces the dark or light palette; `null` follows the app setting or the system. */
 @Composable
-fun VoiceTheme(content: @Composable () -> Unit) {
-  MaterialTheme(
-    colorScheme = if (isDarkTheme()) {
-      if (Build.VERSION.SDK_INT >= 31) {
-        dynamicDarkColorScheme(LocalContext.current)
-      } else {
-        darkColorScheme()
-      }
-    } else {
-      if (Build.VERSION.SDK_INT >= 31) {
-        dynamicLightColorScheme(LocalContext.current)
-      } else {
-        lightColorScheme()
-      }
-    },
+fun VoiceTheme(
+  dark: Boolean? = null,
+  content: @Composable () -> Unit,
+) {
+  val isDark = dark ?: isDarkTheme()
+  CompositionLocalProvider(
+    LocalExtraColors provides if (isDark) DarkExtraColors else LightExtraColors,
+    LocalExtraTextStyles provides DefaultExtraTextStyles,
   ) {
-    content()
+    MaterialTheme(
+      colorScheme = if (isDark) NightColorScheme else PaperColorScheme,
+      typography = voiceTypography(),
+      content = content,
+    )
   }
 }

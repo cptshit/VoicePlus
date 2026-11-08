@@ -224,3 +224,35 @@ den 80 Dateien mit `TLEN` ist es sicher ID3v2, bei den übrigen 109 getaggten Da
 Seit Schritt 0 schreibt `dump-tags.sh` pro MP3 `id3v2` (Version oder `null`) und `id3v1`
 (`true`/`false`) sowie eigene Zeilen `"kind":"image"` für Bilddateien. Ein neuer Dump klärt
 damit sowohl die ID3v1-Frage als auch, wo die Cover liegen.
+
+## Folgennummer korrigieren
+
+„Serie bearbeiten → Titel korrigieren → Folgen in dieser Reihenfolge nummerieren“ setzt die
+Nummern ab einem Startwert. Weil der Scanner die Nummer bei jedem Scan neu aus Tags und Dateinamen
+liest, steht die korrigierte Nummer zusätzlich in `episode_number_overrides` (`hoerspiel.db`);
+`BookParser` bevorzugt sie. Die Überschreibung steht im Backup (Snapshot-Schema 8) und folgt dem
+Buch bei der Wiederherstellung nach einem OS-Wipe auf die neue ID. „Folgennummern auf die gelesenen
+zurücksetzen“ im selben Screen löscht sie für die ganze Serie und liest die Bücher neu ein; geänderte
+Titel bleiben.
+
+## Online-Abgleich (MusicBrainz, iTunes)
+
+Auf Knopfdruck, je Serie: „Mehr → Tags prüfen → Online abgleichen → Abgleichen“. Vorher erklärt ein
+Dialog, was gesendet wird (nur der Serienname); der Hinweis steht in `PRIVACY.md`.
+
+- **MusicBrainz** (`/ws/2/release-group?query=artist:"<Serie>"`, 100 pro Seite, höchstens 3 Seiten, mind.
+  1,1 s Abstand, User-Agent `VoicePlus/<Version> (<Paket>)`). Ein Treffer zählt nur, wenn mehrere
+  Merkmale passen: Typ Audio drama oder Audiobook (kein Soundtrack/Musical), Künstler exakt die Serie,
+  Titel `Serie, Episode N: Titel` mit derselben Serie. Referenz: `fixtures/musicbrainz/gabriel-burns-release-groups.json`
+  (Folge 40 steht dort nur als Soundtrack und fällt deshalb weg).
+- **iTunes Search** nur, wenn MusicBrainz nichts Passendes liefert (`media=audiobook`, `country=de`).
+  Titel werden von Zusätzen wie „(Ungekürzt)“ befreit; Serie und Nummer kommen aus „Serie, Band N: …“,
+  „Serie - Folge N: …“, „Serie Tome N: …“ und „Titel (Serie N)“. Autor muss die Serie oder ein Autor der Bücher sein.
+- **Vergleich:** Nummerierte Folgen werden über die Nummer verglichen (die Nummer muss im Katalog genau
+  einmal vorkommen). Unterschiede nur in Groß-/Kleinschreibung, Satzzeichen oder Leerzeichen sind
+  keine Abweichung („… dem Winter folgte der Herbst“, „R.“); andere Buchstaben (Umlaute, ß) sind ein
+  Vorschlag („Der Fluesterer“ → „Der Flüsterer“). Ein Buch ohne Nummer bekommt eine nur bei exakt einem
+  gleichen Katalogtitel.
+- **Ergebnis:** Vorschläge stehen als Funde (`TagFindingSource.MusicBrainz`/`ITunes`) in „Tags prüfen“ und
+  werden nie automatisch übernommen. Sie überleben einen Rescan; „Ignorieren“ bleibt bei erneutem
+  Abgleich bestehen. Die Katalogantwort wird 30 Tage lokal gecacht (`catalog_cache`), nur Treffer.

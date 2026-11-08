@@ -310,6 +310,7 @@ fun BookOverviewScreen(
           onSearch = { bookOverviewViewModel.onSearchActiveChange(true) },
           onSettings = bookOverviewViewModel::onSettingsClick,
           onImport = bookOverviewViewModel::onBookFolderClick,
+          onTagReview = bookOverviewViewModel::onTagReviewClick,
           onAddToSeries = {
             seriesViewModel.create(shelfViewModel.selected.toList())
             shelfViewModel.cancelSelection()
@@ -361,6 +362,9 @@ fun BookOverviewScreen(
         }
       },
       onPermissionBugCardClick = bookOverviewViewModel::onPermissionBugCardClick,
+      onTagReviewClick = bookOverviewViewModel::onTagReviewClick,
+      filter = shelfViewModel.filter,
+      onFilterChange = { shelfViewModel.filter = it },
       onSeriesClick = { name, bounds ->
         seriesOrigin = floatArrayOf(bounds.left, bounds.top, bounds.right, bounds.bottom)
         openSeries = name
@@ -376,8 +380,6 @@ fun BookOverviewScreen(
         SeriesDetails(
           entry = if (showEntireSeries) seriesEntry.copy(books = seriesEntry.allBooks) else seriesEntry,
           onShowAll = if (!showEntireSeries && seriesEntry.books.size < seriesEntry.allBooks.size) ({ showEntireSeries = true }) else null,
-          booksPerRow = viewState.booksPerRow,
-          origin = Rect(seriesOrigin[0], seriesOrigin[1], seriesOrigin[2], seriesOrigin[3]),
           onPrepare = { seriesPrepared = true },
           onDismiss = { openSeries = null },
           onEdit = {
@@ -419,6 +421,10 @@ fun BookOverviewScreen(
       onSave = { seriesViewModel.save() },
       onUngroup = { seriesViewModel.save(ungroup = true) },
       onShelfChange = seriesViewModel::selectShelf,
+      bulk = seriesViewModel.bulk,
+      onBulkChange = seriesViewModel::bulkChanged,
+      onBulkApply = seriesViewModel::applyBulk,
+      onResetNumbers = seriesViewModel::resetNumbers,
     )
   }
   val deleteBookViewState = deleteBookViewModel.state.value
@@ -491,6 +497,9 @@ internal fun BookOverview(
   organising: Boolean = false,
   dragState: LibraryShelfDragState? = null,
   onOrganise: (Set<BookId>) -> Unit = {},
+  onTagReviewClick: () -> Unit = {},
+  filter: ShelfFilter = ShelfFilter.ALL,
+  onFilterChange: (ShelfFilter) -> Unit = {},
 ) {
   val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
   Scaffold(
@@ -499,7 +508,9 @@ internal fun BookOverview(
       if (!viewState.searchActive) {
         Column {
           libraryBar()
+          if (viewState.books.isNotEmpty() && !selecting && !organising) LibraryFilterChips(filter, onFilterChange)
           if (viewState.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth())
+          if (viewState.tagReviewCount > 0) TagReviewHint(viewState.tagReviewCount, onTagReviewClick)
           if (viewState.showAddBookHint) {
             TextButton(onClick = onBookFolderClick, modifier = Modifier.padding(horizontal = 16.dp)) {
               Text(stringResource(StringsR.string.library_add_audiobooks))
@@ -533,63 +544,69 @@ internal fun BookOverview(
     },
     contentWindowInsets = WindowInsets(0, 0, 0, 0),
   ) { contentPadding ->
-    Box(
+    Column(
       Modifier
         .padding(contentPadding)
         .consumeWindowInsets(contentPadding),
     ) {
-      when (viewState.layoutMode) {
-        BookOverviewLayoutMode.List -> {
-          ListBooks(
-            openSeriesKey = openSeriesKey,
-            sharedTransitionScope = sharedTransitionScope,
-            state = listState,
-            onSeriesClick = onSeriesClick,
-            onSeriesLongClick = onSeriesLongClick,
-            sections = sections,
-            onShelfToggle = onShelfToggle,
-            onShelfMenu = onShelfMenu,
-            onShelfAdd = onShelfAdd,
-            activeCoverKey = activeCoverKey,
-            onCoverOrigin = onCoverOrigin,
-            selecting = selecting,
-            selected = selected,
-            onSelect = onSelect,
-            organising = organising,
-            dragState = dragState,
-            onOrganise = onOrganise,
-            onBookClick = onBookClick,
-            onBookLongClick = onBookLongClick,
-            showPermissionBugCard = viewState.showStoragePermissionBugCard,
-            onPermissionBugCardClick = onPermissionBugCardClick,
-          )
-        }
-        BookOverviewLayoutMode.Grid, BookOverviewLayoutMode.Books -> {
-          GridBooks(
-            openSeriesKey = openSeriesKey,
-            booksMode = viewState.layoutMode == BookOverviewLayoutMode.Books,
-            booksPerRow = viewState.booksPerRow,
-            sharedTransitionScope = sharedTransitionScope,
-            state = gridState,
-            onSeriesClick = onSeriesClick,
-            onSeriesLongClick = onSeriesLongClick,
-            sections = sections,
-            onShelfToggle = onShelfToggle,
-            onShelfMenu = onShelfMenu,
-            onShelfAdd = onShelfAdd,
-            activeCoverKey = activeCoverKey,
-            onCoverOrigin = onCoverOrigin,
-            selecting = selecting,
-            selected = selected,
-            onSelect = onSelect,
-            organising = organising,
-            dragState = dragState,
-            onOrganise = onOrganise,
-            onBookClick = onBookClick,
-            onBookLongClick = onBookLongClick,
-            showPermissionBugCard = viewState.showStoragePermissionBugCard,
-            onPermissionBugCardClick = onPermissionBugCardClick,
-          )
+      val continueBook = viewState.books[BookOverviewCategory.CURRENT]?.values?.firstOrNull()?.value
+      if (continueBook != null && filter == ShelfFilter.ALL && !selecting && !organising) {
+        ContinueListeningCard(continueBook, onBookClick)
+      }
+      Box(Modifier.weight(1f)) {
+        when (viewState.layoutMode) {
+          BookOverviewLayoutMode.List -> {
+            ListBooks(
+              openSeriesKey = openSeriesKey,
+              sharedTransitionScope = sharedTransitionScope,
+              state = listState,
+              onSeriesClick = onSeriesClick,
+              onSeriesLongClick = onSeriesLongClick,
+              sections = sections,
+              onShelfToggle = onShelfToggle,
+              onShelfMenu = onShelfMenu,
+              onShelfAdd = onShelfAdd,
+              activeCoverKey = activeCoverKey,
+              onCoverOrigin = onCoverOrigin,
+              selecting = selecting,
+              selected = selected,
+              onSelect = onSelect,
+              organising = organising,
+              dragState = dragState,
+              onOrganise = onOrganise,
+              onBookClick = onBookClick,
+              onBookLongClick = onBookLongClick,
+              showPermissionBugCard = viewState.showStoragePermissionBugCard,
+              onPermissionBugCardClick = onPermissionBugCardClick,
+            )
+          }
+          BookOverviewLayoutMode.Grid, BookOverviewLayoutMode.Books -> {
+            GridBooks(
+              openSeriesKey = openSeriesKey,
+              booksMode = viewState.layoutMode == BookOverviewLayoutMode.Books,
+              booksPerRow = viewState.booksPerRow,
+              sharedTransitionScope = sharedTransitionScope,
+              state = gridState,
+              onSeriesClick = onSeriesClick,
+              onSeriesLongClick = onSeriesLongClick,
+              sections = sections,
+              onShelfToggle = onShelfToggle,
+              onShelfMenu = onShelfMenu,
+              onShelfAdd = onShelfAdd,
+              activeCoverKey = activeCoverKey,
+              onCoverOrigin = onCoverOrigin,
+              selecting = selecting,
+              selected = selected,
+              onSelect = onSelect,
+              organising = organising,
+              dragState = dragState,
+              onOrganise = onOrganise,
+              onBookClick = onBookClick,
+              onBookLongClick = onBookLongClick,
+              showPermissionBugCard = viewState.showStoragePermissionBugCard,
+              onPermissionBugCardClick = onPermissionBugCardClick,
+            )
+          }
         }
       }
     }

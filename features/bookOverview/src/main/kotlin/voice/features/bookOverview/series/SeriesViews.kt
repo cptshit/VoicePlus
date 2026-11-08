@@ -231,8 +231,6 @@ private fun SeriesCovers(
 @Composable
 internal fun SeriesDetails(
   entry: LibraryEntry,
-  booksPerRow: Int,
-  origin: Rect,
   onPrepare: () -> Unit,
   onDismiss: () -> Unit,
   onEdit: () -> Unit,
@@ -244,18 +242,13 @@ internal fun SeriesDetails(
   var opened by rememberSaveable { mutableStateOf(false) }
   var closing by remember { mutableStateOf(false) }
   var prepared by remember { mutableStateOf(false) }
-  val gridState = rememberLazyGridState()
-  val readyCovers = remember { mutableStateMapOf<String, Boolean>() }
+  val episodes =
+    remember(entry.books.map { it.value }, entry.seriesName) { episodeList(entry.books.map { it.value }, entry.seriesName.orEmpty()) }
   val reveal = remember { Animatable(if (opened) 1f else 0f) }
   val prepare by rememberUpdatedState(onPrepare)
   val dismissCallback by rememberUpdatedState(onDismiss)
   LaunchedEffect(closing) {
     if (!closing) {
-      // Keep the source stack visible until every initially visible cover has loaded (or failed).
-      snapshotFlow {
-        val visible = gridState.layoutInfo.visibleItemsInfo
-        visible.isNotEmpty() && visible.all { readyCovers[it.key] == true }
-      }.first { it }
       prepared = true
       prepare()
     }
@@ -377,69 +370,12 @@ internal fun SeriesDetails(
                     }
                   }
                 }
-                BoxWithConstraints(Modifier.weight(1f, fill = false)) {
-                  // Respect the chosen density, but leave room for readable titles at larger text sizes.
-                  val columns = booksColumnCount(maxWidth, booksPerRow, LocalDensity.current.fontScale)
-                  val compact = columns >= 3 && maxWidth / columns < 144.dp
-                  val coverAspectRatio = entry.coverAspectRatio
-                  var gridBounds by remember { mutableStateOf(Rect.Zero) }
-                  LazyVerticalGrid(
-                    columns = GridCells.Fixed(columns),
-                    state = gridState,
-                    modifier = Modifier.fillMaxWidth().testTag("series-grid")
-                      .onGloballyPositioned { gridBounds = Rect(it.positionInWindow(), it.size.toSize()) },
-                    contentPadding = PaddingValues(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                  ) {
-                    itemsIndexed(entry.books, key = { _, book -> book.value.id.value }) { index, book ->
-                      val label = seriesBookLabel(book.value, entry.seriesName.orEmpty())
-                      var bounds by remember { mutableStateOf(Rect.Zero) }
-                      // Measure the stationary slot, not the animated child, to avoid layout feedback.
-                      Box(Modifier.onGloballyPositioned { bounds = Rect(it.positionInWindow(), it.size.toSize()) }) {
-                        BookshelfBook(
-                          book.value,
-                          onBookClick = { if (prepared && !closing) onBookClick(it) },
-                          onBookLongClick = { if (prepared && !closing) onBookLongClick(it) },
-                          sharedTransitionScope = null,
-                          modifier = Modifier.renderInSharedTransitionScopeOverlay(
-                            zIndexInOverlay = (entry.books.size - index).toFloat(),
-                            renderInOverlay = { reveal.value != 1f },
-                          ).graphicsLayer {
-                            val remaining = 1f - reveal.value
-                            val padding = 8.dp.toPx()
-                            val coverWidth = size.width - 8.dp.toPx()
-                            val coverCenterY = padding + coverWidth / coverAspectRatio / 2f
-                            if (!bounds.isEmpty && !origin.isEmpty && coverWidth > 0f) {
-                              transformOrigin = TransformOrigin(0.5f, coverCenterY / size.height)
-                              val layer = index.coerceAtMost(2)
-                              val stackScale = if (layer == 0) 1f else 0.96f
-                              val scale = 1f + (origin.width * stackScale / coverWidth - 1f) * remaining
-                              scaleX = scale
-                              scaleY = scale
-                              rotationZ = stackAngle(layer) * remaining
-                              translationX = (origin.center.x - bounds.center.x) * remaining
-                              val stackCenterY = origin.center.y - layer * 3.dp.toPx()
-                              translationY = (stackCenterY - bounds.top - coverCenterY) * remaining
-                            }
-                          }.drawWithContent {
-                            // Preserve the visible part of edge rows when lifting them out of the scroll clip.
-                            clipRect(
-                              top = (gridBounds.top - bounds.top).coerceAtLeast(0f),
-                              bottom = (gridBounds.bottom - bounds.top).coerceIn(0f, size.height),
-                            ) { this@drawWithContent.drawContent() }
-                          }.testTag("series-book:${book.value.id.value}"),
-                          coverModifier = Modifier.testTag("book-cover:${book.value.id.value}"),
-                          detailsModifier = Modifier.graphicsLayer { alpha = reveal.value },
-                          title = label.title,
-                          overline = label.part?.let { stringResource(StringsR.string.series_volume, it) }.orEmpty(),
-                          onCoverReady = { readyCovers[book.value.id.value] = true },
-                          compact = compact,
-                        )
-                      }
-                    }
-                  }
-                }
+                SeriesEpisodeList(
+                  items = episodes,
+                  onBookClick = { if (prepared && !closing) onBookClick(it) },
+                  onBookLongClick = { if (prepared && !closing) onBookLongClick(it) },
+                  modifier = Modifier.weight(1f, fill = false).fillMaxWidth(),
+                )
               }
             }
           }

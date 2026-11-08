@@ -45,6 +45,8 @@ class SnapshotWriterTest {
   @After
   fun teardown() = db.close()
 
+  private val episodeNumbers = FakeEpisodeNumberRepo()
+
   private fun writer(backup: BackupRepository = noopBackupStub) = SnapshotWriter(
     contentRepo = contentRepo,
     bookmarkDao = db.bookmarkDao(),
@@ -60,6 +62,7 @@ class SnapshotWriterTest {
     restoreGate = RestoreGate(),
     clock = clock,
     appDb = db,
+    episodeNumberRepo = episodeNumbers,
   )
 
   private fun book(
@@ -103,6 +106,15 @@ class SnapshotWriterTest {
     written.shouldNotBeNull()
     written.activeIds() shouldBe setOf("b1")
     written.savedAtEpochMillis shouldBe clock.millis()
+  }
+
+  @Test
+  fun `snapshot carries corrected episode numbers`() = runTest {
+    contentRepo.put(book("b1", active = true))
+    episodeNumbers.set(BookId("b1"), 12)
+    writer().writeSnapshot(contentRepo.all())
+
+    ring.best().shouldNotBeNull().episodeNumbers shouldBe mapOf("b1" to 12)
   }
 
   @Test

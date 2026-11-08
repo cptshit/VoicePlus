@@ -38,6 +38,16 @@ A full machine-readable list of transitive dependencies and their licenses is av
 
 ---
 
+## Fonts
+
+Bundled in `core/ui/src/main/res/font`, all under the SIL Open Font License 1.1 (texts in `docs/licenses`):
+
+- Literata (The Literata Project Authors) – page and episode titles
+- IBM Plex Sans (IBM Corp.) – running text and buttons
+- Barlow Condensed (The Barlow Project Authors) – episode numbers and section headings
+
+---
+
 ## License
 
 VoicePlus is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.

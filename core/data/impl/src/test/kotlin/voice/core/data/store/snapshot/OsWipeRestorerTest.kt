@@ -58,6 +58,8 @@ class OsWipeRestorerTest {
   @After
   fun teardown() = db.close()
 
+  private val episodeNumbers = FakeEpisodeNumberRepo()
+
   private fun restorer() = OsWipeRestorer(
     organisationDao = db.libraryOrganisationDao(),
     scanWaiter = scanWaiter,
@@ -71,6 +73,7 @@ class OsWipeRestorerTest {
     excludedBooksStore = excluded,
     appDb = db,
     restoreGate = RestoreGate(),
+    episodeNumberRepo = episodeNumbers,
   )
 
   // --- URI schemes: same documentId tail under different tree-grant prefixes (= the OS-wipe re-grant) ---
@@ -284,6 +287,16 @@ class OsWipeRestorerTest {
 
     val bookRepo = BookRepositoryImpl(ChapterRepoImpl(db.chapterDao()), contentRepo)
     bookRepo.get(BookId(newUri("primary:Books/Dune"))).shouldBeNull()
+  }
+
+  @Test
+  fun `corrected episode numbers follow the book to its new id`() = runTest {
+    val (dune, duneChapters) = snapshotBookOf("primary:Books/Dune", listOf("01.mp3"), "01.mp3", position = 400, lastPlayed = 5_000)
+    onScan = { scanInBook("primary:Books/Dune", listOf("01.mp3")) }
+
+    restorer().run(snapshotOf(listOf(dune), duneChapters).copy(episodeNumbers = mapOf(oldUri("primary:Books/Dune") to 7)))
+
+    episodeNumbers.numbers shouldBe mapOf(BookId(newUri("primary:Books/Dune")) to 7)
   }
 
   @Test

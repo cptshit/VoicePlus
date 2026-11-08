@@ -20,6 +20,8 @@ data class BookOverviewViewState(
   val showFolderPickerIcon: Boolean,
   val booksPerRow: Int = 2,
   val organisation: LibraryOrganisation? = null,
+  /** Number of episodes whose tags disagree and are waiting in "Check tags". */
+  val tagReviewCount: Int = 0,
 ) {
 
   companion object {

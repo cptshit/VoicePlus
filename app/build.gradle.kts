@@ -172,6 +172,7 @@ dependencies {
   implementation(projects.features.backup)
   implementation(projects.features.characterList)
   implementation(projects.features.hiddenBooks)
+  implementation(projects.features.tagReview)
   implementation(projects.features.listeningLog)
   implementation(projects.features.listeningStats)
   implementation(projects.core.documentfile)

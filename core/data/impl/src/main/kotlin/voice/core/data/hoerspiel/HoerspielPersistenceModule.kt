@@ -25,4 +25,10 @@ public interface HoerspielPersistenceModule {
 
   @Provides
   private fun seriesAutoGroupingDao(db: HoerspielDb): SeriesAutoGroupingDao = db.seriesAutoGroupingDao()
+
+  @Provides
+  private fun episodeNumberOverrideDao(db: HoerspielDb): EpisodeNumberOverrideDao = db.episodeNumberOverrideDao()
+
+  @Provides
+  private fun catalogCacheDao(db: HoerspielDb): CatalogCacheDao = db.catalogCacheDao()
 }
