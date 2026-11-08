@@ -186,4 +186,7 @@ private val TagFindingSource.label: Int
     TagFindingSource.AlbumTag -> StringsR.string.tag_review_source_album
     TagFindingSource.ArtistTag -> StringsR.string.tag_review_source_artist
     TagFindingSource.FileName -> StringsR.string.tag_review_source_file
+    TagFindingSource.Local -> StringsR.string.tag_review_source_local
+    TagFindingSource.MusicBrainz -> StringsR.string.tag_review_source_musicbrainz
+    TagFindingSource.ITunes -> StringsR.string.tag_review_source_itunes
   }

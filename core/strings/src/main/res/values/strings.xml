@@ -552,4 +552,7 @@
     <string name="library_in_progress_filter">In progress on shelves</string>
     <string name="library_continue_listening">Continue listening</string>
     <string name="library_continue">Play</string>
+    <string name="tag_review_source_local">your library</string>
+    <string name="tag_review_source_musicbrainz">MusicBrainz</string>
+    <string name="tag_review_source_itunes">iTunes</string>
 </resources>

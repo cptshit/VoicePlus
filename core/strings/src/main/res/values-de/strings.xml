@@ -267,4 +267,7 @@
     <string name="library_in_progress_filter">Angefangene auf den Regalen</string>
     <string name="library_continue_listening">Weiterhören</string>
     <string name="library_continue">Abspielen</string>
+    <string name="tag_review_source_local">deine Bibliothek</string>
+    <string name="tag_review_source_musicbrainz">MusicBrainz</string>
+    <string name="tag_review_source_itunes">iTunes</string>
 </resources>
