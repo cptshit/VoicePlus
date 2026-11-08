@@ -54,6 +54,10 @@ class LibrarySectionTest {
     librarySections(books, emptyList(), organisation, ShelfFilter.NOT_STARTED).single().entries.single().books shouldBe listOf(next)
   }
 
+  @Test fun `in progress filter keeps only started and unfinished books`() {
+    librarySections(books, emptyList(), organisation, ShelfFilter.IN_PROGRESS).single().entries.single().books shouldBe listOf(current)
+  }
+
   @Test fun `empty user shelves remain and other books hides only when empty`() {
     val empty = organisation.copy(placements = emptyList(), series = emptyList())
     librarySections(emptyMap(), emptyList(), empty, ShelfFilter.ALL).map { it.id } shouldBe listOf("fantasy")

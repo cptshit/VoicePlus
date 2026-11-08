@@ -72,12 +72,16 @@ internal fun CdCover(
         .absolutePadding(left = hinge, top = frame, right = frame, bottom = frame)
         .background(colors.surfaceContainerHighest),
     ) {
-      Icon(
-        imageVector = Icons.Outlined.Album,
-        contentDescription = null,
-        tint = colors.onSurfaceVariant,
-        modifier = Modifier.align(Alignment.Center).size(48.dp),
-      )
+      if (book.cover == null && book.seriesLabel != null) {
+        GeneratedCover(book)
+      } else {
+        Icon(
+          imageVector = Icons.Outlined.Album,
+          contentDescription = null,
+          tint = colors.onSurfaceVariant,
+          modifier = Modifier.align(Alignment.Center).size(48.dp),
+        )
+      }
       AsyncImage(
         model = book.cover?.file,
         contentDescription = null,
