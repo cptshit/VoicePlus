@@ -20,6 +20,15 @@ public interface TagFindingRepo {
     findings: List<TagFinding>,
   )
 
+  /**
+   * Replaces the online suggestions ([TagFindingSource.isOnline]) of [bookId] and leaves the findings
+   * of the scanner alone. Suggestions the user dismissed stay dismissed when found again unchanged.
+   */
+  public suspend fun replaceOnlineForBook(
+    bookId: BookId,
+    findings: List<TagFinding>,
+  )
+
   public suspend fun setDismissed(
     id: Long,
     dismissed: Boolean,

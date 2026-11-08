@@ -62,6 +62,32 @@ class TagFindingRepoTest {
     repo.flow().first().map { it.otherValue } shouldBe listOf("X")
   }
 
+  private fun online(value: String) = finding(value).copy(
+    chosenSource = TagFindingSource.Local,
+    otherSource = TagFindingSource.MusicBrainz,
+  )
+
+  @Test
+  fun rescanKeepsOnlineSuggestionsAndTheirDismissedState() = runTest {
+    repo.replaceOnlineForBook(book, listOf(online("Die Kommission")))
+    repo.setDismissed(repo.flow(book).first().single().id, dismissed = true)
+
+    repo.replaceForBook(book, listOf(finding("Etwas anderes")))
+    repo.replaceForBook(book, emptyList())
+
+    repo.flow(book).first().map { Triple(it.otherSource, it.otherValue, it.dismissed) } shouldBe
+      listOf(Triple(TagFindingSource.MusicBrainz, "Die Kommission", true))
+  }
+
+  @Test
+  fun onlineReplaceLeavesScannerFindingsAlone() = runTest {
+    repo.replaceForBook(book, listOf(finding("Y")))
+    repo.replaceOnlineForBook(book, listOf(online("Z")))
+    repo.replaceOnlineForBook(book, listOf(online("Z2")))
+
+    repo.flow(book).first().map { it.otherValue } shouldBe listOf("Y", "Z2")
+  }
+
   @Test
   fun bookIdOfInputIsIgnored() = runTest {
     repo.replaceForBook(book, listOf(finding("Y", bookId = otherBook)))

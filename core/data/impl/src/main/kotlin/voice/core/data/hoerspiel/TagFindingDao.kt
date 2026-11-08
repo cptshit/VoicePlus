@@ -18,8 +18,12 @@ public interface TagFindingDao {
   @Query("SELECT * FROM tag_findings WHERE bookId = :bookId")
   public suspend fun forBookOnce(bookId: String): List<TagFinding>
 
-  @Query("DELETE FROM tag_findings WHERE bookId = :bookId")
-  public suspend fun deleteForBook(bookId: String)
+  /** Only the scanner's findings: online suggestions survive a re-scan. */
+  @Query("DELETE FROM tag_findings WHERE bookId = :bookId AND otherSource NOT IN ('MusicBrainz', 'ITunes')")
+  public suspend fun deleteScannedForBook(bookId: String)
+
+  @Query("DELETE FROM tag_findings WHERE bookId = :bookId AND otherSource IN ('MusicBrainz', 'ITunes')")
+  public suspend fun deleteOnlineForBook(bookId: String)
 
   @Insert
   public suspend fun insert(findings: List<TagFinding>)
@@ -35,8 +39,23 @@ public interface TagFindingDao {
     bookId: String,
     findings: List<TagFinding>,
   ) {
-    val dismissed = forBookOnce(bookId).filter { it.dismissed }
-    deleteForBook(bookId)
+    val dismissed = forBookOnce(bookId).filter { it.dismissed && !it.otherSource.isOnline }
+    deleteScannedForBook(bookId)
+    insert(
+      findings.map { finding ->
+        val normalized = finding.copy(id = 0, bookId = bookId, dismissed = false)
+        normalized.copy(dismissed = dismissed.any { it.sameFindingAs(normalized) })
+      },
+    )
+  }
+
+  @Transaction
+  public suspend fun replaceOnlineForBook(
+    bookId: String,
+    findings: List<TagFinding>,
+  ) {
+    val dismissed = forBookOnce(bookId).filter { it.dismissed && it.otherSource.isOnline }
+    deleteOnlineForBook(bookId)
     insert(
       findings.map { finding ->
         val normalized = finding.copy(id = 0, bookId = bookId, dismissed = false)
