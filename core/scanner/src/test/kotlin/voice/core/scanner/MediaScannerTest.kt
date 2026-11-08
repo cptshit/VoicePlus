@@ -12,6 +12,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.spyk
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -491,6 +492,22 @@ class MediaScannerTest {
   }
 
   @Test
+  fun authorFolderParsesEachBookOnce() = test {
+    val audioBooks = folder("audiobooks")
+    repeat(3) { book -> audioFile(File(audioBooks, "author1/book$book"), "c1.mp3") }
+    // Kotlin's synthetic `parseAndStore$default` bridge calls through with a null file; only real calls count.
+    val parsedFiles = mutableListOf<Any>()
+    coEvery { bookParser.parseAndStore(any(), any(), any(), any()) } coAnswers {
+      secondArg<Any?>()?.let { parsedFiles += it }
+      callOriginal()
+    }
+
+    scan(FolderType.Author, audioBooks)
+
+    parsedFiles.size shouldBe 3
+  }
+
+  @Test
   fun hoerspielEpisodesGetSeriesNumberTitleAndSharedAuthor() = test {
     val root = folder("Hoerspiele")
     val untagged = File(root, "GabrielBurns - 002 - Die Brut")
@@ -666,6 +683,17 @@ class MediaScannerTest {
     // passed to scan() is treated as currently-configured. (The remove-during-scan race — where this set diverges
     // from the snapshot mid-scan — is covered by ScanFolderRemovalRaceTest.)
     val configuredFolders = FakeManagedFolders()
+    val bookParser = spyk(
+      BookParser(
+        contentRepo = bookContentRepo,
+        mediaAnalyzer = mediaAnalyzer,
+        fileFactory = FileBasedDocumentFactory,
+        ignoreFileTagsStore = mockk { every { data } returns ignoreFileTags },
+        hoerspielNormalizer = MemoryFeatureFlag(true),
+        tagFindingRepo = tagFindingRepo,
+        episodePartRepo = episodePartRepo,
+      ),
+    )
     private val scanner = MediaScanner(
       contentRepo = bookContentRepo,
       chapterParser = ChapterParser(
@@ -675,15 +703,7 @@ class MediaScannerTest {
         context = ApplicationProvider.getApplicationContext(),
         hoerspielNormalizer = MemoryFeatureFlag(true),
       ),
-      bookParser = BookParser(
-        contentRepo = bookContentRepo,
-        mediaAnalyzer = mediaAnalyzer,
-        fileFactory = FileBasedDocumentFactory,
-        ignoreFileTagsStore = mockk { every { data } returns ignoreFileTags },
-        hoerspielNormalizer = MemoryFeatureFlag(true),
-        tagFindingRepo = tagFindingRepo,
-        episodePartRepo = episodePartRepo,
-      ),
+      bookParser = bookParser,
       seriesAutoGrouper = SeriesAutoGrouper(
         contentRepo = bookContentRepo,
         organisationRepo = organisationRepo,
