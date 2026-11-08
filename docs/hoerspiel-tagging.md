@@ -230,6 +230,7 @@ damit sowohl die ID3v1-Frage als auch, wo die Cover liegen.
 „Serie bearbeiten → Titel korrigieren → Folgen in dieser Reihenfolge nummerieren“ setzt die
 Nummern ab einem Startwert. Weil der Scanner die Nummer bei jedem Scan neu aus Tags und Dateinamen
 liest, steht die korrigierte Nummer zusätzlich in `episode_number_overrides` (`hoerspiel.db`);
-`BookParser` bevorzugt sie. Grenzen: Die Überschreibung ist nicht im Backup-Snapshot (nach einem
-Restore gilt der gesicherte Wert bis zum nächsten Rescan mit „Datei-Tags neu lesen“), und es gibt
-noch keine Oberfläche, um sie wieder zu löschen.
+`BookParser` bevorzugt sie. Die Überschreibung steht im Backup (Snapshot-Schema 8) und folgt dem
+Buch bei der Wiederherstellung nach einem OS-Wipe auf die neue ID. „Folgennummern auf die gelesenen
+zurücksetzen“ im selben Screen löscht sie für die ganze Serie und liest die Bücher neu ein; geänderte
+Titel bleiben.

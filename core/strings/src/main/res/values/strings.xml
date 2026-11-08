@@ -416,6 +416,7 @@
   <string name="series_correct_renumber">Number episodes in this order</string>
   <string name="series_correct_start">First number</string>
   <string name="series_correct_number_change">Episode %1$s → %2$s</string>
+  <string name="series_correct_reset_numbers">Reset episode numbers to the scanned ones</string>
   <string name="series_correct_preview">Preview</string>
   <string name="series_correct_none">No titles would change</string>
   <string name="series_correct_apply">Apply</string>

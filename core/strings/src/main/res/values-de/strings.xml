@@ -190,6 +190,7 @@
     <string name="series_correct_renumber">Folgen in dieser Reihenfolge nummerieren</string>
     <string name="series_correct_start">Erste Nummer</string>
     <string name="series_correct_number_change">Folge %1$s → %2$s</string>
+    <string name="series_correct_reset_numbers">Folgennummern auf die gelesenen zurücksetzen</string>
     <string name="series_correct_preview">Vorschau</string>
     <string name="series_correct_none">Kein Titel würde sich ändern</string>
     <string name="series_correct_apply">Übernehmen</string>

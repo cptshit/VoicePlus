@@ -86,6 +86,7 @@ internal fun SeriesEditorSheet(
   bulk: SeriesBulkState = SeriesBulkState(),
   onBulkChange: ((SeriesBulkState) -> SeriesBulkState) -> Unit = {},
   onBulkApply: () -> Unit = {},
+  onResetNumbers: () -> Unit = {},
 ) {
   var correcting by rememberSaveable { mutableStateOf(false) }
   var adding by rememberSaveable { mutableStateOf(false) }
@@ -152,7 +153,7 @@ internal fun SeriesEditorSheet(
         }
       }
       if (correcting) {
-        BulkCorrection(state, bulk, onBulkChange, onBulkApply, Modifier.weight(1f))
+        BulkCorrection(state, bulk, onBulkChange, onBulkApply, onResetNumbers, Modifier.weight(1f))
       } else if (adding) {
         Text(
           stringResource(
@@ -437,6 +438,7 @@ private fun BulkCorrection(
   bulk: SeriesBulkState,
   onChange: ((SeriesBulkState) -> SeriesBulkState) -> Unit,
   onApply: () -> Unit,
+  onResetNumbers: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   val changes = state.bulkPreview(bulk)
@@ -499,6 +501,9 @@ private fun BulkCorrection(
           modifier = Modifier.width(112.dp),
         )
       }
+    }
+    TextButton(onClick = onResetNumbers, enabled = !bulk.applying) {
+      Text(stringResource(StringsR.string.series_correct_reset_numbers))
     }
     Text(stringResource(StringsR.string.series_correct_preview), style = MaterialTheme.typography.titleMedium)
     LazyColumn(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {

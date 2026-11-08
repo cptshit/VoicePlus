@@ -19,6 +19,7 @@ import voice.core.data.hoerspiel.EpisodeNumberRepo
 import voice.core.data.repo.BookContentRepo
 import voice.core.data.repo.LibraryOrganisationRepo
 import voice.core.logging.api.Logger
+import voice.core.scanner.MediaScanTrigger
 import voice.core.scanner.hoerspiel.BulkRule
 import voice.core.scanner.hoerspiel.EpisodeChange
 import voice.core.scanner.hoerspiel.EpisodeDraft
@@ -90,6 +91,7 @@ class SeriesViewModel(
   private val contentRepo: BookContentRepo,
   private val organisationRepo: LibraryOrganisationRepo,
   private val episodeNumberRepo: EpisodeNumberRepo,
+  private val mediaScanner: MediaScanTrigger,
 ) : RetainedViewModel(),
   BottomSheetItemViewModel {
   internal var state: SeriesEditorState? by mutableStateOf(null)
@@ -170,6 +172,30 @@ class SeriesViewModel(
 
   internal fun bulkChanged(transform: (SeriesBulkState) -> SeriesBulkState) {
     if (!bulk.applying) bulk = transform(bulk).copy(failed = false)
+  }
+
+  /**
+   * Drops the corrected episode numbers of the books in the series. The scan that follows reads the
+   * numbers from tags and file names again; edited titles stay as they are.
+   */
+  internal fun resetNumbers() {
+    val current = state ?: return
+    if (bulk.applying) return
+    val inputs = bulk
+    bulk = inputs.copy(applying = true, failed = false)
+    scope.launch {
+      try {
+        current.selected.forEach { episodeNumberRepo.set(it, null) }
+        mediaScanner.scan(restartIfScanning = true, forceReParse = true)
+        bulk = SeriesBulkState()
+        state = null
+      } catch (e: CancellationException) {
+        throw e
+      } catch (e: Exception) {
+        Logger.w("Could not reset episode numbers: $e")
+        bulk = inputs.copy(applying = false, failed = true)
+      }
+    }
   }
 
   /** Writes the previewed titles to the app database; the audio files stay untouched. */
