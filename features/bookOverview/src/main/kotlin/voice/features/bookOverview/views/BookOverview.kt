@@ -361,6 +361,7 @@ fun BookOverviewScreen(
         }
       },
       onPermissionBugCardClick = bookOverviewViewModel::onPermissionBugCardClick,
+      onTagReviewClick = bookOverviewViewModel::onTagReviewClick,
       onSeriesClick = { name, bounds ->
         seriesOrigin = floatArrayOf(bounds.left, bounds.top, bounds.right, bounds.bottom)
         openSeries = name
@@ -494,6 +495,7 @@ internal fun BookOverview(
   organising: Boolean = false,
   dragState: LibraryShelfDragState? = null,
   onOrganise: (Set<BookId>) -> Unit = {},
+  onTagReviewClick: () -> Unit = {},
 ) {
   val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
   Scaffold(
@@ -503,6 +505,7 @@ internal fun BookOverview(
         Column {
           libraryBar()
           if (viewState.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth())
+          if (viewState.tagReviewCount > 0) TagReviewHint(viewState.tagReviewCount, onTagReviewClick)
           if (viewState.showAddBookHint) {
             TextButton(onClick = onBookFolderClick, modifier = Modifier.padding(horizontal = 16.dp)) {
               Text(stringResource(StringsR.string.library_add_audiobooks))

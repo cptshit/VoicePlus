@@ -234,4 +234,26 @@
         <item quantity="one">%1$d von %2$d Folge</item>
         <item quantity="other">%1$d von %2$d Folgen</item>
     </plurals>
+    <string name="tag_review">Tags prüfen</string>
+    <string name="tag_review_empty">Keine unsicheren Tags. Folgen, bei denen Ordnername, Dateinamen und Tags nicht übereinstimmen, erscheinen hier.</string>
+    <string name="tag_review_apply">Übernehmen</string>
+    <string name="tag_review_edit">Bearbeiten</string>
+    <string name="tag_review_ignore">Ignorieren</string>
+    <string name="tag_review_save">Speichern</string>
+    <string name="tag_review_used">Verwendet: %1$s (%2$s)</string>
+    <string name="tag_review_other">Alternative: %1$s (%2$s)</string>
+    <string name="tag_review_field_series">Serie</string>
+    <string name="tag_review_field_number">Folgennummer</string>
+    <string name="tag_review_field_title">Folgentitel</string>
+    <string name="tag_review_source_series_tag">Serien-Tag</string>
+    <string name="tag_review_source_part_tag">Teil-Tag</string>
+    <string name="tag_review_source_folder">Ordnername</string>
+    <string name="tag_review_source_album">Album-Tag</string>
+    <string name="tag_review_source_artist">Künstler-Tag</string>
+    <string name="tag_review_source_file">Dateiname</string>
+    <plurals name="tag_review_hint_count">
+        <item quantity="one">%d Folge hat unsichere Tags</item>
+        <item quantity="other">%d Folgen haben unsichere Tags</item>
+    </plurals>
+    <string name="tag_review_open">Prüfen</string>
 </resources>

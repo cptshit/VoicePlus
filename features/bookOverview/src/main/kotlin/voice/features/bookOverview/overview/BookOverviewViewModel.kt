@@ -31,6 +31,7 @@ import voice.core.data.hoerspiel.CoverStyle
 import voice.core.data.hoerspiel.CoverStyleStore
 import voice.core.data.hoerspiel.EpisodePart
 import voice.core.data.hoerspiel.EpisodePartRepo
+import voice.core.data.hoerspiel.TagFindingRepo
 import voice.core.data.repo.BookContentRepo
 import voice.core.data.repo.BookRepository
 import voice.core.data.repo.LibraryOrganisationRepo
@@ -81,6 +82,7 @@ class BookOverviewViewModel(
   private val experimentalPlaybackPersistenceFeatureFlag: FeatureFlag<Boolean>,
   private val organisationRepo: LibraryOrganisationRepo,
   private val episodePartRepo: EpisodePartRepo,
+  private val tagFindingRepo: TagFindingRepo,
   @CoverStyleStore
   private val coverStyleStore: DataStore<CoverStyle>,
 ) : RetainedViewModel() {
@@ -118,10 +120,12 @@ class BookOverviewViewModel(
     val booksPerRow = remember { booksPerRowStore.data }.collectAsState(initial = null).value?.coerceIn(2, 3)
     val organisation = remember { organisationRepo.flow() }.collectAsState(initial = null).value
     val episodeParts = remember { episodePartRepo.flow() }.collectAsState(initial = emptyMap()).value
+    val findings = remember { tagFindingRepo.flow() }.collectAsState(initial = emptyList()).value
     val coverStyle = remember { coverStyleStore.data }.collectAsState(initial = CoverStyle.Cd).value
     // Show the saved layout on the first populated frame, without a two-to-three-column shuffle.
     if (gridMode == null || books == null || booksPerRow == null || organisation == null) return BookOverviewViewState.Loading
     val noBooks = !scannerActive && books.isEmpty()
+    val activeIds = books.map { it.id.value }.toSet()
 
     val layoutMode = when (gridMode) {
       GridMode.LIST -> BookOverviewLayoutMode.List
@@ -180,6 +184,7 @@ class BookOverviewViewModel(
       searchViewState = bookSearchViewState,
       showStoragePermissionBugCard = hasStoragePermissionBug,
       showFolderPickerIcon = !folderPickerInSettingsFeatureFlag.get(),
+      tagReviewCount = findings.filter { !it.dismissed && it.bookId in activeIds }.map { it.bookId }.distinct().size,
     )
   }
 
@@ -243,6 +248,10 @@ class BookOverviewViewModel(
 
   fun onBookClick(id: BookId) {
     navigator.goTo(Destination.Playback(id))
+  }
+
+  fun onTagReviewClick() {
+    navigator.goTo(Destination.TagReview)
   }
 
   fun onBookFolderClick() {

@@ -519,4 +519,26 @@
     <string name="library_empty_shelf">Empty shelf</string>
     <string name="library_series_saved">Series saved</string>
     <string name="library_series_ungrouped">Books ungrouped</string>
+  <string name="tag_review">Check tags</string>
+  <string name="tag_review_empty">No doubtful tags. Episodes whose folder name, file names and tags disagree will appear here.</string>
+  <string name="tag_review_apply">Use this</string>
+  <string name="tag_review_edit">Edit</string>
+  <string name="tag_review_ignore">Ignore</string>
+  <string name="tag_review_save">Save</string>
+  <string name="tag_review_used">Used: %1$s (%2$s)</string>
+  <string name="tag_review_other">Alternative: %1$s (%2$s)</string>
+  <string name="tag_review_field_series">Series</string>
+  <string name="tag_review_field_number">Episode number</string>
+  <string name="tag_review_field_title">Episode title</string>
+  <string name="tag_review_source_series_tag">series tag</string>
+  <string name="tag_review_source_part_tag">part tag</string>
+  <string name="tag_review_source_folder">folder name</string>
+  <string name="tag_review_source_album">album tag</string>
+  <string name="tag_review_source_artist">artist tag</string>
+  <string name="tag_review_source_file">file name</string>
+  <plurals name="tag_review_hint_count">
+    <item quantity="one">%d episode has doubtful tags</item>
+    <item quantity="other">%d episodes have doubtful tags</item>
+  </plurals>
+  <string name="tag_review_open">Check</string>
 </resources>
