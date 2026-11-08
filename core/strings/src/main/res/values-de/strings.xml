@@ -270,4 +270,17 @@
     <string name="tag_review_source_local">deine Bibliothek</string>
     <string name="tag_review_source_musicbrainz">MusicBrainz</string>
     <string name="tag_review_source_itunes">iTunes</string>
+    <string name="tag_review_online_title">Online abgleichen</string>
+    <string name="tag_review_online_hint">Fragt MusicBrainz (bei Hörbüchern auch iTunes) nach den Folgen einer Serie. Gesendet wird nur der Serienname, und nur auf Knopfdruck. Vorschläge erscheinen unten, nichts wird automatisch übernommen.</string>
+    <string name="tag_review_online_button">Abgleichen</string>
+    <string name="tag_review_online_confirm_title">Serienname senden?</string>
+    <string name="tag_review_online_confirm_text">„%1$s“ wird an MusicBrainz gesendet. Findet sich dort nichts Passendes, geht der Name auch an die iTunes Search API. Sonst verlässt nichts Dein Gerät, Deine Audiodateien bleiben unverändert.</string>
+    <string name="tag_review_online_send">Senden</string>
+    <string name="tag_review_online_agrees">Stimmt mit dem Katalog überein</string>
+    <string name="tag_review_online_nothing">Kein passender Katalogeintrag</string>
+    <string name="tag_review_online_failed">Dienst nicht erreichbar</string>
+    <plurals name="tag_review_online_found">
+        <item quantity="one">%d Vorschlag</item>
+        <item quantity="other">%d Vorschläge</item>
+    </plurals>
 </resources>

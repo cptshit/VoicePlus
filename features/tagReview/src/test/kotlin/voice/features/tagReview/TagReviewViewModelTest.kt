@@ -34,7 +34,7 @@ class TagReviewViewModelTest {
   private val findingRepo = mockk<TagFindingRepo>(relaxed = true)
   private val contentRepo = mockk<BookContentRepo>(relaxed = true)
   private val numberRepo = mockk<EpisodeNumberRepo>(relaxed = true)
-  private val model = TagReviewViewModel(findingRepo, contentRepo, numberRepo, mockk(relaxed = true))
+  private val model = TagReviewViewModel(findingRepo, contentRepo, numberRepo, mockk(relaxed = true), mockk(relaxed = true))
 
   @Before
   fun setUp() {

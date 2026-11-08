@@ -3,7 +3,9 @@ package voice.features.tagReview
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
@@ -15,15 +17,25 @@ import voice.core.data.hoerspiel.TagFinding
 import voice.core.data.hoerspiel.TagFindingField
 import voice.core.data.hoerspiel.TagFindingRepo
 import voice.core.data.repo.BookContentRepo
+import voice.core.logging.api.Logger
+import voice.features.tagReview.lookup.LookupResult
+import voice.features.tagReview.lookup.OnlineLookup
+import voice.features.tagReview.lookup.seriesName
 import voice.navigation.Navigator
+import kotlin.coroutines.cancellation.CancellationException
 
 @Inject
 class TagReviewViewModel(
   private val findingRepo: TagFindingRepo,
   private val contentRepo: BookContentRepo,
   private val episodeNumberRepo: EpisodeNumberRepo,
+  private val onlineLookup: OnlineLookup,
   private val navigator: Navigator,
 ) : RetainedViewModel() {
+
+  /** Progress and outcome of "Compare online" per series name. */
+  internal var lookups: Map<String, LookupStatus> by mutableStateOf(emptyMap())
+    private set
 
   @Composable
   fun viewState(): TagReviewViewState {
@@ -57,6 +69,23 @@ class TagReviewViewModel(
     }
   }
 
+  /** Asks the catalogues about [series]. The screen has already told the user what is sent. */
+  internal fun compareOnline(series: String) {
+    if (lookups[series] is LookupStatus.Running) return
+    lookups = lookups + (series to LookupStatus.Running)
+    scope.launch {
+      val result = try {
+        onlineLookup.compare(series)
+      } catch (e: CancellationException) {
+        throw e
+      } catch (e: Exception) {
+        Logger.w("Online comparison crashed: $e")
+        LookupResult.Failed
+      }
+      lookups = lookups + (series to LookupStatus.Done(result))
+    }
+  }
+
   fun ignore(finding: TagFindingItem) {
     scope.launch { findingRepo.setDismissed(finding.id, true) }
   }
@@ -69,7 +98,17 @@ class TagReviewViewModel(
 /** Series names can only be fixed in the series editor, the scanner derives them again on every scan. */
 internal val TagFindingField.canApply: Boolean get() = this != TagFindingField.Series
 
-data class TagReviewViewState(val books: List<TagReviewBook>)
+internal sealed interface LookupStatus {
+  data object Running : LookupStatus
+
+  data class Done(val result: LookupResult) : LookupStatus
+}
+
+data class TagReviewViewState(
+  val books: List<TagReviewBook>,
+  /** Series of the library that can be compared online. */
+  val series: List<String> = emptyList(),
+)
 
 data class TagReviewBook(
   val bookId: String,
@@ -93,7 +132,12 @@ internal fun tagReviewViewState(
   contents: List<BookContent>,
 ): TagReviewViewState {
   val names = contents.filter { it.isActive }.associate { it.id.value to it.name }
+  val series = contents.filter { it.isActive }.mapNotNull { it.seriesName }
+    .groupingBy { it.lowercase() }.eachCount().filterValues { it >= 2 }.keys
+    .mapNotNull { key -> contents.firstOrNull { it.isActive && it.seriesName?.lowercase() == key }?.seriesName }
+    .sortedBy { it.lowercase() }
   return TagReviewViewState(
+    series = series,
     books = findings.filter { !it.dismissed && it.bookId in names }
       .groupBy { it.bookId }
       .map { (bookId, items) ->

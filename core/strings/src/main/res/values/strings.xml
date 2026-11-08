@@ -555,4 +555,17 @@
     <string name="tag_review_source_local">your library</string>
     <string name="tag_review_source_musicbrainz">MusicBrainz</string>
     <string name="tag_review_source_itunes">iTunes</string>
+    <string name="tag_review_online_title">Compare online</string>
+    <string name="tag_review_online_hint">Asks MusicBrainz (for audiobooks also iTunes) about the episodes of a series. Only the series name is sent, and only when you tap. Suggestions appear below; nothing is applied automatically.</string>
+    <string name="tag_review_online_button">Compare</string>
+    <string name="tag_review_online_confirm_title">Send series name?</string>
+    <string name="tag_review_online_confirm_text">\"%1$s\" is sent to MusicBrainz. If it has nothing suitable, the name is also sent to the iTunes Search API. Nothing else leaves your device, and your audio files stay unchanged.</string>
+    <string name="tag_review_online_send">Send</string>
+    <string name="tag_review_online_agrees">Matches the catalogue</string>
+    <string name="tag_review_online_nothing">No suitable catalogue entry</string>
+    <string name="tag_review_online_failed">Could not reach the service</string>
+    <plurals name="tag_review_online_found">
+        <item quantity="one">%d suggestion</item>
+        <item quantity="other">%d suggestions</item>
+    </plurals>
 </resources>

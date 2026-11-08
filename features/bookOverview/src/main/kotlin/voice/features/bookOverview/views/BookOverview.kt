@@ -310,6 +310,7 @@ fun BookOverviewScreen(
           onSearch = { bookOverviewViewModel.onSearchActiveChange(true) },
           onSettings = bookOverviewViewModel::onSettingsClick,
           onImport = bookOverviewViewModel::onBookFolderClick,
+          onTagReview = bookOverviewViewModel::onTagReviewClick,
           onAddToSeries = {
             seriesViewModel.create(shelfViewModel.selected.toList())
             shelfViewModel.cancelSelection()

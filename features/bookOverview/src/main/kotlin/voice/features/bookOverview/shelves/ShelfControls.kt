@@ -76,6 +76,7 @@ internal fun ShelfLibraryBar(
   onSettings: () -> Unit,
   onImport: () -> Unit,
   onAddToSeries: () -> Unit,
+  onTagReview: () -> Unit = {},
 ) {
   var menu by remember { mutableStateOf(false) }
   Column {
@@ -171,6 +172,7 @@ internal fun ShelfLibraryBar(
                 Text(stringResource(StringsR.string.library_organise))
               }, onClick = action(model::beginOrganising))
               DropdownMenuItem(text = { Text(stringResource(StringsR.string.series_add_books)) }, onClick = action(onImport))
+              DropdownMenuItem(text = { Text(stringResource(StringsR.string.tag_review)) }, onClick = action(onTagReview))
               DropdownMenuItem(text = { Text(stringResource(StringsR.string.action_settings)) }, onClick = action(onSettings))
             }
           }
