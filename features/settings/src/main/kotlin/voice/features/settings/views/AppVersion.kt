@@ -37,11 +37,19 @@ internal fun AppVersion(
     },
     headlineContent = { Text(text = stringResource(StringsR.string.pref_app_version)) },
     supportingContent = {
-      Text(
-        text = "Based on Voice by Paul Woitaschek",
-        color = LocalContentColor.current.copy(alpha = 0.7F),
-        style = MaterialTheme.typography.bodySmall,
-      )
+      Column {
+        Text(
+          text = "Based on Voice by Paul Woitaschek",
+          color = LocalContentColor.current.copy(alpha = 0.7F),
+          style = MaterialTheme.typography.bodySmall,
+        )
+        // The licence requires naming the fork's origin.
+        Text(
+          text = stringResource(StringsR.string.app_origin_notice),
+          color = LocalContentColor.current.copy(alpha = 0.7F),
+          style = MaterialTheme.typography.bodySmall,
+        )
+      }
     },
     trailingContent = {
       Text(

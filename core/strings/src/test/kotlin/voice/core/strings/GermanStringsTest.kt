@@ -39,6 +39,33 @@ class GermanStringsTest {
     it.value.replace(Regex("^%\\d+\\$"), "%")
   }.sorted().toList()
 
+  /** Names the origin of the fork on purpose; the licence asks for it. */
+  private val originNotice = "app_origin_notice"
+
+  @Test
+  fun noUserTextStillUsesTheOldAppName() {
+    val old = Regex("VoicePlus")
+    (english + german).entries
+      .filter { it.key != originNotice }
+      .filter { (_, entry) -> entry.texts.any { old.containsMatchIn(it) } }
+      .map { it.key }.shouldBeEmpty()
+  }
+
+  @Test
+  fun germanTextsDoNotCallTheAppVoice() {
+    val voice = Regex("\\bVoice\\b")
+    german.filter { it.key != originNotice }
+      .filter { (_, entry) -> entry.texts.any { voice.containsMatchIn(it) } }
+      .map { it.key }.shouldBeEmpty()
+  }
+
+  @Test
+  fun theOriginNoticeNamesTheFork() {
+    german.getValue(originNotice).texts.single().let {
+      check("Folgenreich" in it && "VoicePlus" in it && "Paul Woitaschek" in it && "GPL-3.0" in it)
+    }
+  }
+
   @Test
   fun everyEnglishStringHasAGermanOne() {
     english.keys.filter { it !in german }.shouldBeEmpty()
