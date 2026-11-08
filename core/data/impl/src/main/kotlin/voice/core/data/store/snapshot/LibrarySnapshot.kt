@@ -39,6 +39,8 @@ internal data class LibrarySnapshot(
   // App settings worth carrying across a wipe, each JSON-encoded by SettingsSnapshotter.
   val settings: Map<String, String> = emptyMap(),
   val organisation: LibraryOrganisation? = null,
+  // Episode numbers the user corrected (book id -> number), kept across re-scans by the scanner.
+  val episodeNumbers: Map<String, Int> = emptyMap(),
 ) {
   fun activeIds(): Set<String> = books.filter { it.isActive }.map { it.id }.toSet()
 
@@ -53,7 +55,8 @@ internal data class LibrarySnapshot(
     // v5 adds the user-chosen order within a manual series group.
     // v6 adds home shelves, stable series identity and independent manual/shelf ordering.
     // v7 preserves whether the user explicitly edited a book title.
-    const val SCHEMA_VERSION = 7
+    // v8 adds episode numbers corrected by the user.
+    const val SCHEMA_VERSION = 8
   }
 }
 

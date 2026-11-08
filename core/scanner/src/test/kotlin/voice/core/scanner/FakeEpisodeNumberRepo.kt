@@ -9,6 +9,8 @@ internal class FakeEpisodeNumberRepo : EpisodeNumberRepo {
 
   override suspend fun get(bookId: BookId): Int? = numbers[bookId]
 
+  override suspend fun all(): Map<BookId, Int> = numbers.toMap()
+
   override suspend fun set(
     bookId: BookId,
     number: Int?,

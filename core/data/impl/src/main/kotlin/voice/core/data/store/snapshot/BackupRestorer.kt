@@ -7,6 +7,8 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.first
 import voice.core.data.BookContent
+import voice.core.data.BookId
+import voice.core.data.hoerspiel.EpisodeNumberRepo
 import voice.core.data.repo.BookContentRepo
 import voice.core.data.repo.internals.dao.BookCharacterDao
 import voice.core.data.repo.internals.dao.BookContentDao
@@ -39,6 +41,7 @@ internal class BackupRestorer(
   private val settingsSnapshotter: SettingsSnapshotter,
   private val restoreGate: RestoreGate,
   private val organisationDao: LibraryOrganisationDao,
+  private val episodeNumberRepo: EpisodeNumberRepo,
 ) {
 
   suspend fun restoreIfNeeded() {
@@ -164,6 +167,8 @@ internal class BackupRestorer(
       }
       organisationDao.restore(snapshot, bookContentDao.all().associate { it.id.value to it.id.value })
     }
+    // Own database, so outside the transaction; a failure here must not undo the restored books.
+    snapshot.episodeNumbers.filterKeys(::included).forEach { (id, number) -> episodeNumberRepo.set(BookId(id), number) }
     return written
   }
 }

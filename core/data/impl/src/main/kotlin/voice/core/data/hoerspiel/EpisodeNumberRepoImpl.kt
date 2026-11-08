@@ -9,6 +9,8 @@ public class EpisodeNumberRepoImpl(private val dao: EpisodeNumberOverrideDao) : 
 
   override suspend fun get(bookId: BookId): Int? = dao.get(bookId.value)
 
+  override suspend fun all(): Map<BookId, Int> = dao.all().associate { BookId(it.bookId) to it.number }
+
   override suspend fun set(
     bookId: BookId,
     number: Int?,
