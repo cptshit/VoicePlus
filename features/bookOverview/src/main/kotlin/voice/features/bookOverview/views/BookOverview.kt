@@ -419,6 +419,9 @@ fun BookOverviewScreen(
       onSave = { seriesViewModel.save() },
       onUngroup = { seriesViewModel.save(ungroup = true) },
       onShelfChange = seriesViewModel::selectShelf,
+      bulk = seriesViewModel.bulk,
+      onBulkChange = seriesViewModel::bulkChanged,
+      onBulkApply = seriesViewModel::applyBulk,
     )
   }
   val deleteBookViewState = deleteBookViewModel.state.value

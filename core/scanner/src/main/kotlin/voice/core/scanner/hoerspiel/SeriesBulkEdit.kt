@@ -6,7 +6,6 @@ import voice.core.data.BookId
 public data class EpisodeDraft(
   val id: BookId,
   val name: String,
-  val part: String?,
 )
 
 /** One step of a bulk correction. Rules are applied in order to every episode. */
@@ -24,20 +23,19 @@ public sealed interface BulkRule {
 
   /** Collapses runs of whitespace and trims the ends of titles. */
   public data object TidyWhitespace : BulkRule
-
-  /** Numbers the episodes [start], [start] + 1, … in their current order. */
-  public data class Renumber(val start: Int = 1) : BulkRule
 }
 
-/** Old and new value of one episode; [changed] is false when the rules left it alone. */
+/**
+ * Old and new title of one episode; [changed] is false when the rules left it alone. Only titles
+ * are corrected: the episode number is re-read from tags and file names on every scan, so a
+ * manual number would not survive a re-scan.
+ */
 public data class EpisodeChange(
   val id: BookId,
   val oldName: String,
   val newName: String,
-  val oldPart: String?,
-  val newPart: String?,
 ) {
-  val changed: Boolean get() = oldName != newName || oldPart != newPart
+  val changed: Boolean get() = oldName != newName
 }
 
 /**
@@ -51,7 +49,7 @@ public fun previewBulkEdit(
   var current = episodes
   rules.forEach { rule -> current = current.applyRule(rule) }
   return episodes.zip(current) { old, new ->
-    EpisodeChange(old.id, old.name, new.name, old.part, new.part)
+    EpisodeChange(old.id, old.name, new.name)
   }
 }
 
@@ -63,7 +61,6 @@ private fun List<EpisodeDraft>.applyRule(rule: BulkRule): List<EpisodeDraft> = w
   }
   is BulkRule.StripPrefix -> map { it.withName(it.name.stripPrefix(rule.prefix)) }
   BulkRule.TidyWhitespace -> map { it.withName(it.name.trim().replace(Regex("\\s+"), " ")) }
-  is BulkRule.Renumber -> mapIndexed { index, episode -> episode.copy(part = (rule.start + index).toString()) }
 }
 
 private fun EpisodeDraft.withName(new: String): EpisodeDraft = if (new.isBlank()) this else copy(name = new)

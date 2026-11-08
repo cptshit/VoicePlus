@@ -408,6 +408,19 @@
   <string name="series_manage">Edit series</string>
   <string name="series_name">Series name</string>
   <string name="series_save">Save series</string>
+  <string name="series_correct">Correct titles</string>
+  <string name="series_correct_prefix">Remove from start of titles</string>
+  <string name="series_correct_find">Find</string>
+  <string name="series_correct_replace">Replace with</string>
+  <string name="series_correct_tidy">Tidy up spaces</string>
+  <string name="series_correct_preview">Preview</string>
+  <string name="series_correct_none">No titles would change</string>
+  <string name="series_correct_apply">Apply</string>
+  <string name="series_correct_error">Couldn’t apply the changes. Please try again.</string>
+  <plurals name="series_correct_count">
+    <item quantity="one">%d title changes</item>
+    <item quantity="other">%d titles change</item>
+  </plurals>
   <string name="series_ungroup">Ungroup books</string>
     <string name="series_manage_all">Edit entire series</string>
     <string name="series_volume">Book %1$s</string>

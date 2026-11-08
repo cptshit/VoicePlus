@@ -18,6 +18,10 @@ import voice.core.data.LibraryOrganisation
 import voice.core.data.repo.BookContentRepo
 import voice.core.data.repo.LibraryOrganisationRepo
 import voice.core.logging.api.Logger
+import voice.core.scanner.hoerspiel.BulkRule
+import voice.core.scanner.hoerspiel.EpisodeChange
+import voice.core.scanner.hoerspiel.EpisodeDraft
+import voice.core.scanner.hoerspiel.previewBulkEdit
 import voice.features.bookOverview.bottomSheet.BottomSheetItem
 import voice.features.bookOverview.bottomSheet.BottomSheetItemViewModel
 import voice.features.bookOverview.di.BookOverviewScope
@@ -48,6 +52,26 @@ internal data class SeriesEditorState(
   }
 }
 
+/** Inputs of the bulk title correction in the series editor. */
+internal data class SeriesBulkState(
+  val prefix: String = "",
+  val find: String = "",
+  val replacement: String = "",
+  val tidy: Boolean = false,
+  val applying: Boolean = false,
+  val failed: Boolean = false,
+) {
+  val rules: List<BulkRule> get() = buildList {
+    if (prefix.isNotBlank()) add(BulkRule.StripPrefix(prefix))
+    if (find.isNotEmpty()) add(BulkRule.Replace(find, replacement))
+    if (tidy) add(BulkRule.TidyWhitespace)
+  }
+}
+
+/** What the bulk correction would do to the books currently in the series; changes nothing. */
+internal fun SeriesEditorState.bulkPreview(bulk: SeriesBulkState): List<EpisodeChange> =
+  previewBulkEdit(selectedBooks.map { EpisodeDraft(it.id, it.name) }, bulk.rules)
+
 private val seriesNumberOrder = compareBy<BookContent, String?>(nullsLast(NaturalOrderComparator.stringComparator)) {
   it.part?.takeIf(String::isNotBlank)
 }
@@ -64,6 +88,8 @@ class SeriesViewModel(
 ) : RetainedViewModel(),
   BottomSheetItemViewModel {
   internal var state: SeriesEditorState? by mutableStateOf(null)
+    private set
+  internal var bulk: SeriesBulkState by mutableStateOf(SeriesBulkState())
     private set
   private val noticeChannel = Channel<ShelfNotice>(Channel.BUFFERED)
   internal val notices = noticeChannel.receiveAsFlow()
@@ -131,7 +157,40 @@ class SeriesViewModel(
   }
 
   internal fun dismiss() {
-    if (state?.saving != true) state = null
+    if (state?.saving != true) {
+      state = null
+      bulk = SeriesBulkState()
+    }
+  }
+
+  internal fun bulkChanged(transform: (SeriesBulkState) -> SeriesBulkState) {
+    if (!bulk.applying) bulk = transform(bulk).copy(failed = false)
+  }
+
+  /** Writes the previewed titles to the app database; the audio files stay untouched. */
+  internal fun applyBulk() {
+    val current = state ?: return
+    val inputs = bulk
+    if (inputs.applying) return
+    val changes = current.bulkPreview(inputs).filter { it.changed }
+    if (changes.isEmpty()) return
+    bulk = inputs.copy(applying = true, failed = false)
+    scope.launch {
+      try {
+        changes.forEach { change ->
+          // Keep the title across re-scans, like a title edited in "Edit book".
+          contentRepo.update(change.id) { it.copy(name = change.newName, nameOverridden = true) }
+        }
+        val names = changes.associate { it.id to it.newName }
+        state = state?.copy(books = state?.books.orEmpty().map { book -> names[book.id]?.let { book.copy(name = it) } ?: book })
+        bulk = SeriesBulkState()
+      } catch (e: CancellationException) {
+        throw e
+      } catch (e: Exception) {
+        Logger.w("Could not apply bulk title correction: $e")
+        bulk = inputs.copy(applying = false, failed = true)
+      }
+    }
   }
 
   internal fun nameChanged(name: String) {

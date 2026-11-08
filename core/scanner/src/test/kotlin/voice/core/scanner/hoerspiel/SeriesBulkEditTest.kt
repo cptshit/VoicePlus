@@ -10,10 +10,7 @@ import voice.core.data.BookId
 @RunWith(AndroidJUnit4::class)
 class SeriesBulkEditTest {
 
-  private fun draft(
-    name: String,
-    part: String? = null,
-  ) = EpisodeDraft(BookId(Uri.parse("file:///$name")), name, part)
+  private fun draft(name: String) = EpisodeDraft(BookId(Uri.parse("file:///$name")), name)
 
   private fun names(
     episodes: List<EpisodeDraft>,
@@ -52,12 +49,6 @@ class SeriesBulkEditTest {
   }
 
   @Test
-  fun renumberFollowsCurrentOrder() {
-    previewBulkEdit(listOf(draft("A", "7"), draft("B"), draft("C", "3")), listOf(BulkRule.Renumber(start = 10)))
-      .map { it.newPart } shouldBe listOf("10", "11", "12")
-  }
-
-  @Test
   fun rulesRunInOrder() {
     names(
       listOf(draft("Gabriel Burns -  Die   Brut")),
@@ -68,7 +59,7 @@ class SeriesBulkEditTest {
 
   @Test
   fun changedIsFalseWhenNothingMatches() {
-    val result = previewBulkEdit(listOf(draft("Die Brut", "2")), listOf(BulkRule.Replace("xyz", "abc")))
+    val result = previewBulkEdit(listOf(draft("Die Brut")), listOf(BulkRule.Replace("xyz", "abc")))
     result.single().changed shouldBe false
   }
 }

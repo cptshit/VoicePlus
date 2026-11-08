@@ -182,6 +182,19 @@
     <string name="lockscreen_slider_audiobook">Ganze Folge</string>
     <string name="pref_ignore_file_tags_info">Leitet Folgen- und Kapitelnamen aus Ordner- und Dateinamen ab und ignoriert eingebettete ID3-/Metadaten-Tags. Cover aus Bilddateien im Ordner werden weiter verwendet. Dauer und Kapitelmarken werden immer gelesen. Umschalten durchsucht Deine Bibliothek neu und aktualisiert vorhandene Folgen.</string>
     <string name="ignore_file_tags_confirm_message">Folgen- und Kapitelnamen werden neu aus %1$s abgeleitet. Deine Audiodateien, Hörfortschritte und Lesezeichen bleiben unverändert.</string>
+    <string name="series_correct">Titel korrigieren</string>
+    <string name="series_correct_prefix">Am Titelanfang entfernen</string>
+    <string name="series_correct_find">Suchen</string>
+    <string name="series_correct_replace">Ersetzen durch</string>
+    <string name="series_correct_tidy">Leerzeichen bereinigen</string>
+    <string name="series_correct_preview">Vorschau</string>
+    <string name="series_correct_none">Kein Titel würde sich ändern</string>
+    <string name="series_correct_apply">Übernehmen</string>
+    <string name="series_correct_error">Die Änderungen konnten nicht übernommen werden. Bitte versuche es erneut.</string>
+    <plurals name="series_correct_count">
+        <item quantity="one">%d Titel ändert sich</item>
+        <item quantity="other">%d Titel ändern sich</item>
+    </plurals>
     <string name="series_ungroup">Gruppierung aufheben</string>
     <string name="series_search_books">Folgen suchen</string>
     <string name="series_add_books">Folgen hinzufügen</string>
