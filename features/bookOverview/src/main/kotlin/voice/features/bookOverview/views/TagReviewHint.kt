@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import voice.core.ui.VoiceTheme
 import voice.core.strings.R as StringsR
 
 /** Points to the "Check tags" screen when episodes were tagged inconsistently. */
@@ -31,15 +32,15 @@ internal fun TagReviewHint(
   Row(
     modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp)
       .height(IntrinsicSize.Min)
-      .background(MaterialTheme.colorScheme.tertiaryContainer, MaterialTheme.shapes.small),
+      .background(VoiceTheme.extraColors.noteBackground, MaterialTheme.shapes.small),
     verticalAlignment = Alignment.CenterVertically,
   ) {
-    Box(Modifier.width(4.dp).fillMaxHeight().background(MaterialTheme.colorScheme.tertiary))
+    Box(Modifier.width(4.dp).fillMaxHeight().background(VoiceTheme.extraColors.noteBorder))
     Column(Modifier.weight(1f).padding(start = 12.dp, top = 8.dp, bottom = 8.dp)) {
       Text(
         pluralStringResource(StringsR.plurals.tag_review_hint_count, count, count),
         style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onTertiaryContainer,
+        color = VoiceTheme.extraColors.noteText,
       )
     }
     TextButton(onClick = onClick) { Text(stringResource(StringsR.string.tag_review_open)) }
