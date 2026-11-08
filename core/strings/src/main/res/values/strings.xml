@@ -546,8 +546,8 @@
   <string name="series_section_next">Up next</string>
   <string name="series_section_heard">Heard</string>
   <string name="series_episode_label">Episode</string>
-  <string name="series_gap_one">Episode %d is missing</string>
-  <string name="series_gap_range">Episodes %1$d–%2$d are missing</string>
+  <string name="series_gap_one">Missing: episode %d</string>
+  <string name="series_gap_range">Missing: episodes %1$d–%2$d</string>
     <string name="library_in_progress">In progress</string>
     <string name="library_in_progress_filter">In progress on shelves</string>
     <string name="library_continue_listening">Continue listening</string>

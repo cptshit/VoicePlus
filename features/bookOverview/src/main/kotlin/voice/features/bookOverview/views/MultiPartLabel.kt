@@ -2,7 +2,7 @@ package voice.features.bookOverview.views
 
 import android.content.res.Resources
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import voice.features.bookOverview.overview.BookOverviewItemViewState
 import voice.core.strings.R as StringsR
 
@@ -27,5 +27,5 @@ internal fun multiPartLabel(
 
 @Composable
 internal fun BookOverviewItemViewState.multiPartLabel(): String? {
-  return multiPartLabel(LocalContext.current.resources, titlePart, titlePartCount)
+  return multiPartLabel(LocalResources.current, titlePart, titlePartCount)
 }
