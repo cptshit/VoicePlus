@@ -45,12 +45,15 @@ class OnlineLookup(
 ) {
 
   @IgnorableReturnValue
-  suspend fun compare(series: String): LookupResult {
+  suspend fun compare(
+    series: String,
+    refresh: Boolean = false,
+  ): LookupResult {
     val books = contentRepo.all().filter { it.isActive && it.seriesName.equals(series, ignoreCase = true) }
     if (books.isEmpty()) return LookupResult.NothingSuitable
     val authors = books.mapNotNull { it.author?.trim()?.takeIf(String::isNotEmpty) }.toSet()
     val catalog = try {
-      cached(series) ?: fetch(series, authors)
+      (if (refresh) null else cached(series)) ?: fetch(series, authors)
     } catch (e: CancellationException) {
       throw e
     } catch (e: IOException) {

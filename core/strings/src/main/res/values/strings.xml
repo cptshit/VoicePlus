@@ -569,4 +569,5 @@
         <item quantity="other">%d suggestions</item>
     </plurals>
     <string name="app_origin_notice">Folgenreich is based on VoicePlus and Voice by Paul Woitaschek (GPL-3.0)</string>
+    <string name="tag_review_online_again">Ask again</string>
 </resources>
