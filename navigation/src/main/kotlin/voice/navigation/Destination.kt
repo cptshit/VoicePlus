@@ -25,11 +25,6 @@ sealed interface Destination {
   }
 
   @Serializable
-  data object HiddenBooks : Compose {
-    override val trackingName: String get() = "HiddenBooks"
-  }
-
-  @Serializable
   data object TagReview : Compose {
     override val trackingName: String get() = "TagReview"
   }

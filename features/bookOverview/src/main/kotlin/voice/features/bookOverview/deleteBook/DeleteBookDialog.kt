@@ -80,15 +80,6 @@ internal fun DeleteBookDialog(
           color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
 
-        if (!viewState.alsoDeleteFiles) {
-          Spacer(modifier = Modifier.height(12.dp))
-          Text(
-            text = stringResource(StringsR.string.remove_book_restore_hint),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.primary,
-          )
-        }
-
         Spacer(modifier = Modifier.height(8.dp))
         Row(
           verticalAlignment = Alignment.CenterVertically,

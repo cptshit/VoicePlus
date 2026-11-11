@@ -160,9 +160,6 @@
     <string name="remove_book_description">Diese Folge wird in Deiner Bibliothek ausgeblendet. Deine Audiodateien werden nicht gelöscht.</string>
     <string name="remove_book_description_delete">Diese Folge wird in Deiner Bibliothek ausgeblendet und ihr Ordner wird endgültig vom Speicher gelöscht, einschließlich Cover und aller anderen Dateien darin.</string>
     <string name="remove_book_delete_failed">Die Folge wurde aus Deiner Bibliothek entfernt, aber ihre Dateien konnten nicht gelöscht werden.</string>
-    <string name="remove_book_restore_hint">Ausgeblendete Folgen kannst Du unter Einstellungen → Ausgeblendete Folgen wiederherstellen.</string>
-    <string name="hidden_books">Ausgeblendete Folgen</string>
-    <string name="hidden_books_empty">Keine ausgeblendeten Folgen. Folgen, die Du aus Deiner Bibliothek entfernst, erscheinen hier.</string>
     <string name="backup_restore_unmatched_hint">Gib den Hörspiel-Ordner erneut frei und stelle noch einmal wieder her, oder diese Folgen wurden verschoben oder geändert.</string>
     <string name="backup_reason_single_file">Einzeldatei-Folge nicht automatisch wiederhergestellt</string>
     <string name="bookmark_deleted">Lesezeichen gelöscht</string>
@@ -296,8 +293,6 @@
     <string name="remove_book_and_delete">Entfernen und Dateien löschen</string>
     <string name="remove_book_also_delete_files">Audiodateien auch vom Speicher löschen</string>
     <string name="open_source_licenses">Open-Source-Lizenzen</string>
-    <string name="hidden_books_restore">Wiederherstellen</string>
-    <string name="hidden_books_restore_all">Alle wiederherstellen</string>
     <string name="backup_title">Sichern und Wiederherstellen</string>
     <string name="backup_enabled">Sicherungen sind aktiv</string>
     <string name="backup_folder">Sicherungsordner</string>

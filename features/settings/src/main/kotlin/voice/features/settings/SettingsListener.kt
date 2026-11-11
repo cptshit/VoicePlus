@@ -27,7 +27,6 @@ interface SettingsListener {
   fun onAppVersionClick()
 
   fun openListeningStats()
-  fun openHiddenBooks()
   fun openBackup()
   fun openLicenses()
   fun openPrivacyPolicy()
@@ -74,7 +73,6 @@ interface SettingsListener {
       override fun openFolderPicker() {}
       override fun onAppVersionClick() {}
       override fun openListeningStats() {}
-      override fun openHiddenBooks() {}
       override fun openBackup() {}
       override fun openLicenses() {}
       override fun openPrivacyPolicy() {}

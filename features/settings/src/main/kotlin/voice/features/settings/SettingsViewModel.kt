@@ -242,10 +242,6 @@ class SettingsViewModel(
     navigator.goTo(Destination.ListeningStatistics)
   }
 
-  override fun openHiddenBooks() {
-    navigator.goTo(Destination.HiddenBooks)
-  }
-
   override fun openBackup() {
     navigator.goTo(Destination.BackupRestore)
   }

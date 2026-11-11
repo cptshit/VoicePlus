@@ -28,13 +28,8 @@
     <string name="remove_book_delete_failed">The book was removed from your library, but its files could not be deleted.</string>
     <string name="remove_book_confirm">Remove</string>
     <string name="remove_book_and_delete">Remove &amp; Delete Files</string>
-    <string name="remove_book_restore_hint">You can restore hidden books in Settings → Hidden Books.</string>
     <string name="remove_book_also_delete_files">Also delete audio files from storage</string>
     <string name="open_source_licenses">Open Source Licenses</string>
-    <string name="hidden_books">Hidden Books</string>
-    <string name="hidden_books_empty">No hidden books. Books you remove from your library will appear here.</string>
-    <string name="hidden_books_restore">Restore</string>
-    <string name="hidden_books_restore_all">Restore All</string>
     <string name="backup_title">Backup &amp; Restore</string>
     <string name="backup_enabled">Backups are on</string>
     <string name="backup_folder">Backup folder</string>
