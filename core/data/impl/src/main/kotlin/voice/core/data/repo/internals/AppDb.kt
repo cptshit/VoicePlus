@@ -11,8 +11,6 @@ import voice.core.data.ChapterNameOverride
 import voice.core.data.LibraryPlacement
 import voice.core.data.LibrarySeries
 import voice.core.data.LibraryShelf
-import voice.core.data.ListeningEvent
-import voice.core.data.ListeningSession
 import voice.core.data.RecentBookSearch
 import voice.core.data.repo.internals.dao.BookContentDao
 import voice.core.data.repo.internals.dao.BookSearchFts
@@ -20,13 +18,12 @@ import voice.core.data.repo.internals.dao.BookmarkDao
 import voice.core.data.repo.internals.dao.ChapterDao
 import voice.core.data.repo.internals.dao.ChapterNameOverrideDao
 import voice.core.data.repo.internals.dao.LibraryOrganisationDao
-import voice.core.data.repo.internals.dao.ListeningEventDao
-import voice.core.data.repo.internals.dao.ListeningSessionDao
 import voice.core.data.repo.internals.dao.RecentBookSearchDao
 import voice.core.data.repo.internals.migrations.Migration56
 import voice.core.data.repo.internals.migrations.Migration68
 import voice.core.data.repo.internals.migrations.Migration69
 import voice.core.data.repo.internals.migrations.Migration70
+import voice.core.data.repo.internals.migrations.Migration71
 
 @Database(
   entities = [
@@ -35,8 +32,6 @@ import voice.core.data.repo.internals.migrations.Migration70
     Bookmark::class,
     BookSearchFts::class,
     RecentBookSearch::class,
-    ListeningSession::class,
-    ListeningEvent::class,
     ChapterNameOverride::class,
     LibraryShelf::class,
     LibrarySeries::class,
@@ -63,6 +58,7 @@ import voice.core.data.repo.internals.migrations.Migration70
     AutoMigration(from = 68, to = 69, spec = Migration68::class),
     AutoMigration(from = 69, to = 70, spec = Migration69::class),
     AutoMigration(from = 70, to = 71, spec = Migration70::class),
+    AutoMigration(from = 71, to = 72, spec = Migration71::class),
   ],
 )
 @TypeConverters(Converters::class)
@@ -71,15 +67,13 @@ public abstract class AppDb : RoomDatabase() {
   public abstract fun chapterDao(): ChapterDao
   public abstract fun bookContentDao(): BookContentDao
   public abstract fun bookmarkDao(): BookmarkDao
-  public abstract fun listeningSessionDao(): ListeningSessionDao
-  public abstract fun listeningEventDao(): ListeningEventDao
 
   public abstract fun recentBookSearchDao(): RecentBookSearchDao
   public abstract fun chapterNameOverrideDao(): ChapterNameOverrideDao
   public abstract fun libraryOrganisationDao(): LibraryOrganisationDao
 
   internal companion object {
-    const val VERSION = 71
+    const val VERSION = 72
     const val DATABASE_NAME = "autoBookDB"
   }
 }

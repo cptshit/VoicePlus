@@ -174,7 +174,6 @@ class VoicePlayerTest {
     globalVolumeGainStore = globalVolumeGainStore,
     sleepTimer = mockk(relaxed = true),
     intentHolder = playbackIntentHolder,
-    listeningEventRecorder = mockk(relaxed = true),
     chapterMarkChangeNotifier = chapterMarkChangeNotifier,
   )
 

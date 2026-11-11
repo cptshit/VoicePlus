@@ -169,7 +169,6 @@ class BackupRulesTest {
       "datastore/librarySnapshot1",
       "datastore/librarySnapshot2",
       "datastore/snapshotBackupState",
-      "datastore/openListeningSession",
     )
   }
 }

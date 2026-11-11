@@ -6,7 +6,6 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.createGraphFactory
 import kotlinx.coroutines.runBlocking
 import voice.core.common.rootGraph
-import voice.core.data.InterruptedSessionFinalizer
 import voice.core.data.store.snapshot.LibrarySnapshotService
 import voice.core.initializer.AppInitializer
 
@@ -19,9 +18,6 @@ open class App : Application() {
   @Inject
   lateinit var librarySnapshotService: LibrarySnapshotService
 
-  @Inject
-  lateinit var interruptedSessionFinalizer: InterruptedSessionFinalizer
-
   override fun onCreate() {
     super.onCreate()
 
@@ -31,9 +27,7 @@ open class App : Application() {
       }
 
     runBlocking {
-      // Finalize a session the dead process couldn't close, then restore-if-wiped. Both run before
-      // the snapshot writer starts observing, so neither races a fresh snapshot write.
-      interruptedSessionFinalizer.finalizeIfNeeded()
+      // Restore-if-wiped runs before the snapshot writer starts observing, so it cannot race a fresh snapshot write.
       librarySnapshotService.restoreIfNeeded()
     }
     librarySnapshotService.start()

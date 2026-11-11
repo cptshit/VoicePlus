@@ -238,10 +238,6 @@ class SettingsViewModel(
 
   override fun onAppVersionClick() {}
 
-  override fun openListeningStats() {
-    navigator.goTo(Destination.ListeningStatistics)
-  }
-
   override fun openBackup() {
     navigator.goTo(Destination.BackupRestore)
   }

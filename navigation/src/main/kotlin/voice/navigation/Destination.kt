@@ -20,11 +20,6 @@ sealed interface Destination {
   }
 
   @Serializable
-  data class ListeningLog(val bookId: BookId) : Compose {
-    override val trackingName: String get() = "ListeningLog"
-  }
-
-  @Serializable
   data object TagReview : Compose {
     override val trackingName: String get() = "TagReview"
   }
@@ -32,11 +27,6 @@ sealed interface Destination {
   @Serializable
   data object BackupRestore : Compose {
     override val trackingName: String get() = "BackupRestore"
-  }
-
-  @Serializable
-  data object ListeningStatistics : Compose {
-    override val trackingName: String get() = "ListeningStatistics"
   }
 
   @Serializable

@@ -78,9 +78,7 @@ class ExternalBackupBundleCodecTest {
     restored.books.single().name shouldBe "Legacy Book"
     restored.books.single().positionInChapter shouldBe 15_000
     restored.bookmarks.single().time shouldBe 5_000
-    restored.sessions shouldBe emptyList()
     restored.chapters shouldBe emptyList()
-    restored.events shouldBe emptyList()
     restored.hiddenBooks shouldBe emptySet()
     restored.settings shouldBe emptyMap()
   }
@@ -98,10 +96,8 @@ class ExternalBackupBundleCodecTest {
     restored.books.single().positionInChapter shouldBe 42_000
     restored.bookmarks.single().title shouldBe "Test Bookmark"
     restored.chapterNameOverrides.single().name shouldBe "Renamed Section"
-    restored.sessions.single().durationMs shouldBe 60_000
     restored.chapters.single().relName shouldBe "Compatibility Book/chapter-1.mp3"
     restored.chapters.single().fileSize shouldBe 0
-    restored.events.single().positionMs shouldBe 42_000
     restored.hiddenBooks shouldBe emptySet()
     restored.settings shouldBe mapOf("darkTheme" to "false", "seekTime" to "30")
   }
