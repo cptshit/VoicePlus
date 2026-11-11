@@ -469,9 +469,6 @@
     <string name="library_add_to_series">Add to series</string>
     <string name="library_add_to_shelf">Add to %1$s</string>
     <string name="library_other">Other books</string>
-    <string name="library_completed_filter">Completed on shelves</string>
-    <string name="library_not_started_filter">Not started on shelves</string>
-    <string name="library_reset">Reset</string>
     <string name="library_rename_shelf">Rename shelf</string>
     <string name="library_shelf_name">Shelf name</string>
     <string name="library_create">Create</string>
@@ -549,7 +546,6 @@
   <string name="series_gap_one">Missing: episode %d</string>
   <string name="series_gap_range">Missing: episodes %1$d–%2$d</string>
     <string name="library_in_progress">In progress</string>
-    <string name="library_in_progress_filter">In progress on shelves</string>
     <string name="library_continue_listening">Continue listening</string>
     <string name="library_continue">Play</string>
     <string name="tag_review_source_local">your library</string>
