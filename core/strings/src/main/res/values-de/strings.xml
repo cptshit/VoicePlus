@@ -274,15 +274,6 @@
         <item quantity="one">%d Vorschlag</item>
         <item quantity="other">%d Vorschläge</item>
     </plurals>
-    <string name="widget_skip_back">%d Sekunden zurück</string>
-    <string name="widget_skip_forward">%d Sekunden vor</string>
-    <string name="widget_skip_back_a11y">Zurückspulen</string>
-    <string name="widget_skip_forward_a11y">Vorspulen</string>
-    <string name="widget_compact_description">Zeigt Cover, Titel, aktuelles Kapitel und Spultasten. Die Größe lässt sich nach Wunsch ändern.</string>
-    <string name="widget_config_title">Widget-Einstellungen</string>
-    <string name="widget_config_opacity">Hintergrund-Deckkraft: %1$d%%</string>
-    <string name="widget_config_text_size">Textgröße: %1$sx</string>
-    <string name="widget_config_apply">Übernehmen</string>
     <string name="remove_book_title">Aus der Bibliothek entfernen</string>
     <string name="remove_book_confirm">Entfernen</string>
     <string name="remove_book_and_delete">Entfernen und Dateien löschen</string>
