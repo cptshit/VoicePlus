@@ -29,6 +29,8 @@ android {
 
   androidResources {
     generateLocaleConfig = true
+    // Henrik's fork: only German and English are maintained.
+    localeFilters += listOf("de", "en")
   }
 
   dependenciesInfo {
