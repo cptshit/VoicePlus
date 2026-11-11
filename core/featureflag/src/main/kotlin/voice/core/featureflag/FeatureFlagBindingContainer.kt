@@ -17,17 +17,6 @@ interface FeatureFlagBindingContainer {
 
   @Provides
   @SingleIn(AppScope::class)
-  @ReviewEnabledFeatureFlagQualifier
-  fun reviewEnabledFeatureFlag(factory: FeatureFlagFactory): FeatureFlag<Boolean> {
-    return factory.boolean(
-      key = "review_enabled",
-      description = "Shows the in-app review prompt when the review conditions are met.",
-      defaultValue = false,
-    )
-  }
-
-  @Provides
-  @SingleIn(AppScope::class)
   @UserAgentFeatureFlagQualifier
   fun userAgentFeatureFlag(factory: FeatureFlagFactory): FeatureFlag<String> {
     return factory.string(
@@ -85,9 +74,6 @@ interface FeatureFlagBindingContainer {
     )
   }
 }
-
-@Qualifier
-annotation class ReviewEnabledFeatureFlagQualifier
 
 @Qualifier
 annotation class HoerspielNormalizerFeatureFlagQualifier
