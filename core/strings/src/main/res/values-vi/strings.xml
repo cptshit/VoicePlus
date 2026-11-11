@@ -17,10 +17,6 @@
     <string name="edit_book_title">Chỉnh sửa sách</string>
     <string name="audiobook_folders_title">Thư mục Sách nói</string>
     <string name="playback_speed">Tốc độ phát</string>
-    <string name="bookmark">Đánh dấu</string>
-    <string name="bookmark_edit_title">Chỉnh sửa đánh dấu</string>
-    <string name="bookmark_edit_hint">Tên</string>
-    <string name="bookmark_added">Đánh dấu đã được thêm vào</string>
     <string name="action_settings">Tùy chọn</string>
     <plurals name="seconds">
         <item quantity="other">%dgiây</item>

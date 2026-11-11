@@ -126,9 +126,7 @@ class LibrarySessionCallbackTest {
     bookRepository = mockk(),
     doubleClickHandlerStore = MemoryDataStore(MediaButtonClickAction.SKIP_BACKWARD),
     tripleClickHandlerStore = MemoryDataStore(MediaButtonClickAction.SKIP_FORWARD),
-    bookmarkRepo = mockk(),
     intentHolder = intentHolder,
-    positionUpdater = mockk(),
     context = context,
   )
 
@@ -158,9 +156,7 @@ class LibrarySessionCallbackTest {
       bookRepository = mockk(),
       doubleClickHandlerStore = mockk(),
       tripleClickHandlerStore = mockk(),
-      bookmarkRepo = mockk(),
       intentHolder = mockk(),
-      positionUpdater = mockk(),
       context = mockk(),
     )
 

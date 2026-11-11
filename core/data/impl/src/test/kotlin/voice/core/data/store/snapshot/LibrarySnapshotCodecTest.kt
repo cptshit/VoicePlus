@@ -22,7 +22,6 @@ class LibrarySnapshotCodecTest {
       totalCount = 1,
       activeCount = 1,
       books = listOf(book("b1", true).copy(name = "Saved title").toDto().copy(nameOverridden = false)),
-      bookmarks = emptyList(),
 
       chapterNameOverrides = emptyList(),
     )
@@ -65,7 +64,6 @@ class LibrarySnapshotCodecTest {
       totalCount = 1,
       activeCount = 1,
       books = listOf(book("b1", true).copy(seriesGroup = "Manual series", seriesOrder = 3).toDto()),
-      bookmarks = emptyList(),
       chapterNameOverrides = emptyList(),
     )
     val text = json.encodeToString(LibrarySnapshot.serializer(), snap)
@@ -107,7 +105,7 @@ class LibrarySnapshotCodecTest {
       schemaVersion = LibrarySnapshot.SCHEMA_VERSION, sequence = 7, savedAtEpochMillis = 1,
       totalCount = 1, activeCount = 1,
       books = listOf(book("b1", true).toDto()),
-      bookmarks = emptyList(), chapterNameOverrides = emptyList(),
+      chapterNameOverrides = emptyList(),
       chapters = listOf(
         Chapter(ChapterId("ch-b1"), "C", 1_000, Instant.ofEpochMilli(0), listOf(MarkData(0, "m")))
           .toDto(relName = "ch-b1.mp3"),
@@ -161,7 +159,6 @@ class LibrarySnapshotCodecTest {
       totalCount = 2,
       activeCount = 1,
       books = listOf(book("b1", true).toDto(), book("b2", false).toDto()),
-      bookmarks = emptyList(),
       chapterNameOverrides = emptyList(),
     )
     snap.activeIds() shouldBe setOf("b1")

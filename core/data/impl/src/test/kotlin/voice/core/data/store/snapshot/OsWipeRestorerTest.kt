@@ -65,7 +65,6 @@ class OsWipeRestorerTest {
     contentRepo = contentRepo,
     bookContentDao = db.bookContentDao(),
     chapterDao = db.chapterDao(),
-    bookmarkDao = db.bookmarkDao(),
     chapterNameOverrideDao = db.chapterNameOverrideDao(),
     excludedBooksStore = excluded,
     appDb = db,
@@ -140,17 +139,16 @@ class OsWipeRestorerTest {
   private fun snapshotOf(
     books: List<BookContentDto>,
     chapters: List<ChapterDto>,
-    bookmarks: List<BookmarkDto> = emptyList(),
     hiddenBooks: Set<String> = emptySet(),
   ) = LibrarySnapshot(
     schemaVersion = LibrarySnapshot.SCHEMA_VERSION, dbVersion = AppDb.VERSION, sequence = 1, savedAtEpochMillis = 0,
-    totalCount = books.size, activeCount = books.size, books = books, bookmarks = bookmarks,
+    totalCount = books.size, activeCount = books.size, books = books,
     chapterNameOverrides = emptyList(), chapters = chapters,
     hiddenBooks = hiddenBooks,
   )
 
   @Test
-  fun `re-keys a wiped book onto its new URIs, restoring position and bookmark, and never cross-attaches`() = runTest {
+  fun `re-keys a wiped book onto its new URIs, restoring position, and never cross-attaches`() = runTest {
     val (dune, duneChapters) = snapshotBookOf(
       "primary:Books/Dune",
       listOf("01.mp3", "02.mp3"),
@@ -159,16 +157,7 @@ class OsWipeRestorerTest {
       lastPlayed = 5_000,
     )
     val (ghost, ghostChapters) = snapshotBookOf("primary:Books/Ghost", listOf("a.mp3"), "a.mp3", position = 10, lastPlayed = 5_000)
-    val bookmark = BookmarkDto(
-      bookId = oldUri("primary:Books/Dune"),
-      chapterId = oldUri("primary:Books/Dune/02.mp3"),
-      title = "bm",
-      time = 50,
-      addedAtEpochMillis = 1,
-      setBySleepTimer = false,
-      id = "00000000-0000-0000-0000-000000000009",
-    )
-    val snapshot = snapshotOf(listOf(dune, ghost), duneChapters + ghostChapters, bookmarks = listOf(bookmark))
+    val snapshot = snapshotOf(listOf(dune, ghost), duneChapters + ghostChapters)
 
     onScan = {
       scanInBook("primary:Books/Dune", listOf("01.mp3", "02.mp3")) // Dune re-appears under new URIs
@@ -191,15 +180,9 @@ class OsWipeRestorerTest {
     val bookRepo = BookRepositoryImpl(ChapterRepoImpl(db.chapterDao()), contentRepo)
     bookRepo.get(duneId).shouldNotBeNull()
 
-    // the bookmark followed relName 02.mp3 onto the new chapter id, under the new book id.
-    val bm = db.bookmarkDao().all().single()
-    bm.chapterId shouldBe ChapterId(newUri("primary:Books/Dune/02.mp3"))
-    bm.bookId shouldBe duneId
-
     // the unrelated scanned book was never given Dune's data.
     val other = db.bookContentDao().all().single { it.id == BookId(newUri("primary:Books/Other")) }
     other.positionInChapter shouldBe 0L
-    db.bookmarkDao().all().none { it.bookId == other.id } shouldBe true
     // Ghost was never inserted under any URI.
     db.bookContentDao().all().none { it.id.value.contains("Ghost") } shouldBe true
   }

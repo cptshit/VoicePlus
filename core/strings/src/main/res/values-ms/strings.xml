@@ -18,9 +18,6 @@
     <string name="mark_as_not_started">Tanda sebagai Belum Dimulakan Lagi</string>
     <string name="audiobook_folders_title">Folder audiobook</string>
     <string name="dialog_confirm">Tetapkan</string>
-    <string name="bookmark">Penanda</string>
-    <string name="bookmark_edit_title">Sunting penanda</string>
-    <string name="bookmark_edit_hint">Nama penanda</string>
     <string name="pick_book_cover">Muka hadapan daripada sistem fail</string>
     <string name="change_book_name">Nama</string>
     <string name="dialog_cancel">Batal</string>
@@ -30,9 +27,7 @@
     <string name="playback_speed">Kelajuan main semula</string>
     <string name="cover_search.icon_recent">Pertanyaan terkini</string>
     <string name="cover_search.author">Penulis</string>
-    <string name="bookmark_added">Penanda ditambah</string>
     <string name="action_settings">Pilihan</string>
-    <string name="bookmark_just_now">Baharu tadi</string>
     <string name="book_header_current">Sekarang</string>
     <string name="more">Lain-lain</string>
     <string name="pref_help_translating">Bantu menterjemah Voice</string>

@@ -1,7 +1,6 @@
 package voice.core.data.store.snapshot.rekey
 
 import voice.core.data.BookContent
-import voice.core.data.Bookmark
 import voice.core.data.ChapterId
 import voice.core.data.ChapterNameOverride
 import java.time.Instant
@@ -171,19 +170,6 @@ internal object RestoreReKeyer {
       )
     }.getOrNull() ?: return null
 
-    val bookmarks = snap.bookmarks.mapNotNull { dto ->
-      val re = reKeyChapter(dto.chapterId) ?: return@mapNotNull null
-      Bookmark(
-        bookId = newBookId,
-        chapterId = re.first,
-        title = dto.title,
-        time = clamp(dto.time, re.second),
-        addedAt = Instant.ofEpochMilli(dto.addedAtEpochMillis),
-        setBySleepTimer = dto.setBySleepTimer,
-        id = Bookmark.Id(UUID.fromString(dto.id)),
-      )
-    }
-
     val overrides = snap.overrides.mapNotNull { dto ->
       val re = reKeyChapter(dto.chapterId) ?: return@mapNotNull null
       ChapterNameOverride(
@@ -197,7 +183,6 @@ internal object RestoreReKeyer {
     return MatchedBook(
       sourceId = snap.content.id,
       content = content,
-      bookmarks = bookmarks,
       overrides = overrides,
       sourceLastPlayedAt = Instant.ofEpochMilli(snap.content.lastPlayedAtEpochMillis),
     )

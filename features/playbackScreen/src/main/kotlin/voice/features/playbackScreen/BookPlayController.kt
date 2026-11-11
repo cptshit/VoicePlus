@@ -48,15 +48,11 @@ fun BookPlayScreen(
   val dialogState = viewModel.dialogState.value
   val viewState = viewModel.viewState()
     ?: return
-  val bookmarkAddedMessage = stringResource(StringsR.string.bookmark_added)
   val batteryOptimizationMessage = stringResource(StringsR.string.battery_optimization_rationale)
   val batteryOptimizationAction = stringResource(StringsR.string.battery_optimization_action)
   LaunchedEffect(viewModel) {
     viewModel.viewEffects.collect { viewEffect ->
       when (viewEffect) {
-        BookPlayViewEffect.BookmarkAdded -> {
-          snackbarHostState.showSnackbar(message = bookmarkAddedMessage)
-        }
         BookPlayViewEffect.RequestIgnoreBatteryOptimization -> {
           val result = snackbarHostState.showSnackbar(
             message = batteryOptimizationMessage,
@@ -78,8 +74,6 @@ fun BookPlayScreen(
     onFastForwardClick = viewModel::fastForward,
     onRewindClick = viewModel::rewind,
     onSeek = viewModel::seekTo,
-    onBookmarkClick = viewModel::onBookmarkClick,
-    onBookmarkLongClick = viewModel::onBookmarkLongClick,
     onSkipSilenceClick = viewModel::toggleSkipSilence,
     onSleepTimerClick = viewModel::toggleSleepTimer,
     onVolumeBoostClick = viewModel::onVolumeGainIconClick,

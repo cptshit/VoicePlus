@@ -17,10 +17,6 @@
     <string name="edit_book_title">Kitabı düzenle</string>
     <string name="audiobook_folders_title">Sesli kitap dizinleri</string>
     <string name="playback_speed">Oynatma hızı</string>
-    <string name="bookmark">Yer imi</string>
-    <string name="bookmark_edit_title">Yer imini düzenle</string>
-    <string name="bookmark_edit_hint">Yer imi adı</string>
-    <string name="bookmark_added">Yer imi eklendi</string>
     <string name="action_settings">Tercihler</string>
     <plurals name="seconds">
         <item quantity="one">%d saniye</item>
@@ -48,7 +44,6 @@
         <item quantity="other">%d ses dosyası</item>
     </plurals>
     <string name="folder_type_book_example_header">Bu, aşağıdaki kitapların algılanmasını sağlayacaktır</string>
-    <string name="bookmark_just_now">Şimdi</string>
     <string name="migration_hint_title">Eski kitap konumlarına erişiliyor</string>
     <string name="migration_hint_confirm">Anladım</string>
     <string name="migration_detail_content_root">Kök dizin</string>

@@ -2,11 +2,9 @@ package voice.core.data.store.snapshot.rekey
 
 import voice.core.data.BookContent
 import voice.core.data.BookId
-import voice.core.data.Bookmark
 import voice.core.data.ChapterId
 import voice.core.data.ChapterNameOverride
 import voice.core.data.store.snapshot.BookContentDto
-import voice.core.data.store.snapshot.BookmarkDto
 import voice.core.data.store.snapshot.ChapterNameOverrideDto
 import java.time.Instant
 
@@ -45,7 +43,6 @@ internal data class SnapshotBook(
   val stamp: BookIdentityStamp,
   val content: BookContentDto,
   val chapters: List<SnapChapter>,
-  val bookmarks: List<BookmarkDto>,
   val overrides: List<ChapterNameOverrideDto>,
 )
 
@@ -88,7 +85,6 @@ internal data class MatchedBook(
   // hidden-books set — onto the new id.
   val sourceId: String,
   val content: BookContent,
-  val bookmarks: List<Bookmark>,
   val overrides: List<ChapterNameOverride>,
   val sourceLastPlayedAt: Instant,
 )

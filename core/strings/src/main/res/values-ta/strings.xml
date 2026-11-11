@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="bookmark_edit_title">புக்மார்க்கைத் திருத்து</string>
-    <string name="bookmark_edit_hint">புக்மார்க்கு பெயர்</string>
     <string name="battery_optimization_action">புதுப்பிப்பு</string>
     <string name="select_folder_type_file">கோப்பு</string>
     <string name="onboarding.button_next">அடுத்தது</string>
@@ -33,9 +31,7 @@
     <string name="mark_as_current">மின்னோட்டமாக குறிக்கவும்</string>
     <string name="audiobook_folders_title">ஆடியோபுக் கோப்புறைகள்</string>
     <string name="playback_speed">பின்னணி விரைவு</string>
-    <string name="bookmark">புத்தககுறி</string>
     <string name="mark_as_not_started">மார்க் இன்னும் தொடங்கவில்லை</string>
-    <string name="bookmark_added">புக்மார்க்கு சேர்க்கப்பட்டது</string>
     <string name="action_settings">விருப்பத்தேர்வுகள்</string>
     <plurals name="seconds">
         <item quantity="one">%d இரண்டாவது</item>
@@ -70,7 +66,6 @@
     <string name="folder_type_no_books">குரலால் எந்த புத்தகங்களையும் கண்டறிய முடியவில்லை. ஏதேனும் ஆடியோ கோப்புகள் உள்ளதா?</string>
     <string name="migration_hint_content">புதிய ஆண்ட்ராய்டு பதிப்புகளில் ஏற்படும் மாற்றங்கள் காரணமாக, கணினி பிக்கரைப் பயன்படுத்தி உங்கள் ஆடியோபுக் கோப்புறையைத் தேர்ந்தெடுக்க வேண்டியது அவசியம்.\n\n உங்கள் பழைய புத்தக நிலைகளைக் காண மேலே உள்ள ஐகானைக் சொடுக்கு செய்க.</string>
     <string name="folder_type_title">உங்கள் கோப்புகள் எவ்வாறு கட்டமைக்கப்பட்டுள்ளன?</string>
-    <string name="bookmark_just_now">இப்போது</string>
     <string name="voice_intro_first_book">உங்கள் ஆடியோபுக் கோப்புறையைச் சேர்ப்போம், எனவே நீங்கள் கேட்கத் தொடங்கலாம்!</string>
     <string name="migration_hint_title">பழைய புத்தக நிலைகளை அணுகும்</string>
     <string name="migration_hint_confirm">புரிந்து கொள்ளப்பட்டது</string>

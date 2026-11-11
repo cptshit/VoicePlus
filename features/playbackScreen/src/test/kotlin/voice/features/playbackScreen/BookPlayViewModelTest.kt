@@ -35,7 +35,6 @@ import voice.core.data.Chapter
 import voice.core.data.ChapterId
 import voice.core.data.MarkData
 import voice.core.data.PlaybackToolbarAction
-import voice.core.data.repo.BookmarkRepo
 import voice.core.data.sleeptimer.SleepTimerPreference
 import voice.core.playback.CurrentBookResolver
 import voice.core.playback.LivePlaybackState
@@ -92,7 +91,6 @@ class BookPlayViewModelTest {
   private val currentBookResolver = mockk<CurrentBookResolver> {
     coEvery { book(book.id) } returns book
   }
-  private val bookmarkRepository = mockk<BookmarkRepo>(relaxed = true)
   private val viewModel = BookPlayViewModel(
     bookRepository = mockk {
       coEvery { get(book.id) } returns book
@@ -104,7 +102,6 @@ class BookPlayViewModelTest {
     playStateManager = playStateManager,
     currentBookStoreId = currentBookStoreId,
     navigator = mockk(),
-    bookmarkRepository = bookmarkRepository,
     chapterNameOverrideRepo = mockk {
       every { overridesForBook(any()) } returns flowOf(emptyList())
     },
@@ -231,9 +228,6 @@ class BookPlayViewModelTest {
     yield()
     verify(exactly = 1) {
       sleepTimer.enable(TimedWithDuration(10.minutes))
-    }
-    coVerify(exactly = 0) {
-      bookmarkRepository.addBookmarkAtBookPosition(any(), any(), setBySleepTimer = true)
     }
   }
 
@@ -445,15 +439,12 @@ class BookPlayViewModelTest {
 
     viewModel.setToolbarAction(PlaybackToolbarAction.PLAYBACK_SPEED, pinned = false)
     yield()
-    store.data.first() shouldBe setOf(
-      PlaybackToolbarAction.BOOKMARKS,
-      PlaybackToolbarAction.CHAPTER_FIX,
-    )
+    store.data.first() shouldBe setOf(PlaybackToolbarAction.CHAPTER_FIX)
   }
 
   @Test
   fun `customize toolbar opens its dialog and the view state carries the pinned set`() = scope.runTest {
-    val store = MemoryDataStore(setOf(PlaybackToolbarAction.BOOKMARKS))
+    val store = MemoryDataStore(setOf(PlaybackToolbarAction.PLAYBACK_SPEED))
     val viewModel = viewModel(toolbarActionsStore = store)
 
     viewModel.onCustomizeToolbarClick()
@@ -462,7 +453,7 @@ class BookPlayViewModelTest {
     backgroundScope.launchMolecule(RecompositionMode.Immediate) { viewModel.viewState() }.test {
       var state = awaitItem()
       while (state == null) state = awaitItem()
-      state.toolbarActions shouldBe setOf(PlaybackToolbarAction.BOOKMARKS)
+      state.toolbarActions shouldBe setOf(PlaybackToolbarAction.PLAYBACK_SPEED)
     }
   }
 
@@ -488,7 +479,6 @@ class BookPlayViewModelTest {
       },
       currentBookStoreId = MemoryDataStore(book.id),
       navigator = mockk(),
-      bookmarkRepository = mockk(),
       chapterNameOverrideRepo = mockk {
         every { overridesForBook(any()) } returns flowOf(emptyList())
       },

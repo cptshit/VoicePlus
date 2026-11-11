@@ -3,7 +3,6 @@ package voice.features.playbackScreen.view
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.VolumeUp
-import androidx.compose.material.icons.outlined.BookmarkAdd
 import androidx.compose.material.icons.outlined.GraphicEq
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Tune
@@ -30,7 +29,6 @@ internal fun OverflowMenu(
   onVolumeBoostClick: () -> Unit,
   overflowActions: List<PlaybackToolbarAction>,
   onActionClick: (PlaybackToolbarAction) -> Unit,
-  onQuickBookmarkClick: (() -> Unit)?,
   onCustomizeToolbarClick: () -> Unit,
 ) {
   Box {
@@ -93,20 +91,6 @@ internal fun OverflowMenu(
           },
           text = {
             Text(text = stringResource(id = action.labelRes))
-          },
-        )
-      }
-      onQuickBookmarkClick?.let { onClick ->
-        DropdownMenuItem(
-          onClick = {
-            expanded = false
-            onClick()
-          },
-          leadingIcon = {
-            Icon(imageVector = Icons.Outlined.BookmarkAdd, contentDescription = null)
-          },
-          text = {
-            Text(text = stringResource(id = StringsR.string.bookmark_type_quick))
           },
         )
       }

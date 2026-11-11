@@ -27,10 +27,6 @@
     <string name="mark_as_not_started">غیر آغازشدہ کی مہر لگائیں</string>
     <string name="audiobook_folders_title">صوتی کتب کے کھاتے</string>
     <string name="playback_speed">بجانے کی رفتار</string>
-    <string name="bookmark">نشانی</string>
-    <string name="bookmark_edit_title">نشانی میں تبدیلی کریں</string>
-    <string name="bookmark_edit_hint">نشانی کا نام</string>
-    <string name="bookmark_added">نشانی لگ گئی ہے</string>
     <string name="action_settings">ترجیحات</string>
     <plurals name="seconds">
         <item quantity="one">%d لمحہ</item>

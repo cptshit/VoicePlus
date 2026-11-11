@@ -16,10 +16,6 @@
     <string name="edit_book_title">Uredi knjigo</string>
     <string name="audiobook_folders_title">Mape zvočnih knjig</string>
     <string name="playback_speed">Hitrost predvajanja</string>
-    <string name="bookmark">Zaznamek</string>
-    <string name="bookmark_edit_title">Uredi zaznamek</string>
-    <string name="bookmark_edit_hint">Ime zaznamka</string>
-    <string name="bookmark_added">Zaznamek dodan</string>
     <string name="action_settings">Nastavitve</string>
     <plurals name="seconds">
         <item quantity="one">%d sekundo</item>

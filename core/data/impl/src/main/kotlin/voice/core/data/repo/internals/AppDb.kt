@@ -5,7 +5,6 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import voice.core.data.BookContent
-import voice.core.data.Bookmark
 import voice.core.data.Chapter
 import voice.core.data.ChapterNameOverride
 import voice.core.data.LibraryPlacement
@@ -14,7 +13,6 @@ import voice.core.data.LibraryShelf
 import voice.core.data.RecentBookSearch
 import voice.core.data.repo.internals.dao.BookContentDao
 import voice.core.data.repo.internals.dao.BookSearchFts
-import voice.core.data.repo.internals.dao.BookmarkDao
 import voice.core.data.repo.internals.dao.ChapterDao
 import voice.core.data.repo.internals.dao.ChapterNameOverrideDao
 import voice.core.data.repo.internals.dao.LibraryOrganisationDao
@@ -24,12 +22,12 @@ import voice.core.data.repo.internals.migrations.Migration68
 import voice.core.data.repo.internals.migrations.Migration69
 import voice.core.data.repo.internals.migrations.Migration70
 import voice.core.data.repo.internals.migrations.Migration71
+import voice.core.data.repo.internals.migrations.Migration72
 
 @Database(
   entities = [
     Chapter::class,
     BookContent::class,
-    Bookmark::class,
     BookSearchFts::class,
     RecentBookSearch::class,
     ChapterNameOverride::class,
@@ -59,6 +57,7 @@ import voice.core.data.repo.internals.migrations.Migration71
     AutoMigration(from = 69, to = 70, spec = Migration69::class),
     AutoMigration(from = 70, to = 71, spec = Migration70::class),
     AutoMigration(from = 71, to = 72, spec = Migration71::class),
+    AutoMigration(from = 72, to = 73, spec = Migration72::class),
   ],
 )
 @TypeConverters(Converters::class)
@@ -66,14 +65,13 @@ public abstract class AppDb : RoomDatabase() {
 
   public abstract fun chapterDao(): ChapterDao
   public abstract fun bookContentDao(): BookContentDao
-  public abstract fun bookmarkDao(): BookmarkDao
 
   public abstract fun recentBookSearchDao(): RecentBookSearchDao
   public abstract fun chapterNameOverrideDao(): ChapterNameOverrideDao
   public abstract fun libraryOrganisationDao(): LibraryOrganisationDao
 
   internal companion object {
-    const val VERSION = 72
+    const val VERSION = 73
     const val DATABASE_NAME = "autoBookDB"
   }
 }

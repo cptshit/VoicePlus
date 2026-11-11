@@ -61,7 +61,7 @@ class SettingsSnapshotterTest {
     source.seekTime.updateData { 45 }
     source.gridMode.updateData { GridMode.GRID }
     source.booksPerRow.updateData { 3 }
-    source.mediaDoubleClick.updateData { MediaButtonClickAction.QUICK_BOOKMARK }
+    source.mediaDoubleClick.updateData { MediaButtonClickAction.SKIP_FORWARD_CHAPTER }
     source.ignoreFileTags.updateData { true }
     source.playbackToolbarActions.updateData { setOf(PlaybackToolbarAction.CHAPTER_FIX) }
     source.globalVolumeGain.updateData { 6F }
@@ -74,7 +74,7 @@ class SettingsSnapshotterTest {
     target.seekTime.data.first() shouldBe 45
     target.gridMode.data.first() shouldBe GridMode.GRID
     target.booksPerRow.data.first() shouldBe 3
-    target.mediaDoubleClick.data.first() shouldBe MediaButtonClickAction.QUICK_BOOKMARK
+    target.mediaDoubleClick.data.first() shouldBe MediaButtonClickAction.SKIP_FORWARD_CHAPTER
     target.ignoreFileTags.data.first() shouldBe true
     target.playbackToolbarActions.data.first() shouldBe setOf(PlaybackToolbarAction.CHAPTER_FIX)
     target.globalVolumeGain.data.first() shouldBe 6F

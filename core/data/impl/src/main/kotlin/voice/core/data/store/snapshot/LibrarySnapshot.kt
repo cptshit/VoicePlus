@@ -3,7 +3,6 @@ package voice.core.data.store.snapshot
 import kotlinx.serialization.Serializable
 import voice.core.data.BookContent
 import voice.core.data.BookId
-import voice.core.data.Bookmark
 import voice.core.data.Chapter
 import voice.core.data.ChapterId
 import voice.core.data.ChapterNameOverride
@@ -22,7 +21,6 @@ internal data class LibrarySnapshot(
   val totalCount: Int,
   val activeCount: Int,
   val books: List<BookContentDto>,
-  val bookmarks: List<BookmarkDto>,
   val chapterNameOverrides: List<ChapterNameOverrideDto>,
   // chapters2 rows for every book. Required for the OS-wipe restore: without re-inserted Chapter rows
   // BookRepository.book() returns null and the restored book is invisible. Default-empty so legacy bundles decode.
@@ -85,17 +83,6 @@ internal data class BookContentDto(
   val seriesGroup: String? = null,
   val seriesOrder: Int? = null,
   val nameOverridden: Boolean = false,
-)
-
-@Serializable
-internal data class BookmarkDto(
-  val bookId: String,
-  val chapterId: String,
-  val title: String?,
-  val time: Long,
-  val addedAtEpochMillis: Long,
-  val setBySleepTimer: Boolean,
-  val id: String,
 )
 
 @Serializable
@@ -169,26 +156,6 @@ internal fun BookContentDto.toBookContentOrNull(): BookContent? = runCatching {
     nameOverridden = nameOverridden,
   )
 }.getOrNull()
-
-internal fun Bookmark.toDto() = BookmarkDto(
-  bookId = bookId.value,
-  chapterId = chapterId.value,
-  title = title,
-  time = time,
-  addedAtEpochMillis = addedAt.toEpochMilli(),
-  setBySleepTimer = setBySleepTimer,
-  id = id.value.toString(),
-)
-
-internal fun BookmarkDto.toBookmark() = Bookmark(
-  bookId = BookId(bookId),
-  chapterId = ChapterId(chapterId),
-  title = title,
-  time = time,
-  addedAt = Instant.ofEpochMilli(addedAtEpochMillis),
-  setBySleepTimer = setBySleepTimer,
-  id = Bookmark.Id(UUID.fromString(id)),
-)
 
 internal fun ChapterNameOverride.toDto() = ChapterNameOverrideDto(chapterId, markStartMs, bookId, name)
 

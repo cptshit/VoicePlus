@@ -22,10 +22,6 @@
     <string name="mark_as_not_started">علّمه أنه لم يبدأ</string>
     <string name="audiobook_folders_title">مجلدات الكتب الصوتية</string>
     <string name="playback_speed">سرعة التشغيل</string>
-    <string name="bookmark">العلامات المرجعية</string>
-    <string name="bookmark_edit_title">حرر العلامات</string>
-    <string name="bookmark_edit_hint">اسم العلامة</string>
-    <string name="bookmark_added">أضيفت علامة مرجعية</string>
     <string name="action_settings">التفضيلات</string>
     <plurals name="seconds">
         <item quantity="zero">%d ثانية</item>
@@ -66,7 +62,6 @@
     <string name="folder_type_book_example_header">سيؤدي هذا إلى اكتشاف الكتاب التالي</string>
     <string name="folder_type_no_books">لم يتمكن فويس من اكتشاف أي كتب. هل هناك أي ملفات صوتية؟</string>
     <string name="folder_type_title">ما هي هيكلية ملفاتك؟</string>
-    <string name="bookmark_just_now">الآن</string>
     <string name="voice_intro_first_book">دعنا نضيف مجلد كتبك الصوتية لتبدأ الاستماع!</string>
     <string name="migration_hint_title">الوصول إلى مواضع الكتاب القديم</string>
     <string name="migration_hint_content">نظرًا للتغييرات في إصدارات أندوريد الأحدث، من الضروري تحديد مجلد الكتاب الصوتي باستخدام منتقي النظام.\n\nانقر فوق الرمز أعلاه لعرض مواضع كتابك القديم.</string>

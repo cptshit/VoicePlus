@@ -7,10 +7,6 @@
     <string name="dialog_cancel">Anullar</string>
     <string name="change_book_name">Nom</string>
     <string name="playback_speed">Velocitat de lectura</string>
-    <string name="bookmark">Marcapagina</string>
-    <string name="bookmark_edit_title">Modificar marcapagina</string>
-    <string name="bookmark_edit_hint">Nom del marcapagina</string>
-    <string name="bookmark_added">Marcapagina apondut</string>
     <string name="action_settings">Preferéncias</string>
     <plurals name="seconds">
         <item quantity="one">%d segonda</item>
@@ -25,7 +21,6 @@
     <string name="close">Tampar</string>
     <string name="delete">Suprimir</string>
     <string name="add">Apondre</string>
-    <string name="bookmark_just_now">Ara meteis</string>
     <string name="migration_delete_dialog_action_delete">Suprimir</string>
     <string name="migration_delete_dialog_action_keep">Gardar</string>
     <string name="delete_book_bottom_sheet_title">Suprimir lo libre</string>

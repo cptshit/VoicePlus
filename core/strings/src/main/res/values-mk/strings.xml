@@ -2,11 +2,9 @@
 <resources>
     <string name="onboarding_welcome_subtitle">Ваш личен џебен читач на аудио книги. Ајде да Ве спремиме.</string>
     <string name="mark_as_completed">Обележи како прочитана</string>
-    <string name="bookmark_added">Обележано</string>
     <string name="play">Пушти</string>
     <string name="pause">Пауза</string>
     <string name="mark_as_current">Обележи како тековна</string>
-    <string name="bookmark_just_now">Сега</string>
     <string name="remove">Отстрани</string>
     <string name="generic_error_retry">Пробај повторно</string>
     <string name="rewind">Врати назад</string>
@@ -38,8 +36,6 @@
     <string name="mark_as_not_started">Обележи како непочната</string>
     <string name="audiobook_folders_title">Фолдери со аудио книги</string>
     <string name="playback_speed">Брзина на читање</string>
-    <string name="bookmark_edit_title">Уреди обележувач</string>
-    <string name="bookmark">Обележи</string>
     <string name="action_settings">Поставувања</string>
     <plurals name="seconds">
         <item quantity="one">%d секунда</item>
@@ -98,7 +94,6 @@
         <item quantity="one">%d минута</item>
         <item quantity="other">%d минути</item>
     </plurals>
-    <string name="bookmark_edit_hint">Име на обележувач</string>
     <string name="change_book_name">Име</string>
     <string name="edit_book_title">Ажурирај книга</string>
     <string name="pref_report_issue">Пријави проблем</string>

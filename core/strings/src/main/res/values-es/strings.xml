@@ -17,10 +17,6 @@
     <string name="edit_book_title">Editar libro</string>
     <string name="audiobook_folders_title">Directorios de audiolibros</string>
     <string name="playback_speed">Velocidad de reproducción</string>
-    <string name="bookmark">Marcador</string>
-    <string name="bookmark_edit_title">Editar marcador</string>
-    <string name="bookmark_edit_hint">Nombre del marcador</string>
-    <string name="bookmark_added">Marcador añadido</string>
     <string name="action_settings">Preferencias</string>
     <plurals name="seconds">
         <item quantity="one">%d segundo</item>
@@ -39,7 +35,6 @@
     <string name="close">Cerrar</string>
     <string name="delete">Eliminar</string>
     <string name="add">Agregar</string>
-    <string name="bookmark_just_now">Justo ahora</string>
     <string name="voice_intro_first_book">¡Agreguemos tu carpeta de audiolibros para que puedas empezar a escuchar!</string>
     <string name="migration_hint_title">Accediendo a posiciones antiguas de libros</string>
     <string name="migration_hint_content">Debido a los cambios en las versiones más recientes de Android, debes seleccionar la carpeta de los audiolibros con el selector del sistema. \n \nHaz clic en el icono de arriba para ver la ubicación de los libros antiguos.</string>

@@ -17,10 +17,6 @@
     <string name="edit_book_title">Modifica libro</string>
     <string name="audiobook_folders_title">Cartelle audiolibri</string>
     <string name="playback_speed">Velocità di riproduzione</string>
-    <string name="bookmark">Segnalibro</string>
-    <string name="bookmark_edit_title">Modifica segnalibro</string>
-    <string name="bookmark_edit_hint">Nome segnalibro</string>
-    <string name="bookmark_added">Segnalibro aggiunto</string>
     <string name="action_settings">Preferenze</string>
     <plurals name="seconds">
         <item quantity="one">%d secondo</item>
@@ -82,7 +78,6 @@
     <string name="notification_sleep_timer_enable">Abilita il timer di sospensione</string>
     <string name="notification_sleep_timer_disable">Disabilita il timer di sospensione</string>
     <string name="pref_suggest_idea">Suggerisci un\'idea</string>
-    <string name="bookmark_just_now">Proprio adesso</string>
     <string name="voice_intro_first_book">Aggiungiamo la tua cartella degli audiolibri per iniziare ad ascoltare!</string>
     <string name="migration_hint_content">A causa dei cambiamenti nelle versioni Android più recenti, è necessario selezionare la cartella degli audiolibri utilizzando il selettore di sistema. \n \nFai clic sull\'icona in alto per visualizzare le tue vecchie posizioni del libro.</string>
     <string name="migration_detail_title">Vecchie posizioni dei libri</string>

@@ -11,7 +11,6 @@ import voice.core.data.BookId
 import voice.core.data.hoerspiel.EpisodeNumberRepo
 import voice.core.data.repo.BookContentRepo
 import voice.core.data.repo.internals.dao.BookContentDao
-import voice.core.data.repo.internals.dao.BookmarkDao
 import voice.core.data.repo.internals.dao.ChapterDao
 import voice.core.data.repo.internals.dao.ChapterNameOverrideDao
 import voice.core.data.repo.internals.dao.LibraryOrganisationDao
@@ -26,7 +25,6 @@ import kotlin.coroutines.cancellation.CancellationException
 internal class BackupRestorer(
   private val ring: SnapshotRing,
   private val bookContentDao: BookContentDao,
-  private val bookmarkDao: BookmarkDao,
   private val chapterDao: ChapterDao,
   private val chapterNameOverrideDao: ChapterNameOverrideDao,
   @ExcludedBooksStore private val excludedBooksStore: DataStore<Set<String>>,
@@ -118,7 +116,6 @@ internal class BackupRestorer(
           dto.id to withCover.copy(isActive = withCover.isActive && dto.id !in snapshot.hiddenBooks)
         }
       }
-    val bookmarks = snapshot.bookmarks.filter { included(it.bookId) }.map { it.toBookmark() }
     val overrides = snapshot.chapterNameOverrides.filter { included(it.bookId) }.map { it.toOverride() }
     // chapters2 carries no bookId, so restore them all (REPLACE). A chapter with no surviving content2 row is
     // simply invisible; re-inserting is what lets a restored book's BookRepository.book() resolve at all.
@@ -142,7 +139,6 @@ internal class BackupRestorer(
         bookContentDao.insert(snap.preserveNewerPlaybackFrom(liveRow))
         written++
       }
-      bookmarks.forEach { bookmarkDao.addBookmark(it) }
       overrides.forEach { chapterNameOverrideDao.insert(it) }
       organisationDao.restore(snapshot, bookContentDao.all().associate { it.id.value to it.id.value })
     }

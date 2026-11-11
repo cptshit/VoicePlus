@@ -26,8 +26,14 @@ class OrganisationRestoreTest {
     placements = listOf(LibraryPlacement("old-a", "fantasy", 0, "series", 1), LibraryPlacement("old-b", "fantasy", 0, "series", 0)),
   )
   private val snapshot = LibrarySnapshot(
-    6, sequence = 1, savedAtEpochMillis = 0, totalCount = 0, activeCount = 0,
-    books = emptyList(), bookmarks = emptyList(), chapterNameOverrides = emptyList(), organisation = arrangement,
+    6,
+    sequence = 1,
+    savedAtEpochMillis = 0,
+    totalCount = 0,
+    activeCount = 0,
+    books = emptyList(),
+    chapterNameOverrides = emptyList(),
+    organisation = arrangement,
   )
 
   @Before fun setup() {

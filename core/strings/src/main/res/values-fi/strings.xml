@@ -18,8 +18,6 @@
     <string name="volume_boost">Äänenvoimakkuuden tehostus</string>
     <string name="dialog_confirm">Aseta</string>
     <string name="playback_speed">Toiston nopeus</string>
-    <string name="bookmark">Kirjanmerkki</string>
-    <string name="bookmark_edit_title">Muokkaa kirjanmerkkiä</string>
     <string name="action_settings">Asetukset</string>
     <plurals name="seconds">
         <item quantity="one">%d sekuntti</item>
@@ -37,10 +35,8 @@
     <string name="more">Enemmän</string>
     <string name="change_book_name">Nimi</string>
     <string name="download_book_cover">Kansi internetistä</string>
-    <string name="bookmark_edit_hint">Kirjanmerkin nimi</string>
     <string name="pick_book_cover">Kansi tiedostojärjestelmästä</string>
     <string name="dialog_cancel">Peruuta</string>
-    <string name="bookmark_added">Kirjanmerkki lisätty</string>
     <string name="battery_optimization_action">Päivitä</string>
     <string name="media_session_recent">Viimeisin</string>
     <string name="media_session_root">Kaikki äänikirjat</string>
@@ -65,7 +61,6 @@
     <string name="delete_book_dialog_deletion_confirmation">Poista tiedostoni</string>
     <string name="delete_book_dialog_content">Tämä poistaa tiedostot laitteeltasi.</string>
     <string name="search_hint">Mitä etsit?</string>
-    <string name="bookmark_just_now">Juuri äskettäin</string>
     <string name="migration_hint_title">Vanhojen kirjan paikkohin pääsy</string>
     <string name="onboarding.explanation.subtitle">Voicella voit lisätä kirjoja yksittäisinä tiedostoina tai järjestellä ne kansioissa. Sinä saat valita!</string>
     <string name="onboarding.completion.title">Olet valmiina!</string>

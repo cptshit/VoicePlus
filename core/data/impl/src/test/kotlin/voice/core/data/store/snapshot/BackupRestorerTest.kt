@@ -50,7 +50,6 @@ class BackupRestorerTest {
     organisationDao = db.libraryOrganisationDao(),
     ring = ring,
     bookContentDao = db.bookContentDao(),
-    bookmarkDao = db.bookmarkDao(),
     chapterDao = db.chapterDao(),
     chapterNameOverrideDao = db.chapterNameOverrideDao(),
     excludedBooksStore = excluded,
@@ -72,10 +71,14 @@ class BackupRestorerTest {
   )
 
   private fun snapshotOf(vararg ids: String) = LibrarySnapshot(
-    schemaVersion = 1, dbVersion = AppDb.VERSION, sequence = 1, savedAtEpochMillis = 0,
-    totalCount = ids.size, activeCount = ids.size,
+    schemaVersion = 1,
+    dbVersion = AppDb.VERSION,
+    sequence = 1,
+    savedAtEpochMillis = 0,
+    totalCount = ids.size,
+    activeCount = ids.size,
     books = ids.map { book(it, true).toDto() },
-    bookmarks = emptyList(), chapterNameOverrides = emptyList(),
+    chapterNameOverrides = emptyList(),
   )
 
   @Test
@@ -145,7 +148,7 @@ class BackupRestorerTest {
         schemaVersion = 1, dbVersion = AppDb.VERSION, sequence = 1, savedAtEpochMillis = 0,
         totalCount = 1, activeCount = 1,
         books = listOf(book("a", active = true).toDto()),
-        bookmarks = emptyList(), chapterNameOverrides = emptyList(),
+        chapterNameOverrides = emptyList(),
         chapters = listOf(Chapter(ChapterId("ca"), "Ch A", 1_000, Instant.EPOCH, emptyList()).toDto()),
       )
     }
@@ -169,7 +172,6 @@ class BackupRestorerTest {
     restorer().applyDirect(decoded.snapshot) shouldBe 1
 
     db.bookContentDao().all().single().positionInChapter shouldBe 42_000
-    db.bookmarkDao().all().single().time shouldBe 12_000
     db.chapterDao().all().single().fileSize shouldBe 0
   }
 

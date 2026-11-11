@@ -17,16 +17,12 @@
     <string name="mark_as_not_started">Marchează ca neîncepută încă</string>
     <string name="audiobook_folders_title">Directoare cărți</string>
     <string name="playback_speed">Viteză de redare</string>
-    <string name="bookmark">Semn de carte</string>
     <string name="cover">Copertă</string>
     <string name="previous_track">Pista anterioară</string>
     <string name="content_cover">Afișează alegere copertă</string>
     <string name="pick_book_cover">Copertă din sistemul de fișiere</string>
-    <string name="bookmark_added">Semn de carte adăugat</string>
     <string name="mark_as_completed">Marchează ca terminată</string>
-    <string name="bookmark_edit_title">Modificare semn de carte</string>
     <string name="action_settings">Preferințe</string>
-    <string name="bookmark_edit_hint">Nume semn de carte</string>
     <plurals name="seconds">
         <item quantity="one">%d secundă</item>
         <item quantity="few">%d secunde</item>
@@ -83,7 +79,6 @@
     <string name="folder_type_book_example_header">În acest fel, au fost detectate următoarele cărți</string>
     <string name="folder_type_no_books">Voice nu a găsit nicio carte. Există fișiere audio?</string>
     <string name="migration_hint_content">Din cauza modificărilor din versiunile noi de Android, este necesar să alegeți directorul dumneavoastră cu cărți audio folosind selectorul de sistem.\n\nApăsați pe iconița de mai sus pentru a vedea vechile poziții ale cărților.</string>
-    <string name="bookmark_just_now">Acum</string>
     <string name="migration_detail_content_added_at">Adăugat la</string>
     <string name="migration_detail_content_position_current_file_title">Fișierul curent</string>
     <string name="migration_delete_dialog_content">Odată șterse vechile poziții, nu veți mai putea să recuperați vechile poziții de redare.</string>

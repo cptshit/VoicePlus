@@ -5,7 +5,6 @@ import org.junit.Test
 import voice.core.data.BookId
 import voice.core.data.ChapterId
 import voice.core.data.store.snapshot.BookContentDto
-import voice.core.data.store.snapshot.BookmarkDto
 import voice.core.data.store.snapshot.ChapterNameOverrideDto
 
 /**
@@ -48,7 +47,6 @@ class RestoreReKeyerTest {
     currentRel: String = chapterRelNames.first(),
     position: Long = 0,
     lastPlayed: Long = 0,
-    bookmarks: List<BookmarkDto> = emptyList(),
     overrides: List<ChapterNameOverrideDto> = emptyList(),
     snapDuration: Long = 1_000,
     authority: String = EXTERNAL_STORAGE_AUTHORITY,
@@ -64,7 +62,6 @@ class RestoreReKeyerTest {
       narrator = "Narrator", series = "Series", part = "Part", chapterNameOffset = 3, seriesGroup = "My collection", seriesOrder = 2,
     ),
     chapters = chapterRelNames.map { SnapChapter(ChapterId(oldCid(relPath, it)), it, snapDuration) },
-    bookmarks = bookmarks,
     overrides = overrides,
   )
 
@@ -78,21 +75,6 @@ class RestoreReKeyerTest {
     newBookId = BookId(newBookId),
     stamp = stamp(relPath, folder, chapterRelNames),
     chapters = chapterRelNames.mapIndexed { i, rel -> ScannedChapter(ChapterId(newCid(relPath, rel)), rel, durations[i]) },
-  )
-
-  private fun bookmarkDto(
-    relPath: String,
-    rel: String,
-    time: Long,
-    id: String,
-  ) = BookmarkDto(
-    bookId = "old://$relPath",
-    chapterId = oldCid(relPath, rel),
-    title = "bm",
-    time = time,
-    addedAtEpochMillis = 5,
-    setBySleepTimer = false,
-    id = id,
   )
 
   // ---- scenarios ----
@@ -203,7 +185,6 @@ class RestoreReKeyerTest {
           relPath,
           listOf("01.mp3", "02.mp3"),
           currentRel = "01.mp3",
-          bookmarks = listOf(bookmarkDto(relPath, "02.mp3", time = 50, id = "00000000-0000-0000-0000-000000000001")),
           overrides = listOf(
             ChapterNameOverrideDto(oldCid(relPath, "02.mp3"), markStartMs = 0, bookId = "old://$relPath", name = "Renamed"),
           ),
@@ -217,9 +198,7 @@ class RestoreReKeyerTest {
     m.content.chapters shouldBe listOf(ChapterId(newCid(relPath, "02.mp3")), ChapterId(newCid(relPath, "01.mp3")))
     // currentChapter follows relName 01.mp3, not index 0
     m.content.currentChapter shouldBe ChapterId(newCid(relPath, "01.mp3"))
-    // bookmark + override follow relName 02.mp3
-    m.bookmarks.single().chapterId shouldBe ChapterId(newCid(relPath, "02.mp3"))
-    m.bookmarks.single().bookId shouldBe BookId("new://$relPath")
+    // the override follows relName 02.mp3
     m.overrides.single().chapterId shouldBe newCid(relPath, "02.mp3")
     m.overrides.single().bookId shouldBe "new://$relPath"
     m.overrides.single().name shouldBe "Renamed"
@@ -233,12 +212,14 @@ class RestoreReKeyerTest {
         snapBook(
           relPath,
           listOf("Disc1/01.mp3", "Disc2/01.mp3"),
-          bookmarks = listOf(bookmarkDto(relPath, "Disc2/01.mp3", time = 10, id = "00000000-0000-0000-0000-000000000002")),
+          overrides = listOf(
+            ChapterNameOverrideDto(oldCid(relPath, "Disc2/01.mp3"), markStartMs = 0, bookId = "old://$relPath", name = "Second disc"),
+          ),
         ),
       ),
       scanned = listOf(scanBook(relPath, listOf("Disc1/01.mp3", "Disc2/01.mp3"))),
     )
-    r.matched.single().bookmarks.single().chapterId shouldBe ChapterId(newCid(relPath, "Disc2/01.mp3"))
+    r.matched.single().overrides.single().chapterId shouldBe newCid(relPath, "Disc2/01.mp3")
   }
 
   @Test
@@ -264,14 +245,12 @@ class RestoreReKeyerTest {
           listOf("01.mp3"),
           currentRel = "01.mp3",
           position = 9_000,
-          bookmarks = listOf(bookmarkDto(relPath, "01.mp3", time = 9_000, id = "00000000-0000-0000-0000-000000000003")),
         ),
       ),
       scanned = listOf(scanBook(relPath, listOf("01.mp3"), durations = listOf(1_000))),
     )
     val m = r.matched.single()
     m.content.positionInChapter shouldBe 1_000L
-    m.bookmarks.single().time shouldBe 1_000L
   }
 
   @Test

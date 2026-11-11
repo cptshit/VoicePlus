@@ -23,11 +23,7 @@
     <string name="audiobook_folders_title">אודיאו-ביכל טעקע</string>
     <string name="action_sleep">שלאָף-טיימער</string>
     <string name="content_cover">צייגט די דעקל צו וועלן</string>
-    <string name="bookmark_edit_hint">בוקמארק נאמען</string>
     <string name="pref_theme_dark">טונקעלע טעמע</string>
-    <string name="bookmark_edit_title">רעדאגיר די בוקמארק</string>
-    <string name="bookmark">בוקמארק</string>
-    <string name="bookmark_added">בוקמארק צוגעלייגט</string>
     <string name="action_settings">פרעפרענצן</string>
     <string name="pref_use_grid">ניצט א געקעסטעלטע אויסשטעל</string>
     <string name="remove">נעם אראפ</string>
@@ -47,5 +43,4 @@
     <string name="battery_optimization_action">אפדעיט</string>
     <string name="media_session_root">אלע אודיו ביכער</string>
     <string name="book_header_current">אנגייענדע</string>
-    <string name="bookmark_just_now">ממש יעצט</string>
 </resources>

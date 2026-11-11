@@ -11,7 +11,6 @@
     <string name="close">बन्द गर्नुहोस्</string>
     <string name="delete">मेटाउनुहोस्</string>
     <string name="add">थप्नुहोस्</string>
-    <string name="bookmark_just_now">भर्खरै</string>
     <string name="migration_hint_confirm">बुझे</string>
     <string name="migration_detail_title">पुरानो पुस्तकको ठाउँ</string>
     <string name="migration_detail_content_name">नाम</string>
@@ -31,7 +30,6 @@
     <string name="dialog_cancel">रद्द गर्नुहोस्</string>
     <string name="pick_book_cover">आन्तरिक भण्डारणबाट कभर लिनुहोस्</string>
     <string name="playback_speed">प्लेब्याक गती</string>
-    <string name="bookmark">पुस्तकचिनो</string>
     <plurals name="seconds">
         <item quantity="one">%d सेकेण्ड</item>
         <item quantity="other">%d सेकेण्ड</item>
@@ -64,8 +62,6 @@
     <string name="storage_bug_button">अनुमति दिनुहोस्</string>
     <string name="cover_search_template_no_author">%s अडियोबूक कभर</string>
     <string name="cover_search_template_with_author">%1$s / %2$s अडियोबूक कभर</string>
-    <string name="bookmark_edit_title">पुस्तकचिनो सम्पादन गर्नुहोस्</string>
-    <string name="bookmark_edit_hint">पुस्तकचिनो को नाम</string>
     <string name="pref_theme_dark">अँध्यारो थीम</string>
     <string name="migration_detail_content_position_current_file_title">हालको फाइल</string>
     <string name="play">प्ले</string>
@@ -92,7 +88,6 @@
     <string name="cover_search.author">लेखक</string>
     <string name="voice_intro_first_book">तपाईंको अडियोबूक फोल्डर थप्नुहोस् ताकि तपाईं सुन्न सुरु गर्न सक्नुहुन्छ!</string>
     <string name="migration_hint_title">पुरानो पुस्तक ठाउँहरू पहुँच गर्दै</string>
-    <string name="bookmark_added">पुस्तकचिनो राखियो</string>
     <string name="migration_detail_content_position_current_chapter_title">हालको अध्याय</string>
     <string name="migration_detail_content_position_current_chapter_position">अध्यायमा ठाउँ</string>
     <string name="generic_error_message">केही गडबड भयो 😢</string>

@@ -28,9 +28,6 @@
     <string name="content_cover">Näita kaanepilte, mille vahel valida</string>
     <string name="cover_search_template_no_author">Heliraamatu kaanepilt: %s</string>
     <string name="cover_search_template_with_author">Heliraamatu kaanepilt: %2$s - %1$s</string>
-    <string name="bookmark">Järjehoidja</string>
-    <string name="bookmark_edit_title">Muuda järjehoidjat</string>
-    <string name="bookmark_added">Järjehoidja on lisatud</string>
     <plurals name="seconds">
         <item quantity="one">%d sekund</item>
         <item quantity="other">%d sekundit</item>
@@ -51,7 +48,6 @@
     <string name="close">Sulge</string>
     <string name="delete">Kustuta</string>
     <string name="pref_get_support">Kasutajatugi</string>
-    <string name="bookmark_edit_hint">Järjehoidja nimi</string>
     <string name="action_settings">Eelistused</string>
     <string name="pref_theme_dark">Tume kujundus</string>
     <string name="add">Lisa</string>
@@ -65,7 +61,6 @@
         <item quantity="other">%d helifaili</item>
     </plurals>
     <string name="folder_type_title">Kuidas on sinu heliraamatute failid struktureeritud?</string>
-    <string name="bookmark_just_now">Just nüüd</string>
     <string name="folder_type_book_example_header">Sellega tuvastatakse järgnevad raamatud</string>
     <string name="onboarding_welcome_title">Tere tulemast heliraamatuesitajasse Voice!</string>
     <string name="onboarding.explanation.subtitle">Voice\'i puhul saad sa heliraamatuid lisada üksikute failidena või koondada neid kaustadesse. Tee nii, nagu soovid!</string>

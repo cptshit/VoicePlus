@@ -22,10 +22,6 @@
     <string name="mark_as_not_started">अभी प्रारंभ नहीं चिह्नित करें</string>
     <string name="audiobook_folders_title">ऑडिओबुक के फोल्डर</string>
     <string name="playback_speed">प्लेबैक की गति</string>
-    <string name="bookmark">बुकमार्क</string>
-    <string name="bookmark_edit_title">बुकमार्क संपादन</string>
-    <string name="bookmark_edit_hint">बुकमार्क का नाम</string>
-    <string name="bookmark_added">बुकमार्क जोड़ा गया</string>
     <string name="action_settings">प्राथमिकताएँ</string>
     <plurals name="seconds">
         <item quantity="one">%d सेकंड</item>
@@ -58,7 +54,6 @@
     <string name="folder_type_book_example_header">इससे निम्नलिखित पुस्तकों का पता चलेगा</string>
     <string name="folder_type_no_books">Voice किसी भी किताब का पता नहीं लगा सकी। क्या कोई ऑडियो फाइल है?</string>
     <string name="folder_type_title">आपकी फाइलें कैसे संरचित हैं?</string>
-    <string name="bookmark_just_now">बस अभी</string>
     <string name="voice_intro_first_book">चलिए आपका ऑडियोबुक फोल्डर जोड़ते हैं ताकि आप सुनना शुरू कर सकें!</string>
     <string name="migration_hint_title">पुरानी पुस्तक स्थितियों तक पहुँचना</string>
     <string name="migration_hint_content">नए Android संस्करणों में परिवर्तनों के कारण, सिस्टम पिकर का उपयोग करके अपने ऑडियोबुक फोल्डर का चयन करना आवश्यक है। \n \nअपनी पुरानी पुस्तक स्थिति देखने के लिए ऊपर दिए गए आइकन पर क्लिक करें।</string>

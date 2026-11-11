@@ -49,7 +49,6 @@ class ExternalBackupBundleCodecTest {
         part = null,
       ).toDto(),
     ),
-    bookmarks = emptyList(),
     chapterNameOverrides = emptyList(),
   )
 
@@ -77,7 +76,6 @@ class ExternalBackupBundleCodecTest {
     restored.dbVersion shouldBe 64
     restored.books.single().name shouldBe "Legacy Book"
     restored.books.single().positionInChapter shouldBe 15_000
-    restored.bookmarks.single().time shouldBe 5_000
     restored.chapters shouldBe emptyList()
     restored.hiddenBooks shouldBe emptySet()
     restored.settings shouldBe emptyMap()
@@ -94,7 +92,6 @@ class ExternalBackupBundleCodecTest {
     restored.dbVersion shouldBe 65
     restored.books.single().name shouldBe "Compatibility Book"
     restored.books.single().positionInChapter shouldBe 42_000
-    restored.bookmarks.single().title shouldBe "Test Bookmark"
     restored.chapterNameOverrides.single().name shouldBe "Renamed Section"
     restored.chapters.single().relName shouldBe "Compatibility Book/chapter-1.mp3"
     restored.chapters.single().fileSize shouldBe 0

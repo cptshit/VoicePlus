@@ -22,10 +22,6 @@
     <string name="mark_as_not_started">Markera som inte påbörjad ännu</string>
     <string name="audiobook_folders_title">Ljudboksmappar</string>
     <string name="playback_speed">Uppspelningshastighet</string>
-    <string name="bookmark">Bokmärke</string>
-    <string name="bookmark_edit_title">Redigera bokmärke</string>
-    <string name="bookmark_edit_hint">Namn på bokmärke</string>
-    <string name="bookmark_added">Bokmärke tillagt</string>
     <string name="action_settings">Inställningar</string>
     <plurals name="seconds">
         <item quantity="one">%d sekund</item>
@@ -58,7 +54,6 @@
     <string name="folder_type_book_example_header">Detta skulle leda till att följande böcker upptäcks</string>
     <string name="folder_type_no_books">Voice kunde inte upptäcka några böcker. Finns det några ljudfiler?</string>
     <string name="folder_type_title">Hur är dina filer uppbyggda?</string>
-    <string name="bookmark_just_now">Precis nu</string>
     <string name="voice_intro_first_book">Lägg till din ljudboksmapp så att du kan börja lyssna!</string>
     <string name="migration_hint_title">Åtkomst till gamla bokpositioner</string>
     <string name="migration_hint_content">På grund av ändringar i nyare Android-versioner är det nödvändigt att välja din ljudboksmapp med hjälp av systemväljaren.\n\nKlicka på ikonen ovan för att se dina gamla bokpositioner.</string>

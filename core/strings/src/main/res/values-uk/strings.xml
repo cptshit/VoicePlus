@@ -20,10 +20,6 @@
     <string name="mark_as_not_started">Позначити як ще не почате</string>
     <string name="audiobook_folders_title">Папки з аудіокнигами</string>
     <string name="playback_speed">Швидкість відтворення</string>
-    <string name="bookmark">Закладка</string>
-    <string name="bookmark_edit_title">Редагувати закладку</string>
-    <string name="bookmark_edit_hint">Назва закладки</string>
-    <string name="bookmark_added">Закладку додано</string>
     <string name="action_settings">Налаштування</string>
     <plurals name="seconds">
         <item quantity="one">%d секунда</item>
@@ -43,7 +39,6 @@
     <string name="close">Закрити</string>
     <string name="delete">Видалити</string>
     <string name="add">Додати</string>
-    <string name="bookmark_just_now">Щойно</string>
     <string name="voice_intro_first_book">Давайте додамо папку з аудіокнигами, щоб ви могли почати прослуховування!</string>
     <string name="migration_hint_title">Триває читання старих місць відтворення книг</string>
     <string name="migration_hint_content">Через зміни в нових версіях Android папку з аудіокнигами потрібно вибирати за допомогою системного диспетчера файлів. \n \nНатисніть значок вгорі, щоб переглянути ваші старі місця розташування книг.</string>
