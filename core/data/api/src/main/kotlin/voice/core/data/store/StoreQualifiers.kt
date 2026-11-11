@@ -33,9 +33,6 @@ public annotation class FadeOutStore
 public annotation class AmountOfBatteryOptimizationRequestedStore
 
 @Qualifier
-public annotation class ReviewDialogShownStore
-
-@Qualifier
 public annotation class ExcludedBooksStore
 
 @Qualifier

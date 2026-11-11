@@ -51,9 +51,6 @@ android {
     register("libre") {
       dimension = "distribution"
     }
-    register("proprietary") {
-      dimension = "distribution"
-    }
   }
 
   if (keystorePropsFile.exists()) {
@@ -188,8 +185,6 @@ dependencies {
   implementation(libs.serialization.json)
 
   implementation(libs.coil)
-
-  implementation(projects.features.review.noop)
 
   debugImplementation(projects.core.logging.debug)
 
