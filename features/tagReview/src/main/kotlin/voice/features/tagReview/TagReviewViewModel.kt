@@ -70,12 +70,15 @@ class TagReviewViewModel(
   }
 
   /** Asks the catalogues about [series]. The screen has already told the user what is sent. */
-  internal fun compareOnline(series: String) {
+  internal fun compareOnline(
+    series: String,
+    refresh: Boolean = false,
+  ) {
     if (lookups[series] is LookupStatus.Running) return
     lookups = lookups + (series to LookupStatus.Running)
     scope.launch {
       val result = try {
-        onlineLookup.compare(series)
+        onlineLookup.compare(series, refresh)
       } catch (e: CancellationException) {
         throw e
       } catch (e: Exception) {

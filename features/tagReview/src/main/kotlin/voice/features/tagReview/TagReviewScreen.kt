@@ -89,7 +89,7 @@ internal fun TagReviewScreen(
   onIgnore: (TagFindingItem) -> Unit,
   modifier: Modifier = Modifier,
   lookups: Map<String, LookupStatus> = emptyMap(),
-  onCompareOnline: (String) -> Unit = {},
+  onCompareOnline: (String, Boolean) -> Unit = { _, _ -> },
 ) {
   var confirming by remember { mutableStateOf<String?>(null) }
   var editing by remember { mutableStateOf<TagFindingItem?>(null) }
@@ -150,7 +150,8 @@ internal fun TagReviewScreen(
         TextButton(
           onClick = {
             confirming = null
-            onCompareOnline(series)
+            // After an answer, asking again means: ignore the saved one and ask the services anew.
+            onCompareOnline(series, lookups[series] is LookupStatus.Done)
           },
         ) { Text(stringResource(StringsR.string.tag_review_online_send)) }
       },
@@ -252,7 +253,13 @@ private fun OnlineSection(
           if (status is LookupStatus.Running) {
             CircularProgressIndicator(Modifier.size(24.dp))
           } else {
-            OutlinedButton(onClick = { onCompare(name) }) { Text(stringResource(StringsR.string.tag_review_online_button)) }
+            OutlinedButton(onClick = { onCompare(name) }) {
+              Text(
+                stringResource(
+                  if (status is LookupStatus.Done) StringsR.string.tag_review_online_again else StringsR.string.tag_review_online_button,
+                ),
+              )
+            }
           }
         }
       }

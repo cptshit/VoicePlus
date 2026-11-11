@@ -98,6 +98,16 @@ class OnlineLookupTest {
   }
 
   @Test
+  fun refreshAsksTheServicesAgainDespiteTheCache() = runTest {
+    val subject = lookup(book("Der Fluesterer", "1"))
+    subject.compare("Gabriel Burns")
+    requests.clear()
+
+    subject.compare("Gabriel Burns", refresh = true) shouldBe LookupResult.Found(1, CatalogSource.MusicBrainz)
+    requests.size shouldBe 1
+  }
+
+  @Test
   fun fallsBackToITunesWhenMusicBrainzHasNothingSuitable() = runTest {
     answer = { url ->
       if ("musicbrainz" in url) {

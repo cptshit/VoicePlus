@@ -563,4 +563,5 @@
     <string name="library_empty_shelf">Leeres Regal</string>
     <string name="library_series_saved">Serie gespeichert</string>
     <string name="app_origin_notice">Folgenreich basiert auf VoicePlus und Voice von Paul Woitaschek (GPL-3.0)</string>
+    <string name="tag_review_online_again">Neu abfragen</string>
 </resources>
