@@ -27,7 +27,7 @@ class OrganisationRestoreTest {
   )
   private val snapshot = LibrarySnapshot(
     6, sequence = 1, savedAtEpochMillis = 0, totalCount = 0, activeCount = 0,
-    books = emptyList(), bookmarks = emptyList(), characters = emptyList(), chapterNameOverrides = emptyList(), organisation = arrangement,
+    books = emptyList(), bookmarks = emptyList(), chapterNameOverrides = emptyList(), organisation = arrangement,
   )
 
   @Before fun setup() {

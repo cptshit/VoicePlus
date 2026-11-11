@@ -371,17 +371,7 @@
         <item quantity="other">%1$d Tage</item>
     </plurals>
     <string name="listening_stats_no_data">Noch keine Hördaten.\nStarte die Wiedergabe, um Deine Statistik zu sehen.</string>
-    <string name="character_list">Figurenliste</string>
-    <string name="character_list_add">Figur hinzufügen</string>
-    <string name="character_list_empty">Noch keine Figuren.\nFüge eine Figur hinzu, um Namen und Notizen im Blick zu behalten.</string>
-    <string name="character_name">Name der Figur</string>
-    <string name="character_description">Beschreibung oder Notizen</string>
-    <string name="character_edit">Figur bearbeiten</string>
     <string name="character_save">Speichern</string>
-    <string name="character_delete">Figur löschen</string>
-    <string name="character_delete_title">Figur löschen?</string>
-    <string name="character_delete_confirmation">Das lässt sich nicht rückgängig machen.</string>
-    <string name="character_position_label">Position (1–%1$d)</string>
     <string name="listening_log">Hörprotokoll</string>
     <string name="listening_log_clear_history">Verlauf löschen</string>
     <string name="listening_log_empty">Noch keine Hörsitzungen.\nStarte die Wiedergabe, um Deinen Fortschritt festzuhalten.</string>

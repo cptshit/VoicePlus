@@ -8,7 +8,6 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
-import voice.core.data.repo.internals.dao.BookCharacterDao
 import voice.core.data.repo.internals.dao.BookContentDao
 import voice.core.data.repo.internals.dao.BookmarkDao
 import voice.core.data.repo.internals.dao.ChapterDao
@@ -41,9 +40,6 @@ public interface PersistenceModule {
 
   @Provides
   private fun listeningEventDao(appDb: AppDb): ListeningEventDao = appDb.listeningEventDao()
-
-  @Provides
-  private fun bookCharacterDao(appDb: AppDb): BookCharacterDao = appDb.bookCharacterDao()
 
   @Provides
   private fun chapterNameOverrideDao(appDb: AppDb): ChapterNameOverrideDao = appDb.chapterNameOverrideDao()

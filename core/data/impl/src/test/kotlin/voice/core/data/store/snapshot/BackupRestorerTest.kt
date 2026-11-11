@@ -52,7 +52,6 @@ class BackupRestorerTest {
     ring = ring,
     bookContentDao = db.bookContentDao(),
     bookmarkDao = db.bookmarkDao(),
-    bookCharacterDao = db.bookCharacterDao(),
     chapterDao = db.chapterDao(),
     chapterNameOverrideDao = db.chapterNameOverrideDao(),
     listeningSessionDao = db.listeningSessionDao(),
@@ -79,7 +78,7 @@ class BackupRestorerTest {
     schemaVersion = 1, dbVersion = AppDb.VERSION, sequence = 1, savedAtEpochMillis = 0,
     totalCount = ids.size, activeCount = ids.size,
     books = ids.map { book(it, true).toDto() },
-    bookmarks = emptyList(), characters = emptyList(), chapterNameOverrides = emptyList(),
+    bookmarks = emptyList(), chapterNameOverrides = emptyList(),
   )
 
   @Test
@@ -149,7 +148,7 @@ class BackupRestorerTest {
         schemaVersion = 1, dbVersion = AppDb.VERSION, sequence = 1, savedAtEpochMillis = 0,
         totalCount = 1, activeCount = 1,
         books = listOf(book("a", active = true).toDto()),
-        bookmarks = emptyList(), characters = emptyList(), chapterNameOverrides = emptyList(),
+        bookmarks = emptyList(), chapterNameOverrides = emptyList(),
         chapters = listOf(Chapter(ChapterId("ca"), "Ch A", 1_000, Instant.EPOCH, emptyList()).toDto()),
       )
     }
@@ -164,7 +163,7 @@ class BackupRestorerTest {
         schemaVersion = 1, dbVersion = AppDb.VERSION, sequence = 1, savedAtEpochMillis = 0,
         totalCount = 1, activeCount = 1,
         books = listOf(book("a", active = true).toDto()),
-        bookmarks = emptyList(), characters = emptyList(), chapterNameOverrides = emptyList(),
+        bookmarks = emptyList(), chapterNameOverrides = emptyList(),
         sessions = listOf(
           ListeningSession(
             id = 7,
@@ -203,14 +202,13 @@ class BackupRestorerTest {
 
     db.bookContentDao().all().single().positionInChapter shouldBe 42_000
     db.bookmarkDao().all().single().time shouldBe 12_000
-    db.bookCharacterDao().all().single().name shouldBe "Test Character"
     db.chapterDao().all().single().fileSize shouldBe 0
     db.listeningSessionDao().all().single().durationMs shouldBe 60_000
     db.listeningEventDao().all().single().positionMs shouldBe 42_000
   }
 
   @Test
-  fun `applyDirect twice never duplicates sessions, characters or events`() = runTest {
+  fun `applyDirect twice never duplicates sessions or events`() = runTest {
     contentRepo.put(book("a", active = true))
     val snapshot = snapshotOf("a").copy(
       sessions = listOf(
@@ -219,16 +217,6 @@ class BackupRestorerTest {
           startedAt = Instant.ofEpochMilli(100), endedAt = Instant.ofEpochMilli(200),
           durationMs = 100, startPositionMs = 0, endPositionMs = 100, endReason = 1,
         ).toDto(),
-      ),
-      characters = listOf(
-        BookCharacterDto(
-          id = 3,
-          bookId = "a",
-          name = "Paul",
-          description = "Atreides",
-          createdAtEpochMillis = 5,
-          updatedAtEpochMillis = 5,
-        ),
       ),
       events = listOf(
         ListeningEventDto(bookId = "a", type = 0, chapterId = "ca", positionMs = 50, atEpochMillis = 150),
@@ -241,7 +229,6 @@ class BackupRestorerTest {
 
     db.listeningSessionDao().all().size shouldBe 1
     db.listeningSessionDao().all().single().endReason shouldBe 1
-    db.bookCharacterDao().all().size shouldBe 1
     db.listeningEventDao().all().size shouldBe 1
   }
 

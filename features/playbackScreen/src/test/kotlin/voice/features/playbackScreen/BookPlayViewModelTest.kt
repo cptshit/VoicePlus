@@ -36,7 +36,6 @@ import voice.core.data.ChapterId
 import voice.core.data.ListeningEventType
 import voice.core.data.MarkData
 import voice.core.data.PlaybackToolbarAction
-import voice.core.data.repo.BookCharacterRepo
 import voice.core.data.repo.BookmarkRepo
 import voice.core.data.sleeptimer.SleepTimerPreference
 import voice.core.playback.CurrentBookResolver
@@ -107,9 +106,6 @@ class BookPlayViewModelTest {
     currentBookStoreId = currentBookStoreId,
     navigator = mockk(),
     bookmarkRepository = bookmarkRepository,
-    characterRepo = mockk<BookCharacterRepo> {
-      every { characterCount(any()) } returns flowOf(0)
-    },
     chapterNameOverrideRepo = mockk {
       every { overridesForBook(any()) } returns flowOf(emptyList())
     },
@@ -441,7 +437,7 @@ class BookPlayViewModelTest {
   }
 
   @Test
-  fun `pinning a toolbar action persists it and stops at the cap`() = scope.runTest {
+  fun `pinning and unpinning a toolbar action persists it`() = scope.runTest {
     val store = MemoryDataStore(PlaybackToolbarAction.DEFAULT)
     val viewModel = viewModel(toolbarActionsStore = store)
 
@@ -449,16 +445,10 @@ class BookPlayViewModelTest {
     yield()
     store.data.first() shouldBe PlaybackToolbarAction.DEFAULT + PlaybackToolbarAction.LISTENING_LOG
 
-    // Fifth pin is refused; four is all a compact app bar can take.
-    viewModel.setToolbarAction(PlaybackToolbarAction.CHAPTER_FIX, pinned = true)
-    yield()
-    store.data.first() shouldBe PlaybackToolbarAction.DEFAULT + PlaybackToolbarAction.LISTENING_LOG
-
     viewModel.setToolbarAction(PlaybackToolbarAction.PLAYBACK_SPEED, pinned = false)
     yield()
     store.data.first() shouldBe setOf(
       PlaybackToolbarAction.BOOKMARKS,
-      PlaybackToolbarAction.CHARACTER_LIST,
       PlaybackToolbarAction.LISTENING_LOG,
     )
   }
@@ -501,9 +491,6 @@ class BookPlayViewModelTest {
       currentBookStoreId = MemoryDataStore(book.id),
       navigator = mockk(),
       bookmarkRepository = mockk(),
-      characterRepo = mockk {
-        every { characterCount(any()) } returns flowOf(0)
-      },
       chapterNameOverrideRepo = mockk {
         every { overridesForBook(any()) } returns flowOf(emptyList())
       },

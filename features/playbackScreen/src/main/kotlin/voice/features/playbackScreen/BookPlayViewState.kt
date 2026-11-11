@@ -18,7 +18,6 @@ data class BookPlayViewState(
   val playing: Boolean,
   val cover: ImmutableFile?,
   val skipSilence: Boolean,
-  val characterCount: Int,
   val editChapterNamesVisible: Boolean,
   val toolbarActions: Set<PlaybackToolbarAction>,
 ) {

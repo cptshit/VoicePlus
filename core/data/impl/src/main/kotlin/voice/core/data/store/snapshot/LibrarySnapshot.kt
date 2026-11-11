@@ -1,7 +1,6 @@
 package voice.core.data.store.snapshot
 
 import kotlinx.serialization.Serializable
-import voice.core.data.BookCharacter
 import voice.core.data.BookContent
 import voice.core.data.BookId
 import voice.core.data.Bookmark
@@ -26,7 +25,6 @@ internal data class LibrarySnapshot(
   val activeCount: Int,
   val books: List<BookContentDto>,
   val bookmarks: List<BookmarkDto>,
-  val characters: List<BookCharacterDto>,
   val chapterNameOverrides: List<ChapterNameOverrideDto>,
   val sessions: List<ListeningSessionDto> = emptyList(),
   // chapters2 rows for every book. Required for the OS-wipe restore: without re-inserted Chapter rows
@@ -103,17 +101,6 @@ internal data class BookmarkDto(
   val addedAtEpochMillis: Long,
   val setBySleepTimer: Boolean,
   val id: String,
-)
-
-@Serializable
-internal data class BookCharacterDto(
-  val id: Long,
-  val bookId: String,
-  val name: String,
-  val description: String,
-  val sortOrder: Int = 0,
-  val createdAtEpochMillis: Long,
-  val updatedAtEpochMillis: Long,
 )
 
 @Serializable
@@ -231,26 +218,6 @@ internal fun BookmarkDto.toBookmark() = Bookmark(
   addedAt = Instant.ofEpochMilli(addedAtEpochMillis),
   setBySleepTimer = setBySleepTimer,
   id = Bookmark.Id(UUID.fromString(id)),
-)
-
-internal fun BookCharacter.toDto() = BookCharacterDto(
-  id = id,
-  bookId = bookId.value,
-  name = name,
-  description = description,
-  sortOrder = sortOrder,
-  createdAtEpochMillis = createdAt.toEpochMilli(),
-  updatedAtEpochMillis = updatedAt.toEpochMilli(),
-)
-
-internal fun BookCharacterDto.toBookCharacter() = BookCharacter(
-  id = id,
-  bookId = BookId(bookId),
-  name = name,
-  description = description,
-  sortOrder = sortOrder,
-  createdAt = Instant.ofEpochMilli(createdAtEpochMillis),
-  updatedAt = Instant.ofEpochMilli(updatedAtEpochMillis),
 )
 
 internal fun ChapterNameOverride.toDto() = ChapterNameOverrideDto(chapterId, markStartMs, bookId, name)

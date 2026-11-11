@@ -23,7 +23,7 @@ class LibrarySnapshotCodecTest {
       activeCount = 1,
       books = listOf(book("b1", true).copy(name = "Saved title").toDto().copy(nameOverridden = false)),
       bookmarks = emptyList(),
-      characters = emptyList(),
+
       chapterNameOverrides = emptyList(),
     )
 
@@ -59,10 +59,14 @@ class LibrarySnapshotCodecTest {
   @Test
   fun `LibrarySnapshot round-trips through json`() {
     val snap = LibrarySnapshot(
-      schemaVersion = LibrarySnapshot.SCHEMA_VERSION, sequence = 3, savedAtEpochMillis = 99,
-      totalCount = 1, activeCount = 1,
+      schemaVersion = LibrarySnapshot.SCHEMA_VERSION,
+      sequence = 3,
+      savedAtEpochMillis = 99,
+      totalCount = 1,
+      activeCount = 1,
       books = listOf(book("b1", true).copy(seriesGroup = "Manual series", seriesOrder = 3).toDto()),
-      bookmarks = emptyList(), characters = emptyList(), chapterNameOverrides = emptyList(),
+      bookmarks = emptyList(),
+      chapterNameOverrides = emptyList(),
     )
     val text = json.encodeToString(LibrarySnapshot.serializer(), snap)
     json.decodeFromString(LibrarySnapshot.serializer(), text) shouldBe snap
@@ -103,7 +107,7 @@ class LibrarySnapshotCodecTest {
       schemaVersion = LibrarySnapshot.SCHEMA_VERSION, sequence = 7, savedAtEpochMillis = 1,
       totalCount = 1, activeCount = 1,
       books = listOf(book("b1", true).toDto()),
-      bookmarks = emptyList(), characters = emptyList(), chapterNameOverrides = emptyList(),
+      bookmarks = emptyList(), chapterNameOverrides = emptyList(),
       sessions = listOf(
         ListeningSessionDto(
           id = 3, bookId = "b1", chapterId = "ch-b1", startedAtEpochMillis = 10, endedAtEpochMillis = 20,
@@ -162,9 +166,14 @@ class LibrarySnapshotCodecTest {
   @Test
   fun `activeIds reflects only active books`() {
     val snap = LibrarySnapshot(
-      schemaVersion = 1, sequence = 1, savedAtEpochMillis = 0, totalCount = 2, activeCount = 1,
+      schemaVersion = 1,
+      sequence = 1,
+      savedAtEpochMillis = 0,
+      totalCount = 2,
+      activeCount = 1,
       books = listOf(book("b1", true).toDto(), book("b2", false).toDto()),
-      bookmarks = emptyList(), characters = emptyList(), chapterNameOverrides = emptyList(),
+      bookmarks = emptyList(),
+      chapterNameOverrides = emptyList(),
     )
     snap.activeIds() shouldBe setOf("b1")
   }

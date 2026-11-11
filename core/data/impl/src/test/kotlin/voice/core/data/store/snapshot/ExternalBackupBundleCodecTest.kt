@@ -50,7 +50,6 @@ class ExternalBackupBundleCodecTest {
       ).toDto(),
     ),
     bookmarks = emptyList(),
-    characters = emptyList(),
     chapterNameOverrides = emptyList(),
   )
 
@@ -98,7 +97,6 @@ class ExternalBackupBundleCodecTest {
     restored.books.single().name shouldBe "Compatibility Book"
     restored.books.single().positionInChapter shouldBe 42_000
     restored.bookmarks.single().title shouldBe "Test Bookmark"
-    restored.characters.single().name shouldBe "Test Character"
     restored.chapterNameOverrides.single().name shouldBe "Renamed Section"
     restored.sessions.single().durationMs shouldBe 60_000
     restored.chapters.single().relName shouldBe "Compatibility Book/chapter-1.mp3"

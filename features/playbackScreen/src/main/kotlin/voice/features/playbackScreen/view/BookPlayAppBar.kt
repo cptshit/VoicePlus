@@ -35,7 +35,6 @@ internal fun BookPlayAppBar(
   onSkipSilenceClick: () -> Unit,
   onVolumeBoostClick: () -> Unit,
   onListeningLogClick: () -> Unit,
-  onCharacterListClick: () -> Unit,
   onCustomizeToolbarClick: () -> Unit,
   onCloseClick: () -> Unit,
   useLandscapeLayout: Boolean,
@@ -48,7 +47,6 @@ internal fun BookPlayAppBar(
   val onActionClick: (PlaybackToolbarAction) -> Unit = { action ->
     when (action) {
       PlaybackToolbarAction.BOOKMARKS -> onBookmarkClick()
-      PlaybackToolbarAction.CHARACTER_LIST -> onCharacterListClick()
       PlaybackToolbarAction.PLAYBACK_SPEED -> onSpeedChangeClick()
       PlaybackToolbarAction.CHAPTER_FIX -> onEditChapterNamesClick?.invoke()
       PlaybackToolbarAction.LISTENING_LOG -> onListeningLogClick()
@@ -85,22 +83,6 @@ internal fun BookPlayAppBar(
               imageVector = action.icon,
               contentDescription = stringResource(id = action.labelRes),
             )
-          }
-        }
-        PlaybackToolbarAction.CHARACTER_LIST -> {
-          IconButton(onClick = onCharacterListClick) {
-            BadgedBox(
-              badge = {
-                if (viewState.characterCount > 0) {
-                  Badge()
-                }
-              },
-            ) {
-              Icon(
-                imageVector = action.icon,
-                contentDescription = stringResource(id = action.labelRes),
-              )
-            }
           }
         }
         else -> {

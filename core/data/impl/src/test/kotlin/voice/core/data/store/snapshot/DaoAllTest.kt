@@ -10,7 +10,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import voice.core.data.BookCharacter
 import voice.core.data.BookId
 import voice.core.data.ChapterNameOverride
 import voice.core.data.repo.internals.AppDb
@@ -34,21 +33,11 @@ class DaoAllTest {
   fun teardown() = db.close()
 
   @Test
-  fun `character and override all() return every row`() = runTest {
-    db.bookCharacterDao().insert(
-      BookCharacter(
-        bookId = bookId,
-        name = "Frodo",
-        description = "",
-        createdAt = Instant.EPOCH,
-        updatedAt = Instant.EPOCH,
-      ),
-    )
+  fun `override all() returns every row`() = runTest {
     db.chapterNameOverrideDao().insert(
       ChapterNameOverride(chapterId = "c1", markStartMs = 0L, bookId = bookId.value, name = "Intro"),
     )
 
-    db.bookCharacterDao().all() shouldHaveSize 1
     db.chapterNameOverrideDao().all() shouldHaveSize 1
   }
 }

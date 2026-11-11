@@ -50,7 +50,6 @@ class SnapshotWriterTest {
   private fun writer(backup: BackupRepository = noopBackupStub) = SnapshotWriter(
     contentRepo = contentRepo,
     bookmarkDao = db.bookmarkDao(),
-    bookCharacterDao = db.bookCharacterDao(),
     chapterDao = db.chapterDao(),
     chapterNameOverrideDao = db.chapterNameOverrideDao(),
     listeningSessionDao = db.listeningSessionDao(),

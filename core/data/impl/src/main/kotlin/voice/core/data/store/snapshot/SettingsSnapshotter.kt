@@ -26,6 +26,7 @@ import voice.core.data.store.FadeOutStore
 import voice.core.data.store.GlobalVolumeGainStore
 import voice.core.data.store.GridModeStore
 import voice.core.data.store.IgnoreFileTagsStore
+import voice.core.data.store.LenientToolbarActionsSerializer
 import voice.core.data.store.MediaButtonDoubleClickHandlerStore
 import voice.core.data.store.MediaButtonTripleClickHandlerStore
 import voice.core.data.store.PlaybackToolbarActionsStore
@@ -82,7 +83,7 @@ internal class SettingsSnapshotter(
     Entry("booksPerRow", booksPerRow, Int.serializer()),
     Entry("mediaButtonDoubleClick", mediaDoubleClick, MediaButtonClickAction.serializer()),
     Entry("mediaButtonTripleClick", mediaTripleClick, MediaButtonClickAction.serializer()),
-    Entry("playbackToolbarActions", playbackToolbarActions, SetSerializer(PlaybackToolbarAction.serializer())),
+    Entry("playbackToolbarActions", playbackToolbarActions, LenientToolbarActionsSerializer),
     Entry("globalVolumeGain", globalVolumeGain, Float.serializer().nullable),
     Entry("experimentalPlaybackPersistence", experimentalPersistence, Boolean.serializer()),
     Entry("ignoreFileTags", ignoreFileTags, Boolean.serializer()),
