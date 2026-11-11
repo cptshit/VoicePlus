@@ -14,7 +14,7 @@ To regenerate from the original files (needs `pip install fonttools`):
 U="U+0020-007E,U+00A0-00FF,U+0100-017F,U+02C6,U+02DC,U+2010-2015,U+2018-201E,U+2020-2022,U+2026,U+2030,U+2039-203A,U+20AC,U+2122,U+2190-2193,U+2212,U+25CF"
 pyftsubset Original.ttf --unicodes="$U" --layout-features='*' --glyph-names --notdef-outline --name-IDs='*' --output-file=Subset.ttf
 fonttools varLib.instancer Subset.ttf wght=400:700 -o Out.ttf            # Literata
-fonttools varLib.instancer Subset.ttf wght=400:700 wdth=100 -o Out.ttf   # IBM Plex Sans
+fonttools varLib.instancer Subset.ttf wght=400:700 wdth=100 -o Out.ttf   # IBM Plex Sans, then rename (see License)
 ```
 
 Size: 1.7 MB before, about 0.6 MB after. The unmodified files are in the git history before the
@@ -31,8 +31,9 @@ The OFL allows that and requires the license and copyright notices to stay with 
 they do.
 
 IBM Plex Sans declares the Reserved Font Name "Plex". Clause 3 of the OFL says a modified
-version must not use a Reserved Font Name. The subset still carries the original family name
-inside its name table. That is fine while the app is only built for personal use. Before
-distributing the app or the fonts to others, rename the family in the Plex subset, for example
-with `fontTools.ttLib` (name IDs 1, 4, 6 and 16), or bundle the unmodified original instead.
+version must not use a Reserved Font Name, so the family in the Plex subset is renamed to
+"Folgenreich Sans": name IDs 1, 3, 4, 6, 25 and the named-instance PostScript names. The copyright,
+trademark and license entries of the font are left as they were. The app loads the font by its
+resource id, so the rename has no effect on rendering.
 
+Literata and Barlow Condensed declare no Reserved Font Name and keep their names.
