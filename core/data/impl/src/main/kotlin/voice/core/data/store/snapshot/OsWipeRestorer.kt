@@ -15,7 +15,6 @@ import voice.core.data.MediaScanWaiter
 import voice.core.data.hoerspiel.EpisodeNumberRepo
 import voice.core.data.repo.BookContentRepo
 import voice.core.data.repo.internals.dao.BookContentDao
-import voice.core.data.repo.internals.dao.BookmarkDao
 import voice.core.data.repo.internals.dao.ChapterDao
 import voice.core.data.repo.internals.dao.ChapterNameOverrideDao
 import voice.core.data.repo.internals.dao.LibraryOrganisationDao
@@ -52,7 +51,6 @@ internal class OsWipeRestorer(
   private val contentRepo: BookContentRepo,
   private val bookContentDao: BookContentDao,
   private val chapterDao: ChapterDao,
-  private val bookmarkDao: BookmarkDao,
   private val chapterNameOverrideDao: ChapterNameOverrideDao,
   @ExcludedBooksStore private val excludedBooksStore: DataStore<Set<String>>,
   private val appDb: RoomDatabase,
@@ -95,7 +93,6 @@ internal class OsWipeRestorer(
     // 3. Snapshot side: filter user-deleted books, then attach each book's stamp + chapters + user data.
     val excludedIds = excludedBooksStore.data.first()
     val snapChapterById = snapshot.chapters.associateBy { it.id }
-    val bookmarksByBook = snapshot.bookmarks.groupBy { it.bookId }
     val overridesByBook = snapshot.chapterNameOverrides.groupBy { it.bookId }
     val snapshotBooks = snapshot.books
       // Hidden books DO participate: the scan has already put their files back on disk under new
@@ -103,7 +100,7 @@ internal class OsWipeRestorer(
       // data and their NEW ids are added to the hidden set below, so they stay hidden.
       .filter { it.id !in excludedIds || it.id in snapshot.hiddenBooks }
       .map { dto ->
-        toSnapshotBook(dto, snapChapterById, bookmarksByBook, overridesByBook)
+        toSnapshotBook(dto, snapChapterById, overridesByBook)
       }
 
     // 4. Pure, deterministic, never-cross-attach re-key.
@@ -126,7 +123,6 @@ internal class OsWipeRestorer(
         bookContentDao.insert(content)
         // chapters2 rows already exist from the scan (matched.content.chapters are the scanned ids), so
         // BookRepository.book() resolves without re-inserting anything.
-        matched.bookmarks.forEach { bookmarkDao.addBookmark(it) }
         matched.overrides.forEach { chapterNameOverrideDao.insert(it) }
       }
     }
@@ -179,7 +175,6 @@ internal class OsWipeRestorer(
   private fun toSnapshotBook(
     dto: BookContentDto,
     snapChapterById: Map<String, ChapterDto>,
-    bookmarksByBook: Map<String, List<BookmarkDto>>,
     overridesByBook: Map<String, List<ChapterNameOverrideDto>>,
   ): SnapshotBook {
     val bookRelPath = DeviceRelativePath.documentId(dto.id.toUri())
@@ -194,7 +189,6 @@ internal class OsWipeRestorer(
       stamp = stamp,
       content = dto,
       chapters = snapChapters,
-      bookmarks = bookmarksByBook[dto.id].orEmpty(),
       overrides = overridesByBook[dto.id].orEmpty(),
     )
   }

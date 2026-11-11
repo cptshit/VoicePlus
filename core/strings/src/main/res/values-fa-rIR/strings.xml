@@ -16,10 +16,6 @@
     <string name="edit_book_title">ویرایش کتاب</string>
     <string name="audiobook_folders_title">پوشه‌های کتاب صوتی</string>
     <string name="playback_speed">سرعت بازپخش</string>
-    <string name="bookmark">نشان‌گذاری</string>
-    <string name="bookmark_edit_title">ویرایش نشانه</string>
-    <string name="bookmark_edit_hint">نام گذاری نشانه</string>
-    <string name="bookmark_added">نشانه‌گذاری انجام شد</string>
     <string name="action_settings">تنظیمات</string>
     <plurals name="seconds">
         <item quantity="one">%d ثانیه</item>
@@ -44,7 +40,6 @@
     <string name="book_header_not_started">هنوز شروع نشده</string>
     <string name="book_header_current">جاری</string>
     <string name="close">بستن</string>
-    <string name="bookmark_just_now">همین الان</string>
     <string name="migration_detail_content_position_current_chapter_position">موقعیت در فصل</string>
     <string name="migration_delete_dialog_title">پاک کردن موقعیت ها</string>
     <string name="delete_book_dialog_content">با این کار فایل های موجود در دستگاه شما حذف می شود.</string>

@@ -172,7 +172,6 @@ dependencies {
   implementation(projects.features.tagReview)
   implementation(projects.core.documentfile)
   implementation(projects.features.onboarding)
-  implementation(projects.features.bookmark)
 
   implementation(libs.appCompat)
   implementation(libs.datastore)

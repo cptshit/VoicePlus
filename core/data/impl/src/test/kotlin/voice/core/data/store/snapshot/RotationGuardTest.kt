@@ -19,7 +19,6 @@ class RotationGuardTest {
       totalCount = books.size,
       activeCount = active.size,
       books = books,
-      bookmarks = emptyList(),
       chapterNameOverrides = emptyList(),
     )
   }

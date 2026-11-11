@@ -12,10 +12,6 @@
     <string name="edit_book_title">Athraigh an closleabhar</string>
     <string name="audiobook_folders_title">Fillteáin na closleabhar</string>
     <string name="playback_speed">Luas an seinntora</string>
-    <string name="bookmark">Ga leabhair</string>
-    <string name="bookmark_edit_title">Athraigh an ga leabhair</string>
-    <string name="bookmark_edit_hint">Ainm an ga leabhair</string>
-    <string name="bookmark_added">Ga leabhair curtha</string>
     <string name="action_settings">Socruithe</string>
     <string name="popup_edit">Athraigh</string>
     <string name="remove">Bain de</string>
@@ -99,7 +95,6 @@
     </plurals>
     <string name="folder_type_book_example_header">D’fhágfadh sin go mbraithfí na leabhair seo a leanas</string>
     <string name="folder_type_no_books">Níorbh fhéidir le Voice aon leabhar a bhrath. An bhfuil aon chomhaid fuaime ann?</string>
-    <string name="bookmark_just_now">Anois féin</string>
     <string name="voice_intro_first_book">Cuirimis d’fhillteán closleabhar leis ionas gur féidir leat tosú ag éisteacht!</string>
     <string name="migration_hint_title">Teacht ar phoist na Seanleabhar</string>
     <string name="migration_hint_content">De bharr athruithe ar Leaganacha Android níos nuaí, ní mór d’fhillteán closleabhar a roghnú ag baint úsáide as an roghnóir córais. \n \nCliceáil ar an deilbhín thuas chun féachaint ar do sheanleabhair.</string>

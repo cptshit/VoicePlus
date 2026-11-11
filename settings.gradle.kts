@@ -58,7 +58,6 @@ include(":core:ui")
 
 include(":features:backup")
 include(":features:bookOverview")
-include(":features:bookmark")
 include(":features:chapterEditor")
 include(":features:cover")
 include(":features:folderPicker")

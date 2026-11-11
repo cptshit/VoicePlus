@@ -44,10 +44,6 @@
     <string name="mark_as_not_started">Marca como não iniciado</string>
     <string name="audiobook_folders_title">Pastas de audiolivros</string>
     <string name="playback_speed">Velocidade de reprodução</string>
-    <string name="bookmark">Marcador</string>
-    <string name="bookmark_edit_title">Editar marcador</string>
-    <string name="bookmark_edit_hint">Título do marcador</string>
-    <string name="bookmark_added">Marcador adicionado</string>
     <string name="action_settings">Preferências</string>
     <plurals name="seconds">
         <item quantity="one">%d segundo</item>
@@ -75,7 +71,6 @@
     <string name="folder_type_book_example_header">Isto fará com que os respectivos livros sejam reconhecidos</string>
     <string name="folder_type_no_books">Voice não conseguiu encontrar nenhum livro. O ficheiro está no formato certo?</string>
     <string name="folder_type_title">Como os seus ficheiros estão organizados?</string>
-    <string name="bookmark_just_now">Nesse exato momento</string>
     <string name="voice_intro_first_book">Vamos adicionar uma pasta de Audiolivros para começar a ouvir!</string>
     <string name="migration_hint_title">Aceder posições de livros antigos</string>
     <string name="migration_hint_content">Devido alterações na versão do Android, é necessário selecionar a pasta de Audiolivros manualmente no seu aparelho. \n \nClique no ícone acima para ver a localização antiga dos livros.</string>

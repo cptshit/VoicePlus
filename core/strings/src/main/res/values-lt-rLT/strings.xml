@@ -21,10 +21,6 @@
     <string name="mark_as_not_started">Pažymėti kaip dar nepradėtą</string>
     <string name="audiobook_folders_title">Garsinių knygų aplankai</string>
     <string name="playback_speed">Atkūrimo sparta</string>
-    <string name="bookmark">Žymelės</string>
-    <string name="bookmark_edit_title">Redaguoti žymelę</string>
-    <string name="bookmark_edit_hint">Žymelės pavadinimas</string>
-    <string name="bookmark_added">Žymelė išsaugota</string>
     <string name="action_settings">Nustatymai</string>
     <plurals name="seconds">
         <item quantity="one">%d sekundė</item>
@@ -61,7 +57,6 @@
     <string name="folder_type_book_example_header">Tai leistų aptikti šias knygas</string>
     <string name="folder_type_no_books">„Voice“ nepavyko aptikti jokių knygų. Ar viduje yra garsinių failų?</string>
     <string name="folder_type_title">Kokia jūsų failų struktūra?</string>
-    <string name="bookmark_just_now">Ką tik</string>
     <string name="voice_intro_first_book">Jei norite pradėti klausytis, pridėkite garsinių knygų aplanką!</string>
     <string name="migration_hint_title">Skaitomos senosios pozicijos knygose</string>
     <string name="migration_hint_content">Dėl pokyčių naujesnėse „Android“ versijose, garsinių knygų aplanką būtina nurodyti naudojant sistemos parinkiklį.\n\nPaspauskite ant aukščiau esančios piktogramos, jei norite peržiūrėti senąsias pozicijas knygose.</string>

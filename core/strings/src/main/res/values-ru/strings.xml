@@ -20,10 +20,6 @@
     <string name="mark_as_not_started">Пометить как непрослушанную</string>
     <string name="audiobook_folders_title">Папки с аудиокнигами</string>
     <string name="playback_speed">Скорость воспроизведения</string>
-    <string name="bookmark">Закладка</string>
-    <string name="bookmark_edit_title">Редактировать закладку</string>
-    <string name="bookmark_edit_hint">Имя закладки</string>
-    <string name="bookmark_added">Закладка добавлена</string>
     <string name="action_settings">Настройки</string>
     <plurals name="seconds">
         <item quantity="one">%d секунда</item>
@@ -60,7 +56,6 @@
     <string name="folder_type_book_example_header">Будут обнаружены следующие книги</string>
     <string name="folder_type_no_books">Не удалось обнаружить аудиокниги. Присутствуют ли аудиофайлы?</string>
     <string name="folder_type_title">Как упорядочены ваши файлы?</string>
-    <string name="bookmark_just_now">Только что</string>
     <string name="voice_intro_first_book">Давайте выберем папку с аудиокнигами!</string>
     <string name="migration_hint_title">Поиск предыдущих расположений</string>
     <string name="migration_hint_content">Из-за изменений в последних версиях Android, необходимо выбрать папку с аудиокнигами через системный диалог.\n\nНажмине на значке наверху, чтобы посмотреть предыдущее расположение книг.</string>

@@ -13,7 +13,6 @@
     <string name="review.feedback.content">Nos podes nàrrere ite b\'at àpidu de isballiadu? Apretziamus su parre tuo e nos agiudat a megiorare s\'esperièntzia tua.</string>
     <string name="review.request.content">Su parre tuo nos importat! Si tenes unu momentu, dae·nos unu votu e cumpartzi s\'esperièntzia tua. Noa agiudat a megiorare e a dare un\'esperièntzia de ascurtu prus bona.</string>
     <string name="action_sleep">Temporizadore de suspensione</string>
-    <string name="bookmark_added">Sinnalibru annantu</string>
     <string name="migration_detail_content_position_current_file_title">Documentu atuale</string>
     <string name="rewind">Torra in segus</string>
     <string name="edit_book_title">Modìfica su libru</string>
@@ -39,7 +38,6 @@
     <string name="mark_as_not_started">Marca comente galu no incumintzadu</string>
     <string name="mark_as_current">Marca comente atuale</string>
     <string name="playback_speed">Lestresa de riprodutzione</string>
-    <string name="bookmark">Sinnalibru</string>
     <plurals name="seconds">
         <item quantity="one">%d segundu</item>
         <item quantity="other">%d segundos</item>
@@ -57,7 +55,6 @@
         <item quantity="other">%d documentos àudio</item>
     </plurals>
     <string name="folder_type_title">Comente sunt istruturados sos documentos tuos?</string>
-    <string name="bookmark_just_now">Como como</string>
     <string name="voice_intro_first_book">Agiunghimus sa cartella de audiolibros tua in manera chi potzas incumintzare a ascurtare!</string>
     <string name="migration_hint_title">Atzedende a sas positziones betzas de su libru</string>
     <string name="migration_hint_confirm">Apo cumpresu</string>
@@ -97,9 +94,7 @@
     <string name="play_pause">Riprodutzione / Pàusa</string>
     <string name="fast_forward">In antis lestru</string>
     <string name="dialog_confirm">Cunfigura</string>
-    <string name="bookmark_edit_title">Modìfica su sinnalibru</string>
     <string name="content_cover">Mustra sa cobertedda de isseberare</string>
-    <string name="bookmark_edit_hint">Nùmene de su sinnalibru</string>
     <string name="pref_theme_dark">Tema iscuru</string>
     <string name="popup_edit">Modifica</string>
     <string name="remove">Boga</string>

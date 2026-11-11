@@ -39,9 +39,6 @@
     <string name="mark_as_not_started">Marcar como Non escoitado</string>
     <string name="audiobook_folders_title">Cartafoles de audiolibros</string>
     <string name="playback_speed">Velocidade de reprodución</string>
-    <string name="bookmark">Marcar</string>
-    <string name="bookmark_edit_hint">Nome do marcador</string>
-    <string name="bookmark_added">Engadiuse a marca</string>
     <string name="action_settings">Preferencias</string>
     <string name="pref_seek_time">Tempo a omitir</string>
     <string name="pref_auto_rewind_title">Retroceso automático</string>
@@ -101,11 +98,9 @@
     <string name="onboarding_welcome_subtitle">O teu reprodutor de peto para audiolibros. Imos comezar cos axustes.</string>
     <string name="onboarding.explanation.title">A túa Biblioteca, ao teu xeito</string>
     <string name="onboarding.completion.title">Todo preparado!</string>
-    <string name="bookmark_edit_title">Editar marcador</string>
     <string name="migration_hint_title">Localización antiga dos libros</string>
     <string name="migration_hint_content">Debido a cambios recentes en Android, é preciso seleccionar o cartafol de audiolibros usando o selector do sistema.\n\nPreme na icona superior para ver a localización anterior dos libros.</string>
     <string name="delete">Eliminar</string>
-    <string name="bookmark_just_now">Xusto agora</string>
     <string name="onboarding.button_next">Seguinte</string>
     <string name="delete_book_bottom_sheet_title">Eliminar Libro</string>
     <string name="battery_optimization_rationale">Debido aos axustes da batería podería haber interrupcións da reprodución.</string>

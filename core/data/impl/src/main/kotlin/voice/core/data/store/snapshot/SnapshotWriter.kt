@@ -24,7 +24,6 @@ import voice.core.data.BookContent
 import voice.core.data.hoerspiel.EpisodeNumberRepo
 import voice.core.data.repo.BookContentRepo
 import voice.core.data.repo.internals.AppDb
-import voice.core.data.repo.internals.dao.BookmarkDao
 import voice.core.data.repo.internals.dao.ChapterDao
 import voice.core.data.repo.internals.dao.ChapterNameOverrideDao
 import voice.core.data.store.ExcludedBooksStore
@@ -42,7 +41,6 @@ import kotlin.time.Duration.Companion.seconds
 @Inject
 internal class SnapshotWriter(
   private val contentRepo: BookContentRepo,
-  private val bookmarkDao: BookmarkDao,
   private val chapterDao: ChapterDao,
   private val chapterNameOverrideDao: ChapterNameOverrideDao,
   private val ring: SnapshotRing,
@@ -67,7 +65,6 @@ internal class SnapshotWriter(
     // (a source missing here means that change silently never reaches any backup).
     merge(
       contentRepo.flow().map { },
-      bookmarkDao.count().map { },
       chapterNameOverrideDao.count().map { },
       excludedBooksStore.data.drop(1).map { },
       settingsSnapshotter.changes(),
@@ -152,7 +149,6 @@ internal class SnapshotWriter(
           totalCount = books.size,
           activeCount = books.count { it.isActive },
           books = bookDtos,
-          bookmarks = bookmarkDao.all().map { it.toDto() },
           chapterNameOverrides = chapterNameOverrideDao.all().map { it.toDto() },
           chapters = chapterDtos,
           hiddenBooks = excludedIds,

@@ -29,8 +29,6 @@ import voice.features.playbackScreen.BookPlayViewState
 internal fun BookPlayAppBar(
   viewState: BookPlayViewState,
   onSleepTimerClick: () -> Unit,
-  onBookmarkClick: () -> Unit,
-  onBookmarkLongClick: () -> Unit,
   onSpeedChangeClick: () -> Unit,
   onSkipSilenceClick: () -> Unit,
   onVolumeBoostClick: () -> Unit,
@@ -45,7 +43,6 @@ internal fun BookPlayAppBar(
   )
   val onActionClick: (PlaybackToolbarAction) -> Unit = { action ->
     when (action) {
-      PlaybackToolbarAction.BOOKMARKS -> onBookmarkClick()
       PlaybackToolbarAction.PLAYBACK_SPEED -> onSpeedChangeClick()
       PlaybackToolbarAction.CHAPTER_FIX -> onEditChapterNamesClick?.invoke()
     }
@@ -63,34 +60,11 @@ internal fun BookPlayAppBar(
       )
     }
     pinnedActions.forEach { action ->
-      when (action) {
-        PlaybackToolbarAction.BOOKMARKS -> {
-          // Not an IconButton: long-press adds a quick bookmark without leaving the screen.
-          Box(
-            modifier = Modifier
-              .size(40.dp)
-              .combinedClickable(
-                onClick = onBookmarkClick,
-                onLongClick = onBookmarkLongClick,
-                indication = ripple(bounded = false, radius = 20.dp),
-                interactionSource = remember { MutableInteractionSource() },
-              ),
-            contentAlignment = Alignment.Center,
-          ) {
-            Icon(
-              imageVector = action.icon,
-              contentDescription = stringResource(id = action.labelRes),
-            )
-          }
-        }
-        else -> {
-          IconButton(onClick = { onActionClick(action) }) {
-            Icon(
-              imageVector = action.icon,
-              contentDescription = stringResource(id = action.labelRes),
-            )
-          }
-        }
+      IconButton(onClick = { onActionClick(action) }) {
+        Icon(
+          imageVector = action.icon,
+          contentDescription = stringResource(id = action.labelRes),
+        )
       }
     }
     OverflowMenu(
@@ -99,8 +73,6 @@ internal fun BookPlayAppBar(
       onVolumeBoostClick = onVolumeBoostClick,
       overflowActions = overflowActions,
       onActionClick = onActionClick,
-      // Long-press on the pinned icon is the quick bookmark; with the icon gone it needs a menu entry.
-      onQuickBookmarkClick = onBookmarkLongClick.takeIf { PlaybackToolbarAction.BOOKMARKS in overflowActions },
       onCustomizeToolbarClick = onCustomizeToolbarClick,
     )
   }

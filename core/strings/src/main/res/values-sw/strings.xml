@@ -12,10 +12,6 @@
     <string name="edit_book_title">Badili Kitabu</string>
     <string name="audiobook_folders_title">folda ya Vitabu vya sauti</string>
     <string name="playback_speed">Kasi ya uchezaji</string>
-    <string name="bookmark">Alamisho</string>
-    <string name="bookmark_edit_title">Badili Alamisho</string>
-    <string name="bookmark_edit_hint">Jina la Alamisho</string>
-    <string name="bookmark_added">Alamisho Imeogezwa</string>
     <string name="action_settings">Mapendeleo</string>
     <plurals name="seconds">
         <item quantity="one">Sekunde %d</item>

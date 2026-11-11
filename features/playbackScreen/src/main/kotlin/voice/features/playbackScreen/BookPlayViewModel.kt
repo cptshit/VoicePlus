@@ -26,7 +26,6 @@ import voice.core.data.byMarkKey
 import voice.core.data.durationMs
 import voice.core.data.markForPosition
 import voice.core.data.repo.BookRepository
-import voice.core.data.repo.BookmarkRepo
 import voice.core.data.repo.ChapterNameOverrideRepo
 import voice.core.data.sleeptimer.SleepTimerPreference
 import voice.core.data.store.CurrentBookStore
@@ -64,7 +63,6 @@ class BookPlayViewModel(
   @CurrentBookStore
   private val currentBookStoreId: DataStore<BookId?>,
   private val navigator: Navigator,
-  private val bookmarkRepository: BookmarkRepo,
   private val chapterNameOverrideRepo: ChapterNameOverrideRepo,
   private val volumeGainFormatter: VolumeGainFormatter,
   private val batteryOptimization: BatteryOptimization,
@@ -381,22 +379,6 @@ class BookPlayViewModel(
       valueFormatted = volumeGainFormatter.format(gain),
       remember = remember,
     )
-  }
-
-  fun onBookmarkClick() {
-    navigator.goTo(Destination.Bookmarks(bookId))
-  }
-
-  fun onBookmarkLongClick() {
-    scope.launch {
-      val book = currentBook() ?: return@launch
-      bookmarkRepository.addBookmarkAtBookPosition(
-        book = book,
-        title = null,
-        setBySleepTimer = false,
-      )
-      _viewEffects.tryEmit(BookPlayViewEffect.BookmarkAdded)
-    }
   }
 
   fun seekTo(position: Duration) {

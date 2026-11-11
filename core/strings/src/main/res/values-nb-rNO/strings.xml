@@ -6,8 +6,6 @@
     <string name="more">Mer</string>
     <string name="pick_book_cover">Omslag fra filsystemet</string>
     <string name="playback_speed">Avspillingshastighet</string>
-    <string name="bookmark">Bokmerke</string>
-    <string name="bookmark_edit_hint">Bokmerkenavn</string>
     <string name="pref_seek_time">Hoppintervall</string>
     <string name="pref_use_grid">Bruk rutenett</string>
     <string name="pref_help_translating">Bistå oversettelsen</string>
@@ -46,11 +44,8 @@
     <string name="edit_book_title">Rediger bok</string>
     <string name="mark_as_current">Marker som pågående</string>
     <string name="mark_as_not_started">Marker som ikke startet enda</string>
-    <string name="bookmark_edit_title">Rediger bokmerke</string>
-    <string name="bookmark_added">Bokmerke lagt til</string>
     <string name="action_settings">Innstillinger</string>
     <string name="pref_report_issue">Rapporter problem</string>
-    <string name="bookmark_just_now">Akkurat nå</string>
     <plurals name="seconds">
         <item quantity="one">%d sekund</item>
         <item quantity="other">%d sekunder</item>

@@ -22,10 +22,6 @@
     <string name="mark_as_not_started">Markeren als nog niet aan begonnen</string>
     <string name="audiobook_folders_title">Luisterboekmappen</string>
     <string name="playback_speed">Afspeelsnelheid</string>
-    <string name="bookmark">Bladwijzer toevoegen</string>
-    <string name="bookmark_edit_title">Bladwijzer bewerken</string>
-    <string name="bookmark_edit_hint">Bladwijzernaam</string>
-    <string name="bookmark_added">De bladwijzer is toegevoegd</string>
     <string name="action_settings">Instellingen</string>
     <plurals name="seconds">
         <item quantity="one">%d seconde</item>
@@ -58,7 +54,6 @@
     <string name="folder_type_book_example_header">Hierdoor worden de volgende boeken opgenomen</string>
     <string name="folder_type_no_books">Er zijn geen boeken aangetroffen. Zijn er audiobestanden aanwezig?</string>
     <string name="folder_type_title">Hoe zijn de bestanden onderverdeeld?</string>
-    <string name="bookmark_just_now">Zojuist</string>
     <string name="voice_intro_first_book">Laten we je luisterboekmap toevoegen om te beginnen met luisteren!</string>
     <string name="migration_hint_title">Oude leeslocaties</string>
     <string name="migration_hint_content">Door wijzigingen in nieuwere Android-versies, is het noodzakelijk om je luisterboek opnieuw te kiezen via de bestandskiezer.\n\nDruk op bovenstaand pictogram je leeslocaties te bekijken.</string>

@@ -22,10 +22,6 @@
     <string name="mark_as_not_started">Marquer comme Non Commencé</string>
     <string name="audiobook_folders_title">Dossiers de livres audio</string>
     <string name="playback_speed">Vitesse de lecture</string>
-    <string name="bookmark">Marque-page</string>
-    <string name="bookmark_edit_title">Modifier le marque-page</string>
-    <string name="bookmark_edit_hint">Nom du marque-page</string>
-    <string name="bookmark_added">Marque-page ajouté</string>
     <string name="action_settings">Préférences</string>
     <plurals name="seconds">
         <item quantity="one">%d seconde</item>
@@ -60,7 +56,6 @@
     <string name="folder_type_book_example_header">Cela conduirait à la détection des livres suivants</string>
     <string name="folder_type_no_books">Voice n\'a pu détecter aucun livre. Y a-t-il des fichiers audio ?</string>
     <string name="folder_type_title">Comment vos fichiers sont ils structurés ?</string>
-    <string name="bookmark_just_now">À l\'instant</string>
     <string name="voice_intro_first_book">Ajoutons un dossier de livres audio pour commencer à les écouter !</string>
     <string name="migration_hint_title">Accès aux anciennes positions de lecture</string>
     <string name="migration_hint_content">Du fait de modifications dans les nouvelles versions d\'Android, il est nécessaire de sélectionner votre dossier de livres audio à l\'aide de la boîte de dialogue système.\n\nCliquez sur l\'icône ci-dessus pour voir vos anciennes positions de lecture.</string>

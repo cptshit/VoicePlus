@@ -25,7 +25,6 @@ class SnapshotRingTest {
     books = (1..active).map {
       BookContentDto("b$it", 1f, false, true, 0, null, "b$it", 0, listOf("c"), "c", 0, null, 0f, null, null, null, null)
     },
-    bookmarks = emptyList(),
     chapterNameOverrides = emptyList(),
   )
 

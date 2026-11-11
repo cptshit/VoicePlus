@@ -21,7 +21,6 @@
     <string name="edit_book_title">Edit buku</string>
     <string name="audiobook_folders_title">Folder buku audio</string>
     <string name="playback_speed">Kecepatan pemutaran</string>
-    <string name="bookmark">Markah</string>
     <string name="book_header_current">Saat ini</string>
     <string name="pref_get_support">Dapatkan bantuan</string>
     <string name="pref_app_version">Versi aplikasi</string>
@@ -29,9 +28,6 @@
     <string name="book_header_not_started">Belum dimulai</string>
     <string name="cover_search_template_no_author">%s sampul buku audio</string>
     <string name="cover_search_template_with_author">%1$s oleh %2$s sampul buku audio</string>
-    <string name="bookmark_edit_title">Edit markah</string>
-    <string name="bookmark_edit_hint">Nama markah</string>
-    <string name="bookmark_added">Markah ditambahkan</string>
     <string name="action_settings">Preferensi</string>
     <plurals name="seconds">
         <item quantity="other">%d detik</item>
@@ -57,7 +53,6 @@
     <string name="folder_type_title">Bagaimana file Anda terstruktur?</string>
     <string name="folder_mode_root">Mode Buku Tingkat Atas: Subfolder adalah buku</string>
     <string name="folder_type_no_books">Suara tidak dapat mendeteksi buku apa pun. Apakah ada file audio?</string>
-    <string name="bookmark_just_now">Baru saja</string>
     <string name="migration_hint_title">Mengakses posisi Buku lama</string>
     <string name="migration_hint_confirm">Oke</string>
     <string name="migration_detail_title">Posisi buku lama</string>

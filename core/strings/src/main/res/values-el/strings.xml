@@ -17,10 +17,6 @@
     <string name="edit_book_title">Επεξεργασία βιβλίου</string>
     <string name="audiobook_folders_title">Φάκελοι Audiobook</string>
     <string name="playback_speed">Ταχύτητα αναπαραγωγής</string>
-    <string name="bookmark">Σελιδοδείκτης</string>
-    <string name="bookmark_edit_title">Επεξεργασία σελιδοδείκτη</string>
-    <string name="bookmark_edit_hint">Όνομα σελιδοδείκτη</string>
-    <string name="bookmark_added">Ο σελιδοδείκτης προστέθηκε</string>
     <string name="action_settings">Προτιμήσεις</string>
     <plurals name="seconds">
         <item quantity="one">%d δευτερόλεπτο</item>
@@ -91,5 +87,4 @@
     <string name="generic_error_retry">Ξαναδοκιμάστε</string>
     <string name="play">Αναπαραγωγή</string>
     <string name="pause">Παύση</string>
-    <string name="bookmark_just_now">Ακριβώς τώρα</string>
 </resources>

@@ -22,10 +22,6 @@
     <string name="mark_as_not_started">Als \"Neu\" markieren</string>
     <string name="audiobook_folders_title">Hörspiel-Ordner</string>
     <string name="playback_speed">Abspielgeschwindigkeit</string>
-    <string name="bookmark">Lesezeichen</string>
-    <string name="bookmark_edit_title">Lesezeichen bearbeiten</string>
-    <string name="bookmark_edit_hint">Lesezeichenname</string>
-    <string name="bookmark_added">Lesezeichen hinzugefügt</string>
     <string name="action_settings">Einstellungen</string>
     <plurals name="seconds">
         <item quantity="one">%d Sekunde</item>
@@ -58,7 +54,6 @@
     <string name="pref_help_translating">Beim Übersetzen helfen</string>
     <string name="folder_type_no_books">Folgenreich konnte keine Folgen erkennen. Gibt es hier Audio-Dateien?</string>
     <string name="folder_type_title">Wie sind deine Dateien organisiert?</string>
-    <string name="bookmark_just_now">Gerade eben</string>
     <string name="voice_intro_first_book">Füge Deinen Hörspiel-Ordner hinzu, damit Du mit dem Hören beginnen kannst!</string>
     <string name="migration_hint_title">Zugriff auf alte Hörpositionen</string>
     <string name="migration_hint_content">Aufgrund von Änderungen in neueren Android-Versionen ist es notwendig, Deinen Hörspiel-Ordner mit dem System-Dateimanager auszuwählen. \n \nKlicke auf das Symbol oben, um Deine alten Hörpositionen zu sehen.</string>
@@ -162,11 +157,6 @@
     <string name="remove_book_delete_failed">Die Folge wurde aus Deiner Bibliothek entfernt, aber ihre Dateien konnten nicht gelöscht werden.</string>
     <string name="backup_restore_unmatched_hint">Gib den Hörspiel-Ordner erneut frei und stelle noch einmal wieder her, oder diese Folgen wurden verschoben oder geändert.</string>
     <string name="backup_reason_single_file">Einzeldatei-Folge nicht automatisch wiederhergestellt</string>
-    <string name="bookmark_deleted">Lesezeichen gelöscht</string>
-    <string name="bookmark_unavailable">Lesezeichen nicht verfügbar</string>
-    <string name="bookmark_type_quick">Schnell-Lesezeichen</string>
-    <string name="bookmark_add_named">Lesezeichen mit Namen hinzufügen</string>
-    <string name="bookmark_position">%1$s im Kapitel · %2$s in der Folge</string>
     <string name="settings_section_books">Hörspiele &amp; Ordner</string>
     <string name="library_view_books">Regal</string>
     <string name="pref_books_per_row">Folgen pro Reihe</string>
@@ -174,7 +164,6 @@
     <string name="cover_style_book">Buch</string>
     <string name="cover_style_cd">CD</string>
     <string name="cover_crop_book">Buch (2:3)</string>
-    <string name="media_button_action_quick_bookmark">Schnell-Lesezeichen</string>
     <string name="lockscreen_slider_audiobook">Ganze Folge</string>
     <string name="pref_ignore_file_tags_info">Leitet Folgen- und Kapitelnamen aus Ordner- und Dateinamen ab und ignoriert eingebettete ID3-/Metadaten-Tags. Cover aus Bilddateien im Ordner werden weiter verwendet. Dauer und Kapitelmarken werden immer gelesen. Umschalten durchsucht Deine Bibliothek neu und aktualisiert vorhandene Folgen.</string>
     <string name="ignore_file_tags_confirm_message">Folgen- und Kapitelnamen werden neu aus %1$s abgeleitet. Deine Audiodateien, Hörfortschritte und Lesezeichen bleiben unverändert.</string>
@@ -334,9 +323,6 @@
     <string name="edit_book_no_embedded_cover">Es wurde kein eingebettetes Cover gefunden.</string>
     <string name="edit_book_local_description">Wird in Folgenreich gespeichert und in Deinen eingerichteten Sicherungen berücksichtigt. Die Audiodateien bleiben unverändert.</string>
     <string name="sleep_resume_confirmation">Drücke erneut auf Abspielen, um nach dem Einschlafen fortzusetzen</string>
-    <string name="bookmark_type_manual">Manuell</string>
-    <string name="bookmark_type_sleep_timer">Einschlaf-Timer</string>
-    <string name="bookmark_saved">Gespeichert: %1$s</string>
     <string name="undo">Rückgängig</string>
     <string name="settings_section_library">Deine Bibliothek</string>
     <string name="settings_section_playback">Wiedergabe und Steuerung</string>

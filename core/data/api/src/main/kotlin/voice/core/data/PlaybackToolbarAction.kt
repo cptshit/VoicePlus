@@ -8,13 +8,12 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 public enum class PlaybackToolbarAction {
-  BOOKMARKS,
   PLAYBACK_SPEED,
   CHAPTER_FIX,
   ;
 
   public companion object {
-    public val DEFAULT: Set<PlaybackToolbarAction> = setOf(BOOKMARKS, PLAYBACK_SPEED)
+    public val DEFAULT: Set<PlaybackToolbarAction> = setOf(PLAYBACK_SPEED)
 
     /** Sleep timer, close and overflow are always present; four more still fit a 360dp app bar. */
     public const val MAX_PINNED: Int = 4

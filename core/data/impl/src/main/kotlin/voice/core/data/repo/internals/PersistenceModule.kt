@@ -9,7 +9,6 @@ import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 import voice.core.data.repo.internals.dao.BookContentDao
-import voice.core.data.repo.internals.dao.BookmarkDao
 import voice.core.data.repo.internals.dao.ChapterDao
 import voice.core.data.repo.internals.dao.ChapterNameOverrideDao
 import voice.core.data.repo.internals.dao.LibraryOrganisationDao
@@ -26,9 +25,6 @@ public interface PersistenceModule {
 
   @Provides
   private fun bookContentDao(appDb: AppDb): BookContentDao = appDb.bookContentDao()
-
-  @Provides
-  private fun bookmarkDao(appDb: AppDb): BookmarkDao = appDb.bookmarkDao()
 
   @Provides
   private fun recentBookSearchDao(appDb: AppDb): RecentBookSearchDao = appDb.recentBookSearchDao()

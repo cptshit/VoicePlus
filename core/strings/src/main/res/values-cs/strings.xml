@@ -22,10 +22,6 @@
     <string name="mark_as_not_started">Označit jako dosud nezahájené</string>
     <string name="audiobook_folders_title">Složky s audioknihami</string>
     <string name="playback_speed">Rychlost přehrávání</string>
-    <string name="bookmark">Záložka</string>
-    <string name="bookmark_edit_title">Upravit záložku</string>
-    <string name="bookmark_edit_hint">Název záložky</string>
-    <string name="bookmark_added">Záložka přidána</string>
     <string name="action_settings">Nastavení</string>
     <plurals name="seconds">
         <item quantity="one">%d sekunda</item>
@@ -46,7 +42,6 @@
     <string name="add">Přidat</string>
     <string name="folder_mode_root">Režim knihy nejvyšší úrovně: Podsložky jsou knihy</string>
     <string name="folder_type_title">Jak jsou organizované vaše soubory?</string>
-    <string name="bookmark_just_now">Právě teď</string>
     <string name="migration_hint_title">Zpřístupnění starých pozic knih</string>
     <string name="select_folder_type_folder">Složka</string>
     <string name="notification_sleep_timer_disable">Vypnout časovač vypnutí</string>

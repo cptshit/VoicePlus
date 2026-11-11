@@ -12,7 +12,6 @@
     <string name="cover_search_template_no_author">Portada de l\'audiollibre %s</string>
     <string name="pick_book_cover">Portada del sistema de fitxers</string>
     <string name="cover_search_template_with_author">Portada de l\'audiollibre %1$s per %2$s</string>
-    <string name="bookmark">Punt de llibre</string>
     <string name="edit_book_title">Edita el llibre</string>
     <string name="audiobook_folders_title">Carpetes de l\'audiollibre</string>
     <string name="playback_speed">Velocitat de reproducció</string>
@@ -28,9 +27,6 @@
     <string name="pref_seek_time">Omet la quantitat</string>
     <string name="pref_use_grid">Utilitza la disposició en quadrícula</string>
     <string name="pref_report_issue">Informeu d\'un problema</string>
-    <string name="bookmark_edit_title">Canvia el punt de llibre</string>
-    <string name="bookmark_edit_hint">Nom del punt de llibre</string>
-    <string name="bookmark_added">S\'ha afegit el punt de llibre</string>
     <string name="pref_get_support">Obtingueu ajuda</string>
     <string name="pref_app_version">Versió de l\'aplicació</string>
     <string name="popup_edit">Edita</string>
@@ -48,7 +44,6 @@
     </plurals>
     <string name="folder_type_no_books">El Voice no ha pogut detectar cap llibre. Hi ha cap fitxer d\'àudio?</string>
     <string name="folder_type_title">Com s\'estructuren els fitxers?</string>
-    <string name="bookmark_just_now">Ara mateix</string>
     <string name="voice_intro_first_book">Afegiu la carpeta de l\'audiollibre perquè pugueu començar a escoltar-lo.</string>
     <string name="migration_hint_confirm">Entesos</string>
     <string name="migration_detail_content_name">Nom</string>

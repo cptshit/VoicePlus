@@ -20,10 +20,6 @@
     <string name="mark_as_not_started">Megjelölés még el nem kezdettként</string>
     <string name="audiobook_folders_title">Hangoskönyv mappák</string>
     <string name="playback_speed">Lejátszási sebesség</string>
-    <string name="bookmark">Könyvjelző</string>
-    <string name="bookmark_edit_title">Könyvjelző szerkesztése</string>
-    <string name="bookmark_edit_hint">Könyvjelző neve</string>
-    <string name="bookmark_added">Könyvjelző hozzáadva</string>
     <string name="action_settings">Beállítások</string>
     <plurals name="seconds">
         <item quantity="one">%d másodperc</item>
@@ -41,7 +37,6 @@
     <string name="close">Bezárás</string>
     <string name="delete">Törlés</string>
     <string name="add">Hozzáadás</string>
-    <string name="bookmark_just_now">Éppen most</string>
     <string name="voice_intro_first_book">Adjon hozzá a hangoskönyv mappát, hogy elkezdhesse a hallgatást!</string>
     <string name="migration_hint_title">Hozzáférés a régi könyvek helyéhez</string>
     <string name="migration_hint_content">Az újabb Android-verziók változásai miatt ki kell választani a hangoskönyv mappát a rendszerválasztóval.\n\nKattintson a fenti ikonra a régi könyvek helyének megtekintéséhez.</string>

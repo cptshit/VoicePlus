@@ -37,14 +37,12 @@ import voice.core.data.Book
 import voice.core.data.BookId
 import voice.core.data.MediaButtonClickAction
 import voice.core.data.repo.BookRepository
-import voice.core.data.repo.BookmarkRepo
 import voice.core.data.store.CurrentBookStore
 import voice.core.data.store.MediaButtonDoubleClickHandlerStore
 import voice.core.data.store.MediaButtonTripleClickHandlerStore
 import voice.core.logging.api.Logger
 import voice.core.playback.history.PlaybackIntentHolder
 import voice.core.playback.player.VoicePlayer
-import voice.core.playback.playstate.PositionUpdater
 import voice.core.playback.session.search.BookSearchHandler
 import voice.core.playback.session.search.BookSearchParser
 import voice.core.strings.R as StringsR
@@ -63,9 +61,7 @@ class LibrarySessionCallback(
   private val doubleClickHandlerStore: DataStore<MediaButtonClickAction>,
   @MediaButtonTripleClickHandlerStore
   private val tripleClickHandlerStore: DataStore<MediaButtonClickAction>,
-  private val bookmarkRepo: BookmarkRepo,
   private val intentHolder: PlaybackIntentHolder,
-  private val positionUpdater: PositionUpdater,
   private val context: Context,
 ) : MediaLibrarySession.Callback {
 
@@ -357,7 +353,6 @@ class LibrarySessionCallback(
       MediaButtonClickAction.SKIP_BACKWARD -> player.seekBack()
       MediaButtonClickAction.SKIP_FORWARD_CHAPTER -> player.forceSeekToNext()
       MediaButtonClickAction.SKIP_BACKWARD_CHAPTER -> player.forceSeekToPrevious()
-      MediaButtonClickAction.QUICK_BOOKMARK -> scope.launch { createQuickBookmark() }
       MediaButtonClickAction.NONE -> Unit
     }
   }
@@ -384,20 +379,6 @@ class LibrarySessionCallback(
 
   private fun showSleepResumeConfirmation() {
     Toast.makeText(context, StringsR.string.sleep_resume_confirmation, Toast.LENGTH_SHORT).show()
-  }
-
-  private suspend fun createQuickBookmark() {
-    // The bookmark is written from the book's persisted position, and with experimental playback
-    // persistence enabled that is only flushed every 5 minutes — the bookmark would land minutes
-    // behind the audio the user just heard.
-    positionUpdater.flushPositionNow()
-    val bookId = currentBookStoreId.data.first() ?: return
-    val book = bookRepository.get(bookId) ?: return
-    bookmarkRepo.addBookmarkAtBookPosition(book = book, title = null, setBySleepTimer = false)
-    Logger.d("Quick bookmark created at current position")
-    withContext(Dispatchers.Main) {
-      Toast.makeText(context, StringsR.string.bookmark_added, Toast.LENGTH_SHORT).show()
-    }
   }
 }
 

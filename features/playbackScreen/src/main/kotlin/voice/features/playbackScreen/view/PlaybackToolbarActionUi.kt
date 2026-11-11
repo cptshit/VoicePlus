@@ -1,7 +1,6 @@
 package voice.features.playbackScreen.view
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.CollectionsBookmark
 import androidx.compose.material.icons.outlined.EditNote
 import androidx.compose.material.icons.outlined.Group
 import androidx.compose.material.icons.outlined.History
@@ -12,14 +11,12 @@ import voice.core.strings.R as StringsR
 
 internal val PlaybackToolbarAction.icon: ImageVector
   get() = when (this) {
-    PlaybackToolbarAction.BOOKMARKS -> Icons.Outlined.CollectionsBookmark
     PlaybackToolbarAction.PLAYBACK_SPEED -> Icons.Outlined.Speed
     PlaybackToolbarAction.CHAPTER_FIX -> Icons.Outlined.EditNote
   }
 
 internal val PlaybackToolbarAction.labelRes: Int
   get() = when (this) {
-    PlaybackToolbarAction.BOOKMARKS -> StringsR.string.bookmark
     PlaybackToolbarAction.PLAYBACK_SPEED -> StringsR.string.playback_speed
     PlaybackToolbarAction.CHAPTER_FIX -> StringsR.string.chapter_fix_menu
   }

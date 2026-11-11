@@ -30,9 +30,6 @@
     <string name="mark_as_completed">סמן כהושלם</string>
     <string name="mark_as_not_started">סמן כ-עוד לא התחלתי</string>
     <string name="playback_speed">מהירות השמעה</string>
-    <string name="bookmark">סימנייה</string>
-    <string name="bookmark_edit_hint">שם הסימנייה</string>
-    <string name="bookmark_added">סימנייה נוספה</string>
     <string name="action_settings">העדפות</string>
     <plurals name="seconds">
         <item quantity="one">שנייה</item>
@@ -64,7 +61,6 @@
     </plurals>
     <string name="folder_type_no_books">Voice לא זיהה ספרים. האם יש קבצי שמע?</string>
     <string name="folder_type_title">איך הקבצים שלך מסודרים?</string>
-    <string name="bookmark_just_now">ממש עכשיו</string>
     <string name="migration_hint_confirm">מובן</string>
     <string name="migration_detail_title">מיקומי ספרים ישנים</string>
     <string name="migration_detail_content_name">שם</string>
@@ -126,7 +122,6 @@
     <string name="change_book_name">שם</string>
     <string name="migration_hint_title">ניגש למיקומי ספרים ישנים</string>
     <string name="audiobook_folders_title">תיקיית קולספר</string>
-    <string name="bookmark_edit_title">ערוך סימנייה</string>
     <string name="folder_mode_single">מצב ספר בודד: תיקייה אחת שווה ספר אחד.</string>
     <string name="migration_delete_dialog_action_delete">הסר</string>
     <string name="migration_detail_content_bookmarks">סימניות</string>

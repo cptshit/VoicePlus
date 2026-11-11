@@ -11,10 +11,6 @@
     <string name="pick_book_cover">Capa do sistema de arquivo</string>
     <string name="edit_book_title">Editar livro</string>
     <string name="playback_speed">Velocidade de reprodução</string>
-    <string name="bookmark">Marcador</string>
-    <string name="bookmark_edit_title">Editar marcador</string>
-    <string name="bookmark_edit_hint">Título do marcador</string>
-    <string name="bookmark_added">Marcador adicionado</string>
     <string name="action_settings">Preferências</string>
     <plurals name="seconds">
         <item quantity="one">%d segundo</item>
@@ -91,7 +87,6 @@
     <string name="migration_delete_dialog_action_keep">Manter</string>
     <string name="migration_detail_content_position_current_file_position">Posição no ficheiro</string>
     <string name="cover_search.author">Autor</string>
-    <string name="bookmark_just_now">Nesse exato momento</string>
     <string name="delete_book_bottom_sheet_title">Deletar livro</string>
     <string name="battery_optimization_action">Atualizar</string>
     <string name="media_session_root">Audiolivros</string>
