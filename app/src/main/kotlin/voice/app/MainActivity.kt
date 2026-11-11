@@ -24,7 +24,6 @@ import voice.app.navigation.StartDestinationProvider
 import voice.core.common.rootGraphAs
 import voice.core.logging.api.Logger
 import voice.core.ui.VoiceTheme
-import voice.features.review.ReviewFeature
 import voice.navigation.Destination
 import voice.navigation.NavigationCommand
 import voice.navigation.Navigator
@@ -112,8 +111,6 @@ class MainActivity : AppCompatActivity() {
             }
           }
         }
-
-        ReviewFeature()
       }
     }
   }

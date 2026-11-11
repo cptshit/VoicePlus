@@ -159,13 +159,6 @@ public interface StoreModule {
 
   @Provides
   @SingleIn(AppScope::class)
-  @ReviewDialogShownStore
-  private fun reviewDialogShown(factory: VoiceDataStoreFactory): DataStore<Boolean> {
-    return factory.create(Boolean.serializer(), false, "reviewDialogShown")
-  }
-
-  @Provides
-  @SingleIn(AppScope::class)
   @ExcludedBooksStore
   private fun excludedBooks(factory: VoiceDataStoreFactory): DataStore<Set<String>> {
     return factory.create(
