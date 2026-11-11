@@ -13,7 +13,6 @@ import voice.core.strings.R as StringsR
 internal val PlaybackToolbarAction.icon: ImageVector
   get() = when (this) {
     PlaybackToolbarAction.BOOKMARKS -> Icons.Outlined.CollectionsBookmark
-    PlaybackToolbarAction.CHARACTER_LIST -> Icons.Outlined.Group
     PlaybackToolbarAction.PLAYBACK_SPEED -> Icons.Outlined.Speed
     PlaybackToolbarAction.CHAPTER_FIX -> Icons.Outlined.EditNote
     PlaybackToolbarAction.LISTENING_LOG -> Icons.Outlined.History
@@ -22,7 +21,6 @@ internal val PlaybackToolbarAction.icon: ImageVector
 internal val PlaybackToolbarAction.labelRes: Int
   get() = when (this) {
     PlaybackToolbarAction.BOOKMARKS -> StringsR.string.bookmark
-    PlaybackToolbarAction.CHARACTER_LIST -> StringsR.string.character_list
     PlaybackToolbarAction.PLAYBACK_SPEED -> StringsR.string.playback_speed
     PlaybackToolbarAction.CHAPTER_FIX -> StringsR.string.chapter_fix_menu
     PlaybackToolbarAction.LISTENING_LOG -> StringsR.string.listening_log

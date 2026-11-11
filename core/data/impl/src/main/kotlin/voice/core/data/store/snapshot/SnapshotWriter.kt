@@ -24,7 +24,6 @@ import voice.core.data.BookContent
 import voice.core.data.hoerspiel.EpisodeNumberRepo
 import voice.core.data.repo.BookContentRepo
 import voice.core.data.repo.internals.AppDb
-import voice.core.data.repo.internals.dao.BookCharacterDao
 import voice.core.data.repo.internals.dao.BookmarkDao
 import voice.core.data.repo.internals.dao.ChapterDao
 import voice.core.data.repo.internals.dao.ChapterNameOverrideDao
@@ -46,7 +45,6 @@ import kotlin.time.Duration.Companion.seconds
 internal class SnapshotWriter(
   private val contentRepo: BookContentRepo,
   private val bookmarkDao: BookmarkDao,
-  private val bookCharacterDao: BookCharacterDao,
   private val chapterDao: ChapterDao,
   private val chapterNameOverrideDao: ChapterNameOverrideDao,
   private val listeningSessionDao: ListeningSessionDao,
@@ -74,7 +72,6 @@ internal class SnapshotWriter(
     merge(
       contentRepo.flow().map { },
       bookmarkDao.count().map { },
-      bookCharacterDao.count().map { },
       chapterNameOverrideDao.count().map { },
       listeningSessionDao.count().map { },
       listeningEventDao.count().map { },
@@ -167,7 +164,6 @@ internal class SnapshotWriter(
           activeCount = books.count { it.isActive },
           books = bookDtos,
           bookmarks = bookmarkDao.all().map { it.toDto() },
-          characters = bookCharacterDao.all().map { it.toDto() },
           chapterNameOverrides = chapterNameOverrideDao.all().map { it.toDto() },
           sessions = listeningSessionDao.all().map { it.toDto() },
           chapters = chapterDtos,

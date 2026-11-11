@@ -67,7 +67,6 @@ class OsWipeRestorerTest {
     bookContentDao = db.bookContentDao(),
     chapterDao = db.chapterDao(),
     bookmarkDao = db.bookmarkDao(),
-    bookCharacterDao = db.bookCharacterDao(),
     chapterNameOverrideDao = db.chapterNameOverrideDao(),
     listeningSessionDao = db.listeningSessionDao(),
     excludedBooksStore = excluded,
@@ -145,12 +144,11 @@ class OsWipeRestorerTest {
     chapters: List<ChapterDto>,
     bookmarks: List<BookmarkDto> = emptyList(),
     sessions: List<ListeningSessionDto> = emptyList(),
-    characters: List<BookCharacterDto> = emptyList(),
     hiddenBooks: Set<String> = emptySet(),
   ) = LibrarySnapshot(
     schemaVersion = LibrarySnapshot.SCHEMA_VERSION, dbVersion = AppDb.VERSION, sequence = 1, savedAtEpochMillis = 0,
     totalCount = books.size, activeCount = books.size, books = books, bookmarks = bookmarks,
-    characters = characters, chapterNameOverrides = emptyList(), sessions = sessions, chapters = chapters,
+    chapterNameOverrides = emptyList(), sessions = sessions, chapters = chapters,
     hiddenBooks = hiddenBooks,
   )
 
@@ -207,27 +205,6 @@ class OsWipeRestorerTest {
     db.bookmarkDao().all().none { it.bookId == other.id } shouldBe true
     // Ghost was never inserted under any URI.
     db.bookContentDao().all().none { it.id.value.contains("Ghost") } shouldBe true
-  }
-
-  @Test
-  fun `restores character notes onto the re-keyed book`() = runTest {
-    val (dune, duneChapters) = snapshotBookOf("primary:Books/Dune", listOf("01.mp3"), "01.mp3", position = 400, lastPlayed = 5_000)
-    val character = BookCharacterDto(
-      id = 9,
-      bookId = oldUri("primary:Books/Dune"),
-      name = "Paul",
-      description = "the heir",
-      sortOrder = 0,
-      createdAtEpochMillis = 11,
-      updatedAtEpochMillis = 22,
-    )
-    onScan = { scanInBook("primary:Books/Dune", listOf("01.mp3")) }
-
-    restorer().run(snapshotOf(listOf(dune), duneChapters, characters = listOf(character)))
-
-    val restored = db.bookCharacterDao().all().single()
-    restored.bookId shouldBe BookId(newUri("primary:Books/Dune"))
-    restored.name shouldBe "Paul"
   }
 
   @Test

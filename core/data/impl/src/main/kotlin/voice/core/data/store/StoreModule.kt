@@ -209,7 +209,7 @@ public interface StoreModule {
   @PlaybackToolbarActionsStore
   private fun playbackToolbarActionsStore(factory: VoiceDataStoreFactory): DataStore<Set<PlaybackToolbarAction>> {
     return factory.create(
-      serializer = SetSerializer(PlaybackToolbarAction.serializer()),
+      serializer = LenientToolbarActionsSerializer,
       defaultValue = PlaybackToolbarAction.DEFAULT,
       fileName = "playbackToolbarActions",
     )

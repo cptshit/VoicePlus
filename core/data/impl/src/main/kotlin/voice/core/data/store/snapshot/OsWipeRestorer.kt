@@ -7,7 +7,6 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.first
-import voice.core.data.BookCharacter
 import voice.core.data.BookContent
 import voice.core.data.BookId
 import voice.core.data.Chapter
@@ -17,7 +16,6 @@ import voice.core.data.ListeningSession
 import voice.core.data.MediaScanWaiter
 import voice.core.data.hoerspiel.EpisodeNumberRepo
 import voice.core.data.repo.BookContentRepo
-import voice.core.data.repo.internals.dao.BookCharacterDao
 import voice.core.data.repo.internals.dao.BookContentDao
 import voice.core.data.repo.internals.dao.BookmarkDao
 import voice.core.data.repo.internals.dao.ChapterDao
@@ -58,7 +56,6 @@ internal class OsWipeRestorer(
   private val bookContentDao: BookContentDao,
   private val chapterDao: ChapterDao,
   private val bookmarkDao: BookmarkDao,
-  private val bookCharacterDao: BookCharacterDao,
   private val chapterNameOverrideDao: ChapterNameOverrideDao,
   private val listeningSessionDao: ListeningSessionDao,
   @ExcludedBooksStore private val excludedBooksStore: DataStore<Set<String>>,
@@ -105,14 +102,13 @@ internal class OsWipeRestorer(
     val bookmarksByBook = snapshot.bookmarks.groupBy { it.bookId }
     val overridesByBook = snapshot.chapterNameOverrides.groupBy { it.bookId }
     val sessionsByBook = snapshot.sessions.groupBy { it.bookId }
-    val charactersByBook = snapshot.characters.groupBy { it.bookId }
     val snapshotBooks = snapshot.books
       // Hidden books DO participate: the scan has already put their files back on disk under new
       // ids, so skipping them would leave them visible and dataless. They are re-keyed with their
       // data and their NEW ids are added to the hidden set below, so they stay hidden.
       .filter { it.id !in excludedIds || it.id in snapshot.hiddenBooks }
       .map { dto ->
-        toSnapshotBook(dto, snapChapterById, bookmarksByBook, overridesByBook, sessionsByBook, charactersByBook)
+        toSnapshotBook(dto, snapChapterById, bookmarksByBook, overridesByBook, sessionsByBook)
       }
 
     // 4. Pure, deterministic, never-cross-attach re-key.
@@ -139,9 +135,8 @@ internal class OsWipeRestorer(
           }
       }
       // Seed the natural-key dedup sets INSIDE the transaction so a concurrent caller can't make us
-      // double-insert the autoGenerate-PK rows (sessions / characters).
+      // double-insert the autoGenerate-PK rows (sessions).
       val seenSessionKeys = listeningSessionDao.all().mapTo(mutableSetOf()) { it.naturalKey() }
-      val seenCharacterKeys = bookCharacterDao.all().mapTo(mutableSetOf()) { it.naturalKey() }
       result.matched.forEach { matched ->
         val live = liveById[matched.content.id.value]
         // Portable artwork wins; legacy JSON bundles retain the freshly scanned cover. Newer
@@ -161,10 +156,6 @@ internal class OsWipeRestorer(
           // ListeningSession has an autoGenerate PK; dedup on a natural key so a re-run can't double-count,
           // and insert with a fresh id so a snapshot-generation id can't collide with a live row.
           if (seenSessionKeys.add(session.naturalKey())) listeningSessionDao.insert(session.copy(id = 0))
-        }
-        matched.characters.forEach { character ->
-          // BookCharacter also has an autoGenerate PK; same natural-key dedup + fresh id.
-          if (seenCharacterKeys.add(character.naturalKey())) bookCharacterDao.insert(character.copy(id = 0))
         }
         // Listening EVENTS are deliberately not re-keyed: they are seek/skip decorations on the log, and
         // carrying them across dead-URI chapter ids isn't worth the mapping surface. The same-device
@@ -245,7 +236,6 @@ internal class OsWipeRestorer(
     bookmarksByBook: Map<String, List<BookmarkDto>>,
     overridesByBook: Map<String, List<ChapterNameOverrideDto>>,
     sessionsByBook: Map<String, List<ListeningSessionDto>>,
-    charactersByBook: Map<String, List<BookCharacterDto>>,
   ): SnapshotBook {
     val bookRelPath = DeviceRelativePath.documentId(dto.id.toUri())
     val bookChapters = dto.chapters.mapNotNull { snapChapterById[it] }
@@ -262,7 +252,6 @@ internal class OsWipeRestorer(
       bookmarks = bookmarksByBook[dto.id].orEmpty(),
       overrides = overridesByBook[dto.id].orEmpty(),
       sessions = sessionsByBook[dto.id].orEmpty(),
-      characters = charactersByBook[dto.id].orEmpty(),
     )
   }
 
@@ -289,7 +278,5 @@ internal class OsWipeRestorer(
 // BackupRestorer). Snapshot row ids belong to a different database generation, so restores insert
 // with a fresh id and dedup on these keys instead.
 internal fun ListeningSession.naturalKey(): String = "${bookId.value}|${startedAt.toEpochMilli()}|$startPositionMs"
-
-internal fun BookCharacter.naturalKey(): String = "${bookId.value}|$name|${createdAt.toEpochMilli()}"
 
 internal fun ListeningEvent.naturalKey(): String = "${bookId.value}|${at.toEpochMilli()}|$type|$positionMs"

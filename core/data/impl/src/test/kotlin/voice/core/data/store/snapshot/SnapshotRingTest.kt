@@ -17,12 +17,16 @@ class SnapshotRingTest {
     seq: Long,
     active: Int,
   ) = LibrarySnapshot(
-    schemaVersion = 1, sequence = seq, savedAtEpochMillis = 0,
-    totalCount = active, activeCount = active,
+    schemaVersion = 1,
+    sequence = seq,
+    savedAtEpochMillis = 0,
+    totalCount = active,
+    activeCount = active,
     books = (1..active).map {
       BookContentDto("b$it", 1f, false, true, 0, null, "b$it", 0, listOf("c"), "c", 0, null, 0f, null, null, null, null)
     },
-    bookmarks = emptyList(), characters = emptyList(), chapterNameOverrides = emptyList(),
+    bookmarks = emptyList(),
+    chapterNameOverrides = emptyList(),
   )
 
   @Test

@@ -17,7 +17,7 @@ class RestoreSelectorTest {
     books = activeIds.map {
       BookContentDto(it, 1f, false, true, 0, null, it, 0, listOf("c"), "c", 0, null, 0f, null, null, null, null)
     },
-    bookmarks = emptyList(), characters = emptyList(), chapterNameOverrides = emptyList(),
+    bookmarks = emptyList(), chapterNameOverrides = emptyList(),
   )
 
   @Test

@@ -10,7 +10,6 @@ import voice.core.data.BookContent
 import voice.core.data.BookId
 import voice.core.data.hoerspiel.EpisodeNumberRepo
 import voice.core.data.repo.BookContentRepo
-import voice.core.data.repo.internals.dao.BookCharacterDao
 import voice.core.data.repo.internals.dao.BookContentDao
 import voice.core.data.repo.internals.dao.BookmarkDao
 import voice.core.data.repo.internals.dao.ChapterDao
@@ -30,7 +29,6 @@ internal class BackupRestorer(
   private val ring: SnapshotRing,
   private val bookContentDao: BookContentDao,
   private val bookmarkDao: BookmarkDao,
-  private val bookCharacterDao: BookCharacterDao,
   private val chapterDao: ChapterDao,
   private val chapterNameOverrideDao: ChapterNameOverrideDao,
   private val listeningSessionDao: ListeningSessionDao,
@@ -125,7 +123,6 @@ internal class BackupRestorer(
         }
       }
     val bookmarks = snapshot.bookmarks.filter { included(it.bookId) }.map { it.toBookmark() }
-    val characters = snapshot.characters.filter { included(it.bookId) }.map { it.toBookCharacter() }
     val overrides = snapshot.chapterNameOverrides.filter { included(it.bookId) }.map { it.toOverride() }
     val sessions = snapshot.sessions.filter { included(it.bookId) }.map { it.toListeningSession() }
     val events = snapshot.events.filter { included(it.bookId) }.map { it.toListeningEvent() }
@@ -138,7 +135,6 @@ internal class BackupRestorer(
       // ids belong to a different database generation, so inserting by id could collide with (or
       // REPLACE) unrelated live rows. Insert with a fresh id instead, and skip rows already present.
       val seenSessionKeys = listeningSessionDao.all().mapTo(mutableSetOf()) { it.naturalKey() }
-      val seenCharacterKeys = bookCharacterDao.all().mapTo(mutableSetOf()) { it.naturalKey() }
       val seenEventKeys = listeningEventDao.all().mapTo(mutableSetOf()) { it.naturalKey() }
       val existingChapterIds = if (chapters.isEmpty()) {
         emptySet()
@@ -155,9 +151,6 @@ internal class BackupRestorer(
         written++
       }
       bookmarks.forEach { bookmarkDao.addBookmark(it) }
-      characters.forEach { character ->
-        if (seenCharacterKeys.add(character.naturalKey())) bookCharacterDao.insert(character.copy(id = 0))
-      }
       overrides.forEach { chapterNameOverrideDao.insert(it) }
       sessions.forEach { session ->
         if (seenSessionKeys.add(session.naturalKey())) listeningSessionDao.insert(session.copy(id = 0))

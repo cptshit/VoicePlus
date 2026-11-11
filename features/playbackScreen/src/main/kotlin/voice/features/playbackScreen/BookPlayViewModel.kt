@@ -26,7 +26,6 @@ import voice.core.data.PlaybackToolbarAction
 import voice.core.data.byMarkKey
 import voice.core.data.durationMs
 import voice.core.data.markForPosition
-import voice.core.data.repo.BookCharacterRepo
 import voice.core.data.repo.BookRepository
 import voice.core.data.repo.BookmarkRepo
 import voice.core.data.repo.ChapterNameOverrideRepo
@@ -67,7 +66,6 @@ class BookPlayViewModel(
   private val currentBookStoreId: DataStore<BookId?>,
   private val navigator: Navigator,
   private val bookmarkRepository: BookmarkRepo,
-  private val characterRepo: BookCharacterRepo,
   private val chapterNameOverrideRepo: ChapterNameOverrideRepo,
   private val volumeGainFormatter: VolumeGainFormatter,
   private val batteryOptimization: BatteryOptimization,
@@ -114,7 +112,6 @@ class BookPlayViewModel(
     }
     val isPlaying = livePlaybackState?.isPlaying ?: (managerPlayState == PlayStateManager.PlayState.Playing)
 
-    val characterCount by remember { characterRepo.characterCount(bookId) }.collectAsState(initial = 0)
     // Held until the store answers so a customised toolbar never flashes the default set first.
     val toolbarActions = remember { toolbarActionsStore.data }.collectAsState(initial = null).value
       ?: return null
@@ -148,7 +145,6 @@ class BookPlayViewModel(
       playedTime = positionInCurrentMark.milliseconds,
       cover = book.content.cover?.let(::ImmutableFile),
       skipSilence = book.content.skipSilence,
-      characterCount = characterCount,
       // Gate on chapter MARKS (what the editor actually lists), not raw markData — otherwise the
       // entry is hidden for the common one-file-per-chapter book whose files carry no embedded marks.
       editChapterNamesVisible = hasMoreThanOneChapter,
@@ -394,10 +390,6 @@ class BookPlayViewModel(
 
   fun onListeningLogClick() {
     navigator.goTo(Destination.ListeningLog(bookId))
-  }
-
-  fun onCharacterListClick() {
-    navigator.goTo(Destination.CharacterList(bookId))
   }
 
   fun onBookmarkLongClick() {

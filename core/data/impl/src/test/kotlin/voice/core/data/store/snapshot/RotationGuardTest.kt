@@ -13,9 +13,14 @@ class RotationGuardTest {
     val books = (active.map { it to true } + inactive.map { it to false })
       .map { (id, isActive) -> dto(id, isActive) }
     return LibrarySnapshot(
-      schemaVersion = 1, sequence = 1, savedAtEpochMillis = savedAt,
-      totalCount = books.size, activeCount = active.size,
-      books = books, bookmarks = emptyList(), characters = emptyList(), chapterNameOverrides = emptyList(),
+      schemaVersion = 1,
+      sequence = 1,
+      savedAtEpochMillis = savedAt,
+      totalCount = books.size,
+      activeCount = active.size,
+      books = books,
+      bookmarks = emptyList(),
+      chapterNameOverrides = emptyList(),
     )
   }
 
