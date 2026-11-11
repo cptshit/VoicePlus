@@ -19,3 +19,20 @@ fonttools varLib.instancer Subset.ttf wght=400:700 wdth=100 -o Out.ttf   # IBM P
 
 Size: 1.7 MB before, about 0.6 MB after. The unmodified files are in the git history before the
 commit that introduced this file.
+
+## License
+
+All three families are licensed under the SIL Open Font License 1.1. The full texts are in
+`docs/licenses/` (`OFL-literata.txt`, `OFL-ibmplexsans.txt`, `OFL-barlowcondensed.txt`) and the
+authors are credited in `CREDITS.md`.
+
+The files in this repository are modified versions (subsets, see above) of the original fonts.
+The OFL allows that and requires the license and copyright notices to stay with the fonts, which
+they do.
+
+IBM Plex Sans declares the Reserved Font Name "Plex". Clause 3 of the OFL says a modified
+version must not use a Reserved Font Name. The subset still carries the original family name
+inside its name table. That is fine while the app is only built for personal use. Before
+distributing the app or the fonts to others, rename the family in the Plex subset, for example
+with `fontTools.ttLib` (name IDs 1, 4, 6 and 16), or bundle the unmodified original instead.
+
