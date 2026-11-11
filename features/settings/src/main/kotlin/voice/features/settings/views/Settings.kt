@@ -193,20 +193,6 @@ private fun Settings(
               SettingsDivider()
             }
             ListItem(
-              modifier = Modifier.clickable { listener.openHiddenBooks() },
-              colors = ListItemDefaults.colors(containerColor = Color.Transparent),
-              leadingContent = {
-                Icon(Icons.Outlined.VisibilityOff, contentDescription = null)
-              },
-              headlineContent = {
-                Text(stringResource(StringsR.string.hidden_books))
-              },
-              trailingContent = {
-                Icon(Icons.Outlined.ChevronRight, contentDescription = null)
-              },
-            )
-            SettingsDivider()
-            ListItem(
               modifier = Modifier.clickable { listener.setIgnoreFileTags(!viewState.ignoreFileTags) },
               colors = ListItemDefaults.colors(containerColor = Color.Transparent),
               leadingContent = {

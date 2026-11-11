@@ -169,7 +169,6 @@ dependencies {
   implementation(projects.features.cover)
   implementation(projects.features.chapterEditor)
   implementation(projects.features.backup)
-  implementation(projects.features.hiddenBooks)
   implementation(projects.features.tagReview)
   implementation(projects.features.listeningLog)
   implementation(projects.features.listeningStats)
