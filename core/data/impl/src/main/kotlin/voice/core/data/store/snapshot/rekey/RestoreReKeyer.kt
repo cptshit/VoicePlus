@@ -4,7 +4,6 @@ import voice.core.data.BookContent
 import voice.core.data.Bookmark
 import voice.core.data.ChapterId
 import voice.core.data.ChapterNameOverride
-import voice.core.data.ListeningSession
 import java.time.Instant
 import java.util.UUID
 import kotlin.math.abs
@@ -195,30 +194,11 @@ internal object RestoreReKeyer {
       )
     }
 
-    val sessions = snap.sessions.mapNotNull { dto ->
-      val start = reKeyChapter(dto.chapterId) ?: return@mapNotNull null
-      val end = dto.endChapterId?.let { reKeyChapter(it) }
-      val endClampDuration = end?.second ?: start.second
-      ListeningSession(
-        id = 0, // let Room assign a fresh PK; the writer dedups on a natural key for idempotency.
-        bookId = newBookId,
-        chapterId = start.first,
-        startedAt = Instant.ofEpochMilli(dto.startedAtEpochMillis),
-        endedAt = Instant.ofEpochMilli(dto.endedAtEpochMillis),
-        durationMs = dto.durationMs,
-        startPositionMs = clamp(dto.startPositionMs, start.second),
-        endPositionMs = clamp(dto.endPositionMs, endClampDuration),
-        endChapterId = end?.first,
-        endReason = dto.endReason,
-      )
-    }
-
     return MatchedBook(
       sourceId = snap.content.id,
       content = content,
       bookmarks = bookmarks,
       overrides = overrides,
-      sessions = sessions,
       sourceLastPlayedAt = Instant.ofEpochMilli(snap.content.lastPlayedAtEpochMillis),
     )
   }

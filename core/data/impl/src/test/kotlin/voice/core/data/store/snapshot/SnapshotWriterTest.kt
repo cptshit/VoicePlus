@@ -52,8 +52,6 @@ class SnapshotWriterTest {
     bookmarkDao = db.bookmarkDao(),
     chapterDao = db.chapterDao(),
     chapterNameOverrideDao = db.chapterNameOverrideDao(),
-    listeningSessionDao = db.listeningSessionDao(),
-    listeningEventDao = db.listeningEventDao(),
     ring = ring,
     excludedBooksStore = excluded,
     settingsSnapshotter = testSettingsSnapshotter(),

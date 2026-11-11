@@ -33,7 +33,6 @@ import voice.core.data.BookContent
 import voice.core.data.BookId
 import voice.core.data.Chapter
 import voice.core.data.ChapterId
-import voice.core.data.ListeningEventType
 import voice.core.data.MarkData
 import voice.core.data.PlaybackToolbarAction
 import voice.core.data.repo.BookmarkRepo
@@ -301,7 +300,7 @@ class BookPlayViewModelTest {
 
   @Test
   fun onChapterClickSetsPositionAndDismissesDialog() = scope.runTest {
-    every { player.setPosition(any(), any(), any()) } just Runs
+    every { player.setPosition(any(), any()) } just Runs
 
     viewModel.onCurrentChapterClick()
     yield()
@@ -314,7 +313,7 @@ class BookPlayViewModelTest {
     // Verify player.setPosition was called with correct parameters
     // The second mark starts at 2 minutes position in the first chapter
     verify(exactly = 1) {
-      player.setPosition(time = 2.minutes.inWholeMilliseconds, id = book.chapters.first().id, tag = ListeningEventType.GoToChapter)
+      player.setPosition(time = 2.minutes.inWholeMilliseconds, id = book.chapters.first().id)
     }
 
     viewModel.dialogState.value shouldBe null
@@ -326,7 +325,7 @@ class BookPlayViewModelTest {
       content = book.content.copy(positionInChapter = 4.5.minutes.inWholeMilliseconds),
     )
     coEvery { currentBookResolver.book(book.id) } returns liveBook
-    every { player.setPosition(any(), any(), any()) } just Runs
+    every { player.setPosition(any(), any()) } just Runs
 
     viewModel.seekTo(30.seconds)
     yield()
@@ -335,7 +334,6 @@ class BookPlayViewModelTest {
       player.setPosition(
         time = 4.5.minutes.inWholeMilliseconds,
         id = liveBook.currentChapter.id,
-        tag = null,
       )
     }
   }
@@ -441,15 +439,15 @@ class BookPlayViewModelTest {
     val store = MemoryDataStore(PlaybackToolbarAction.DEFAULT)
     val viewModel = viewModel(toolbarActionsStore = store)
 
-    viewModel.setToolbarAction(PlaybackToolbarAction.LISTENING_LOG, pinned = true)
+    viewModel.setToolbarAction(PlaybackToolbarAction.CHAPTER_FIX, pinned = true)
     yield()
-    store.data.first() shouldBe PlaybackToolbarAction.DEFAULT + PlaybackToolbarAction.LISTENING_LOG
+    store.data.first() shouldBe PlaybackToolbarAction.DEFAULT + PlaybackToolbarAction.CHAPTER_FIX
 
     viewModel.setToolbarAction(PlaybackToolbarAction.PLAYBACK_SPEED, pinned = false)
     yield()
     store.data.first() shouldBe setOf(
       PlaybackToolbarAction.BOOKMARKS,
-      PlaybackToolbarAction.LISTENING_LOG,
+      PlaybackToolbarAction.CHAPTER_FIX,
     )
   }
 

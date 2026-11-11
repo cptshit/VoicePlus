@@ -21,7 +21,6 @@ import voice.core.data.BookId
 import voice.core.data.GridMode
 import voice.core.data.repo.BookContentRepo
 import voice.core.data.repo.BookRepository
-import voice.core.data.repo.ListeningSessionRepo
 import voice.core.data.repo.internals.dao.RecentBookSearchDao
 import voice.core.featureflag.MemoryFeatureFlag
 import voice.core.playback.LivePlaybackState
@@ -66,9 +65,6 @@ class BookOverviewViewModelTest {
         coEvery { search(any()) } returns emptyList()
       },
       contentRepo = mockk<BookContentRepo>(),
-      sessionRepo = mockk<ListeningSessionRepo> {
-        every { allSessions() } returns MutableStateFlow(emptyList())
-      },
       deviceHasStoragePermissionBug = mockk<DeviceHasStoragePermissionBug> {
         every { hasBug } returns MutableStateFlow(false)
       },

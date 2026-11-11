@@ -26,7 +26,6 @@ import voice.core.common.comparator.sortedNaturally
 import voice.core.data.Book
 import voice.core.data.BookId
 import voice.core.data.GridMode
-import voice.core.data.ListeningSessionEndReason
 import voice.core.data.hoerspiel.CoverStyle
 import voice.core.data.hoerspiel.CoverStyleStore
 import voice.core.data.hoerspiel.EpisodePart
@@ -35,7 +34,6 @@ import voice.core.data.hoerspiel.TagFindingRepo
 import voice.core.data.repo.BookContentRepo
 import voice.core.data.repo.BookRepository
 import voice.core.data.repo.LibraryOrganisationRepo
-import voice.core.data.repo.ListeningSessionRepo
 import voice.core.data.repo.internals.dao.RecentBookSearchDao
 import voice.core.data.store.BooksPerRowStore
 import voice.core.data.store.CurrentBookStore
@@ -74,7 +72,6 @@ class BookOverviewViewModel(
   private val recentBookSearchDao: RecentBookSearchDao,
   private val search: BookSearch,
   private val contentRepo: BookContentRepo,
-  private val sessionRepo: ListeningSessionRepo,
   private val deviceHasStoragePermissionBug: DeviceHasStoragePermissionBug,
   @FolderPickerInSettingsFeatureFlagQualifier
   private val folderPickerInSettingsFeatureFlag: FeatureFlag<Boolean>,
@@ -103,14 +100,6 @@ class BookOverviewViewModel(
       .collectAsState().value
     val books = remember { repo.flow() }
       .collectAsState(initial = null).value
-    val finishedAt = remember {
-      sessionRepo.allSessions().map { sessions ->
-        sessions
-          .filter { it.endReason == ListeningSessionEndReason.EndOfBook.id }
-          .groupBy({ it.bookId }, { it.endedAt })
-          .mapValues { (_, endings) -> endings.max() }
-      }
-    }.collectAsState(initial = emptyMap()).value
     val currentBookId = remember { currentBookStoreDataStore.data }
       .collectAsState(initial = null).value
     val scannerActive = remember { mediaScanner.scannerActive }
@@ -159,7 +148,6 @@ class BookOverviewViewModel(
               book.id to key(book.id) {
                 book.itemViewState(
                   currentBookId = currentBookId,
-                  finishedAt = finishedAt[book.id],
                   episodePart = episodeParts[book.id],
                   coverStyle = coverStyle,
                   livePlaybackState = { livePlaybackState.value },
@@ -299,23 +287,22 @@ class BookOverviewViewModel(
 @Composable
 private fun Book.itemViewState(
   currentBookId: BookId?,
-  finishedAt: Instant?,
   episodePart: EpisodePart?,
   coverStyle: CoverStyle,
   livePlaybackState: () -> LivePlaybackState?,
 ): State<BookOverviewItemViewState> {
   if (id != currentBookId) {
-    return rememberUpdatedState(toItemViewState(finishedAt, episodePart, coverStyle))
+    return rememberUpdatedState(toItemViewState(episodePart = episodePart, coverStyle = coverStyle))
   }
   val currentPlaybackState by rememberUpdatedState(livePlaybackState)
-  return remember(this, currentBookId, finishedAt, episodePart, coverStyle) {
+  return remember(this, currentBookId, episodePart, coverStyle) {
     derivedStateOf {
       val livePlayback = currentPlaybackState()
       if (livePlayback != null) {
         overlay(livePlayback)
       } else {
         this
-      }.toItemViewState(finishedAt, episodePart, coverStyle)
+      }.toItemViewState(episodePart = episodePart, coverStyle = coverStyle)
     }
   }
 }

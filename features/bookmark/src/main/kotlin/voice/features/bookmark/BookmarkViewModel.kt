@@ -20,7 +20,6 @@ import voice.core.common.resolveChapterName
 import voice.core.data.BookId
 import voice.core.data.Bookmark
 import voice.core.data.Chapter
-import voice.core.data.ListeningEventType
 import voice.core.data.byMarkKey
 import voice.core.data.durationMs
 import voice.core.data.markForPosition
@@ -145,7 +144,7 @@ class BookmarkViewModel(
 
       val wasPlaying = playStateManager.playState == PlayStateManager.PlayState.Playing
       currentBookStore.updateData { bookId }
-      playerController.setPosition(bookmark.time, bookmark.chapterId, tag = ListeningEventType.GoToChapter)
+      playerController.setPosition(bookmark.time, bookmark.chapterId)
       if (wasPlaying) {
         playerController.play()
       }

@@ -15,8 +15,6 @@ import voice.core.data.repo.internals.dao.BookmarkDao
 import voice.core.data.repo.internals.dao.ChapterDao
 import voice.core.data.repo.internals.dao.ChapterNameOverrideDao
 import voice.core.data.repo.internals.dao.LibraryOrganisationDao
-import voice.core.data.repo.internals.dao.ListeningEventDao
-import voice.core.data.repo.internals.dao.ListeningSessionDao
 import voice.core.data.repo.internals.transaction
 import voice.core.data.store.ExcludedBooksStore
 import voice.core.logging.api.Logger
@@ -31,8 +29,6 @@ internal class BackupRestorer(
   private val bookmarkDao: BookmarkDao,
   private val chapterDao: ChapterDao,
   private val chapterNameOverrideDao: ChapterNameOverrideDao,
-  private val listeningSessionDao: ListeningSessionDao,
-  private val listeningEventDao: ListeningEventDao,
   @ExcludedBooksStore private val excludedBooksStore: DataStore<Set<String>>,
   private val appDb: RoomDatabase,
   private val contentRepo: BookContentRepo,
@@ -124,8 +120,6 @@ internal class BackupRestorer(
       }
     val bookmarks = snapshot.bookmarks.filter { included(it.bookId) }.map { it.toBookmark() }
     val overrides = snapshot.chapterNameOverrides.filter { included(it.bookId) }.map { it.toOverride() }
-    val sessions = snapshot.sessions.filter { included(it.bookId) }.map { it.toListeningSession() }
-    val events = snapshot.events.filter { included(it.bookId) }.map { it.toListeningEvent() }
     // chapters2 carries no bookId, so restore them all (REPLACE). A chapter with no surviving content2 row is
     // simply invisible; re-inserting is what lets a restored book's BookRepository.book() resolve at all.
     val chapters = snapshot.chapters.map { it.toChapter() }
@@ -134,8 +128,6 @@ internal class BackupRestorer(
       // Natural-key dedup for the autoGenerate-PK tables, seeded INSIDE the transaction: snapshot row
       // ids belong to a different database generation, so inserting by id could collide with (or
       // REPLACE) unrelated live rows. Insert with a fresh id instead, and skip rows already present.
-      val seenSessionKeys = listeningSessionDao.all().mapTo(mutableSetOf()) { it.naturalKey() }
-      val seenEventKeys = listeningEventDao.all().mapTo(mutableSetOf()) { it.naturalKey() }
       val existingChapterIds = if (chapters.isEmpty()) {
         emptySet()
       } else {
@@ -152,12 +144,6 @@ internal class BackupRestorer(
       }
       bookmarks.forEach { bookmarkDao.addBookmark(it) }
       overrides.forEach { chapterNameOverrideDao.insert(it) }
-      sessions.forEach { session ->
-        if (seenSessionKeys.add(session.naturalKey())) listeningSessionDao.insert(session.copy(id = 0))
-      }
-      events.forEach { event ->
-        if (seenEventKeys.add(event.naturalKey())) listeningEventDao.insert(event.copy(id = 0))
-      }
       organisationDao.restore(snapshot, bookContentDao.all().associate { it.id.value to it.id.value })
     }
     // Own database, so outside the transaction; a failure here must not undo the restored books.

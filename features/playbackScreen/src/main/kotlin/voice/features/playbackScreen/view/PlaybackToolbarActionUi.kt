@@ -15,7 +15,6 @@ internal val PlaybackToolbarAction.icon: ImageVector
     PlaybackToolbarAction.BOOKMARKS -> Icons.Outlined.CollectionsBookmark
     PlaybackToolbarAction.PLAYBACK_SPEED -> Icons.Outlined.Speed
     PlaybackToolbarAction.CHAPTER_FIX -> Icons.Outlined.EditNote
-    PlaybackToolbarAction.LISTENING_LOG -> Icons.Outlined.History
   }
 
 internal val PlaybackToolbarAction.labelRes: Int
@@ -23,5 +22,4 @@ internal val PlaybackToolbarAction.labelRes: Int
     PlaybackToolbarAction.BOOKMARKS -> StringsR.string.bookmark
     PlaybackToolbarAction.PLAYBACK_SPEED -> StringsR.string.playback_speed
     PlaybackToolbarAction.CHAPTER_FIX -> StringsR.string.chapter_fix_menu
-    PlaybackToolbarAction.LISTENING_LOG -> StringsR.string.listening_log
   }

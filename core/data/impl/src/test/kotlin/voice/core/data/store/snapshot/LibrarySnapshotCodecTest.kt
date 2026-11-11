@@ -102,24 +102,15 @@ class LibrarySnapshotCodecTest {
   }
 
   @Test
-  fun `v3 LibrarySnapshot round-trips endReason, events, hidden books and settings`() {
+  fun `v3 LibrarySnapshot round-trips hidden books and settings`() {
     val snap = LibrarySnapshot(
       schemaVersion = LibrarySnapshot.SCHEMA_VERSION, sequence = 7, savedAtEpochMillis = 1,
       totalCount = 1, activeCount = 1,
       books = listOf(book("b1", true).toDto()),
       bookmarks = emptyList(), chapterNameOverrides = emptyList(),
-      sessions = listOf(
-        ListeningSessionDto(
-          id = 3, bookId = "b1", chapterId = "ch-b1", startedAtEpochMillis = 10, endedAtEpochMillis = 20,
-          durationMs = 10, startPositionMs = 0, endPositionMs = 10, endChapterId = null, endReason = 1,
-        ),
-      ),
       chapters = listOf(
         Chapter(ChapterId("ch-b1"), "C", 1_000, Instant.ofEpochMilli(0), listOf(MarkData(0, "m")))
           .toDto(relName = "ch-b1.mp3"),
-      ),
-      events = listOf(
-        ListeningEventDto(bookId = "b1", type = 0, chapterId = "ch-b1", positionMs = 5, atEpochMillis = 15),
       ),
       hiddenBooks = setOf("b-hidden"),
       settings = mapOf("darkTheme" to "true"),
@@ -127,7 +118,6 @@ class LibrarySnapshotCodecTest {
     val text = json.encodeToString(LibrarySnapshot.serializer(), snap)
     val decoded = json.decodeFromString(LibrarySnapshot.serializer(), text)
     decoded shouldBe snap
-    decoded.sessions.single().endReason shouldBe 1
   }
 
   @Test
@@ -145,7 +135,6 @@ class LibrarySnapshotCodecTest {
     decoded.books.single().id shouldBe "b1"
     decoded.books.single().seriesGroup shouldBe null
     decoded.books.single().seriesOrder shouldBe null
-    decoded.sessions shouldBe emptyList()
     decoded.hiddenBooks shouldBe emptySet()
     decoded.settings shouldBe emptyMap()
   }

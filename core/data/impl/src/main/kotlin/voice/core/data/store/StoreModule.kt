@@ -16,7 +16,6 @@ import voice.core.data.GridMode
 import voice.core.data.LockscreenSecondaryTextMode
 import voice.core.data.LockscreenSliderMode
 import voice.core.data.MediaButtonClickAction
-import voice.core.data.OpenSessionCheckpoint
 import voice.core.data.PlaybackToolbarAction
 import voice.core.data.sleeptimer.SleepTimerPreference
 import kotlin.time.Duration
@@ -260,17 +259,5 @@ public interface StoreModule {
   @IgnoreFileTagsStore
   private fun ignoreFileTagsStore(factory: VoiceDataStoreFactory): DataStore<Boolean> {
     return factory.boolean("ignoreFileTags", defaultValue = false)
-  }
-
-  @Provides
-  @SingleIn(AppScope::class)
-  @OpenListeningSessionStore
-  private fun openListeningSessionStore(factory: VoiceDataStoreFactory): DataStore<OpenSessionCheckpoint?> {
-    return factory.create(
-      serializer = OpenSessionCheckpoint.serializer().nullable,
-      defaultValue = null,
-      fileName = "openListeningSession",
-      replaceCorruptedWithDefault = true,
-    )
   }
 }

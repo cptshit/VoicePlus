@@ -35,7 +35,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import voice.core.data.Book
 import voice.core.data.BookId
-import voice.core.data.ListeningEventType
 import voice.core.data.MediaButtonClickAction
 import voice.core.data.repo.BookRepository
 import voice.core.data.repo.BookmarkRepo
@@ -253,9 +252,6 @@ class LibrarySessionCallback(
       }
       is CustomCommand.PauseWithRewind -> {
         pauseWithRewind(player, intentHolder, command.rewindMs)
-      }
-      is CustomCommand.TagNextSeek -> {
-        intentHolder.pendingSeekIntent = ListeningEventType.fromId(command.typeId)
       }
     }
 

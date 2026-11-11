@@ -16,7 +16,6 @@ import voice.core.data.BookContent
 import voice.core.data.BookId
 import voice.core.data.Chapter
 import voice.core.data.ChapterId
-import voice.core.data.ListeningSession
 import voice.core.data.MarkData
 import voice.core.data.repo.BookContentRepoImpl
 import voice.core.data.repo.internals.AppDb
@@ -54,8 +53,6 @@ class BackupRestorerTest {
     bookmarkDao = db.bookmarkDao(),
     chapterDao = db.chapterDao(),
     chapterNameOverrideDao = db.chapterNameOverrideDao(),
-    listeningSessionDao = db.listeningSessionDao(),
-    listeningEventDao = db.listeningEventDao(),
     excludedBooksStore = excluded,
     appDb = db,
     contentRepo = contentRepo,
@@ -157,36 +154,7 @@ class BackupRestorerTest {
   }
 
   @Test
-  fun `restores listening sessions when room is empty`() = runTest {
-    slot0.updateData {
-      LibrarySnapshot(
-        schemaVersion = 1, dbVersion = AppDb.VERSION, sequence = 1, savedAtEpochMillis = 0,
-        totalCount = 1, activeCount = 1,
-        books = listOf(book("a", active = true).toDto()),
-        bookmarks = emptyList(), chapterNameOverrides = emptyList(),
-        sessions = listOf(
-          ListeningSession(
-            id = 7,
-            bookId = BookId("a"),
-            chapterId = ChapterId("ca"),
-            startedAt = Instant.ofEpochMilli(100),
-            endedAt = Instant.ofEpochMilli(200),
-            durationMs = 100,
-            startPositionMs = 0,
-            endPositionMs = 100,
-          ).toDto(),
-        ),
-      )
-    }
-    restorer().restoreIfNeeded()
-    // Restored with a FRESH id — snapshot ids belong to a different database generation.
-    val restored = db.listeningSessionDao().all().single()
-    restored.startedAt shouldBe Instant.ofEpochMilli(100)
-    restored.bookId.value shouldBe "a"
-  }
-
-  @Test
-  fun `released db65 backup restores progress and listening statistics into room`() = runTest {
+  fun `released db65 backup restores progress into room`() = runTest {
     val decoded = ExternalBackupBundleCodec.decode(
       snapshotTestJson,
       backupFixture("db65-envelope-without-chapter-file-size.json"),
@@ -203,33 +171,6 @@ class BackupRestorerTest {
     db.bookContentDao().all().single().positionInChapter shouldBe 42_000
     db.bookmarkDao().all().single().time shouldBe 12_000
     db.chapterDao().all().single().fileSize shouldBe 0
-    db.listeningSessionDao().all().single().durationMs shouldBe 60_000
-    db.listeningEventDao().all().single().positionMs shouldBe 42_000
-  }
-
-  @Test
-  fun `applyDirect twice never duplicates sessions or events`() = runTest {
-    contentRepo.put(book("a", active = true))
-    val snapshot = snapshotOf("a").copy(
-      sessions = listOf(
-        ListeningSession(
-          id = 7, bookId = BookId("a"), chapterId = ChapterId("ca"),
-          startedAt = Instant.ofEpochMilli(100), endedAt = Instant.ofEpochMilli(200),
-          durationMs = 100, startPositionMs = 0, endPositionMs = 100, endReason = 1,
-        ).toDto(),
-      ),
-      events = listOf(
-        ListeningEventDto(bookId = "a", type = 0, chapterId = "ca", positionMs = 50, atEpochMillis = 150),
-      ),
-    )
-
-    val r = restorer()
-    r.applyDirect(snapshot) shouldBe 1
-    r.applyDirect(snapshot) shouldBe 1
-
-    db.listeningSessionDao().all().size shouldBe 1
-    db.listeningSessionDao().all().single().endReason shouldBe 1
-    db.listeningEventDao().all().size shouldBe 1
   }
 
   @Test

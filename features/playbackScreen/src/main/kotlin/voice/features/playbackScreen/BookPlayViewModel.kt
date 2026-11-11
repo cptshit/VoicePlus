@@ -21,7 +21,6 @@ import voice.core.common.RetainedViewModel
 import voice.core.common.resolveChapterName
 import voice.core.data.Book
 import voice.core.data.BookId
-import voice.core.data.ListeningEventType
 import voice.core.data.PlaybackToolbarAction
 import voice.core.data.byMarkKey
 import voice.core.data.durationMs
@@ -346,7 +345,7 @@ class BookPlayViewModel(
         chapter.chapterMarks.forEach { mark ->
           currentIndex++
           if (currentIndex == number - 1) {
-            player.setPosition(mark.startMs, chapter.id, tag = ListeningEventType.GoToChapter)
+            player.setPosition(mark.startMs, chapter.id)
             _dialogState.value = null
             return@launch
           }
@@ -386,10 +385,6 @@ class BookPlayViewModel(
 
   fun onBookmarkClick() {
     navigator.goTo(Destination.Bookmarks(bookId))
-  }
-
-  fun onListeningLogClick() {
-    navigator.goTo(Destination.ListeningLog(bookId))
   }
 
   fun onBookmarkLongClick() {

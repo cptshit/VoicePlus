@@ -27,8 +27,6 @@ import voice.core.data.repo.internals.AppDb
 import voice.core.data.repo.internals.dao.BookmarkDao
 import voice.core.data.repo.internals.dao.ChapterDao
 import voice.core.data.repo.internals.dao.ChapterNameOverrideDao
-import voice.core.data.repo.internals.dao.ListeningEventDao
-import voice.core.data.repo.internals.dao.ListeningSessionDao
 import voice.core.data.store.ExcludedBooksStore
 import voice.core.data.store.snapshot.identity.DeviceRelativePath
 import voice.core.logging.api.Logger
@@ -47,8 +45,6 @@ internal class SnapshotWriter(
   private val bookmarkDao: BookmarkDao,
   private val chapterDao: ChapterDao,
   private val chapterNameOverrideDao: ChapterNameOverrideDao,
-  private val listeningSessionDao: ListeningSessionDao,
-  private val listeningEventDao: ListeningEventDao,
   private val ring: SnapshotRing,
   @ExcludedBooksStore private val excludedBooksStore: DataStore<Set<String>>,
   private val settingsSnapshotter: SettingsSnapshotter,
@@ -73,8 +69,6 @@ internal class SnapshotWriter(
       contentRepo.flow().map { },
       bookmarkDao.count().map { },
       chapterNameOverrideDao.count().map { },
-      listeningSessionDao.count().map { },
-      listeningEventDao.count().map { },
       excludedBooksStore.data.drop(1).map { },
       settingsSnapshotter.changes(),
       appDb.libraryOrganisationDao().changes().map { },
@@ -150,11 +144,6 @@ internal class SnapshotWriter(
             .orEmpty()
           chapter.toDto(relName = relName)
         }
-        // Newest events per book, mirroring the UI's own 500-row read cap so bundle size stays bounded.
-        val events = listeningEventDao.all()
-          .groupBy { it.bookId }
-          .values
-          .flatMap { it.take(EVENTS_PER_BOOK) }
         val snapshot = LibrarySnapshot(
           schemaVersion = LibrarySnapshot.SCHEMA_VERSION,
           dbVersion = AppDb.VERSION,
@@ -165,9 +154,7 @@ internal class SnapshotWriter(
           books = bookDtos,
           bookmarks = bookmarkDao.all().map { it.toDto() },
           chapterNameOverrides = chapterNameOverrideDao.all().map { it.toDto() },
-          sessions = listeningSessionDao.all().map { it.toDto() },
           chapters = chapterDtos,
-          events = events.map { it.toDto() },
           hiddenBooks = excludedIds,
           settings = settingsSnapshotter.capture(),
           organisation = appDb.libraryOrganisationDao().get(),
@@ -209,6 +196,5 @@ internal class SnapshotWriter(
   companion object {
     private val DEBOUNCE = 3.seconds
     private val PERIODIC_FLUSH = 5.minutes
-    private const val EVENTS_PER_BOOK = 500
   }
 }

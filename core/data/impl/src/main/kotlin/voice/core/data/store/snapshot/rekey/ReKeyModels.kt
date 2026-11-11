@@ -5,11 +5,9 @@ import voice.core.data.BookId
 import voice.core.data.Bookmark
 import voice.core.data.ChapterId
 import voice.core.data.ChapterNameOverride
-import voice.core.data.ListeningSession
 import voice.core.data.store.snapshot.BookContentDto
 import voice.core.data.store.snapshot.BookmarkDto
 import voice.core.data.store.snapshot.ChapterNameOverrideDto
-import voice.core.data.store.snapshot.ListeningSessionDto
 import java.time.Instant
 
 /**
@@ -49,7 +47,6 @@ internal data class SnapshotBook(
   val chapters: List<SnapChapter>,
   val bookmarks: List<BookmarkDto>,
   val overrides: List<ChapterNameOverrideDto>,
-  val sessions: List<ListeningSessionDto>,
 )
 
 /** A freshly-scanned chapter under its new (post-re-grant) [newId], with its fresh duration. */
@@ -93,7 +90,6 @@ internal data class MatchedBook(
   val content: BookContent,
   val bookmarks: List<Bookmark>,
   val overrides: List<ChapterNameOverride>,
-  val sessions: List<ListeningSession>,
   val sourceLastPlayedAt: Instant,
 )
 

@@ -31,7 +31,6 @@ import voice.core.data.store.MediaButtonDoubleClickHandlerStore
 import voice.core.data.store.MediaButtonTripleClickHandlerStore
 import voice.core.data.store.SeekTimeStore
 import voice.core.playback.di.PlaybackScope
-import voice.core.playback.history.ListeningEventRecorder
 import voice.core.playback.history.PlaybackIntentHolder
 import voice.core.playback.playstate.PositionUpdater
 import voice.core.playback.session.LibrarySessionCallback
@@ -156,7 +155,6 @@ class AndroidAutoMediaButtonTest {
       withContext(Dispatchers.Main) {
         intentHolder.clearSleepResumeConfirmation()
         graph.positionUpdater.release()
-        graph.listeningEventRecorder.release()
         session?.release()
         graph.player.release()
         graph.scope.cancel()
@@ -192,7 +190,6 @@ interface MediaButtonTestGraph {
   val callback: LibrarySessionCallback
   val scope: CoroutineScope
   val positionUpdater: PositionUpdater
-  val listeningEventRecorder: ListeningEventRecorder
   val intentHolder: PlaybackIntentHolder
 
   @GraphExtension.Factory

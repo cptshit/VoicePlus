@@ -61,10 +61,4 @@
   <exclude
     domain="file"
     path="datastore/snapshotBackupState.tmp" />
-  <exclude
-    domain="file"
-    path="datastore/openListeningSession" />
-  <exclude
-    domain="file"
-    path="datastore/openListeningSession.tmp" />
 </full-backup-content>

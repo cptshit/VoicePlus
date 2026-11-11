@@ -11,7 +11,6 @@ import kotlinx.coroutines.withTimeoutOrNull
 import voice.core.common.rootGraphAs
 import voice.core.logging.api.Logger
 import voice.core.playback.di.PlaybackGraph
-import voice.core.playback.history.ListeningEventRecorder
 import voice.core.playback.player.VoicePlayer
 import voice.core.playback.playstate.PositionUpdater
 import kotlin.time.Duration.Companion.seconds
@@ -29,9 +28,6 @@ class PlaybackService : MediaLibraryService() {
 
   @Inject
   lateinit var positionUpdater: PositionUpdater
-
-  @Inject
-  lateinit var listeningEventRecorder: ListeningEventRecorder
 
   @Inject
   lateinit var voiceNotificationProvider: VoiceMediaNotificationProvider
@@ -56,16 +52,11 @@ class PlaybackService : MediaLibraryService() {
       // (ANR -> system kill -> both writes lost).
       positionUpdater.release()
       runBlocking {
-        // Session before position: the open session is irreplaceable at this layer, while the
-        // position checkpoints every second and can lose at most that. Each flush is fenced so
-        // one failure can't starve the other or skip the releases below.
-        runCatching { withTimeoutOrNull(FLUSH_TIMEOUT) { listeningEventRecorder.flushOpenSessionNow() } }
-          .onFailure { Logger.w(it, "Could not flush the open listening session on teardown") }
+        // One failure must not skip the releases below.
         runCatching { withTimeoutOrNull(FLUSH_TIMEOUT) { positionUpdater.flushPositionNow() } }
           .onFailure { Logger.w(it, "Could not flush the playback position on teardown") }
       }
     } finally {
-      listeningEventRecorder.release()
       player.release()
       session.release()
       scope.cancel()

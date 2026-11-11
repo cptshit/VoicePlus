@@ -11,7 +11,6 @@ public enum class PlaybackToolbarAction {
   BOOKMARKS,
   PLAYBACK_SPEED,
   CHAPTER_FIX,
-  LISTENING_LOG,
   ;
 
   public companion object {

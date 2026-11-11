@@ -63,7 +63,7 @@ class SettingsSnapshotterTest {
     source.booksPerRow.updateData { 3 }
     source.mediaDoubleClick.updateData { MediaButtonClickAction.QUICK_BOOKMARK }
     source.ignoreFileTags.updateData { true }
-    source.playbackToolbarActions.updateData { setOf(PlaybackToolbarAction.LISTENING_LOG) }
+    source.playbackToolbarActions.updateData { setOf(PlaybackToolbarAction.CHAPTER_FIX) }
     source.globalVolumeGain.updateData { 6F }
 
     val captured = source.snapshotter().capture()
@@ -76,7 +76,7 @@ class SettingsSnapshotterTest {
     target.booksPerRow.data.first() shouldBe 3
     target.mediaDoubleClick.data.first() shouldBe MediaButtonClickAction.QUICK_BOOKMARK
     target.ignoreFileTags.data.first() shouldBe true
-    target.playbackToolbarActions.data.first() shouldBe setOf(PlaybackToolbarAction.LISTENING_LOG)
+    target.playbackToolbarActions.data.first() shouldBe setOf(PlaybackToolbarAction.CHAPTER_FIX)
     target.globalVolumeGain.data.first() shouldBe 6F
     // Untouched settings keep their defaults.
     target.autoRewind.data.first() shouldBe 2

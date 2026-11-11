@@ -66,7 +66,7 @@ internal constructor(
   @Volatile
   private var lastScanFolderKeys: Set<Pair<FolderType, Uri>>? = null
 
-  // Test seam, mirroring ListeningEventRecorder.clock.
+  // Test seam for the clock.
   internal var clock: () -> Instant = { Instant.now() }
 
   public fun scan(

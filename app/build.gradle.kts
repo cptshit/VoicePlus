@@ -170,8 +170,6 @@ dependencies {
   implementation(projects.features.chapterEditor)
   implementation(projects.features.backup)
   implementation(projects.features.tagReview)
-  implementation(projects.features.listeningLog)
-  implementation(projects.features.listeningStats)
   implementation(projects.core.documentfile)
   implementation(projects.features.onboarding)
   implementation(projects.features.bookmark)

@@ -8,8 +8,6 @@ import voice.core.data.Chapter
 import voice.core.data.ChapterId
 import voice.core.data.ChapterNameOverride
 import voice.core.data.LibraryOrganisation
-import voice.core.data.ListeningEvent
-import voice.core.data.ListeningSession
 import voice.core.data.MarkData
 import java.io.File
 import java.time.Instant
@@ -26,12 +24,9 @@ internal data class LibrarySnapshot(
   val books: List<BookContentDto>,
   val bookmarks: List<BookmarkDto>,
   val chapterNameOverrides: List<ChapterNameOverrideDto>,
-  val sessions: List<ListeningSessionDto> = emptyList(),
   // chapters2 rows for every book. Required for the OS-wipe restore: without re-inserted Chapter rows
   // BookRepository.book() returns null and the restored book is invisible. Default-empty so legacy bundles decode.
   val chapters: List<ChapterDto> = emptyList(),
-  // Listening-log transport events, capped to the newest per book (matching the UI's own read cap).
-  val events: List<ListeningEventDto> = emptyList(),
   // Book ids the user hid from the library. Restored books stay hidden instead of resurfacing.
   val hiddenBooks: Set<String> = emptySet(),
   // App settings worth carrying across a wipe, each JSON-encoded by SettingsSnapshotter.
@@ -109,31 +104,6 @@ internal data class ChapterNameOverrideDto(
   val markStartMs: Long,
   val bookId: String,
   val name: String,
-)
-
-@Serializable
-internal data class ListeningSessionDto(
-  val id: Long,
-  val bookId: String,
-  val chapterId: String,
-  val startedAtEpochMillis: Long,
-  val endedAtEpochMillis: Long,
-  val durationMs: Long,
-  val startPositionMs: Long,
-  val endPositionMs: Long,
-  val endChapterId: String?,
-  // v3: why the session ended (stable ListeningSessionEndReason id). Null on pre-v3 bundles.
-  val endReason: Int? = null,
-)
-
-@Serializable
-internal data class ListeningEventDto(
-  val bookId: String,
-  val type: Int,
-  val chapterId: String,
-  val positionMs: Long,
-  val fromPositionMs: Long? = null,
-  val atEpochMillis: Long,
 )
 
 @Serializable
@@ -223,50 +193,6 @@ internal fun BookmarkDto.toBookmark() = Bookmark(
 internal fun ChapterNameOverride.toDto() = ChapterNameOverrideDto(chapterId, markStartMs, bookId, name)
 
 internal fun ChapterNameOverrideDto.toOverride() = ChapterNameOverride(chapterId, markStartMs, bookId, name)
-
-internal fun ListeningSession.toDto() = ListeningSessionDto(
-  id = id,
-  bookId = bookId.value,
-  chapterId = chapterId.value,
-  startedAtEpochMillis = startedAt.toEpochMilli(),
-  endedAtEpochMillis = endedAt.toEpochMilli(),
-  durationMs = durationMs,
-  startPositionMs = startPositionMs,
-  endPositionMs = endPositionMs,
-  endChapterId = endChapterId?.value,
-  endReason = endReason,
-)
-
-internal fun ListeningSessionDto.toListeningSession() = ListeningSession(
-  id = id,
-  bookId = BookId(bookId),
-  chapterId = ChapterId(chapterId),
-  startedAt = Instant.ofEpochMilli(startedAtEpochMillis),
-  endedAt = Instant.ofEpochMilli(endedAtEpochMillis),
-  durationMs = durationMs,
-  startPositionMs = startPositionMs,
-  endPositionMs = endPositionMs,
-  endChapterId = endChapterId?.let { ChapterId(it) },
-  endReason = endReason,
-)
-
-internal fun ListeningEvent.toDto() = ListeningEventDto(
-  bookId = bookId.value,
-  type = type,
-  chapterId = chapterId.value,
-  positionMs = positionMs,
-  fromPositionMs = fromPositionMs,
-  atEpochMillis = at.toEpochMilli(),
-)
-
-internal fun ListeningEventDto.toListeningEvent() = ListeningEvent(
-  bookId = BookId(bookId),
-  type = type,
-  chapterId = ChapterId(chapterId),
-  positionMs = positionMs,
-  fromPositionMs = fromPositionMs,
-  at = Instant.ofEpochMilli(atEpochMillis),
-)
 
 internal fun Chapter.toDto(relName: String = "") = ChapterDto(
   id = id.value,

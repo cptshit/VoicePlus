@@ -7,7 +7,6 @@ import voice.core.data.ChapterId
 import voice.core.data.store.snapshot.BookContentDto
 import voice.core.data.store.snapshot.BookmarkDto
 import voice.core.data.store.snapshot.ChapterNameOverrideDto
-import voice.core.data.store.snapshot.ListeningSessionDto
 
 /**
  * Corruption-critical pure re-keyer. The overriding invariant under test: book A's position / bookmarks /
@@ -51,7 +50,6 @@ class RestoreReKeyerTest {
     lastPlayed: Long = 0,
     bookmarks: List<BookmarkDto> = emptyList(),
     overrides: List<ChapterNameOverrideDto> = emptyList(),
-    sessions: List<ListeningSessionDto> = emptyList(),
     snapDuration: Long = 1_000,
     authority: String = EXTERNAL_STORAGE_AUTHORITY,
     singleFile: Boolean = false,
@@ -68,7 +66,6 @@ class RestoreReKeyerTest {
     chapters = chapterRelNames.map { SnapChapter(ChapterId(oldCid(relPath, it)), it, snapDuration) },
     bookmarks = bookmarks,
     overrides = overrides,
-    sessions = sessions,
   )
 
   private fun scanBook(
