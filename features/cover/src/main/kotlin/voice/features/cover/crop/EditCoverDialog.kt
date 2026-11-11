@@ -48,6 +48,8 @@ import kotlinx.coroutines.launch
 import voice.core.common.rootGraphAs
 import voice.core.data.BookId
 import voice.core.data.GridMode
+import voice.core.data.hoerspiel.CoverStyle
+import voice.core.data.hoerspiel.CoverStyleStore
 import voice.core.data.store.GridModeStore
 import voice.core.scanner.CoverSaver
 import voice.navigation.Destination
@@ -61,6 +63,8 @@ interface EditCoverComponent {
   val coverSaver: CoverSaver
 
   @get:GridModeStore val gridModeStore: DataStore<GridMode>
+
+  @get:CoverStyleStore val coverStyleStore: DataStore<CoverStyle>
 }
 
 @ContributesTo(AppScope::class)
@@ -70,13 +74,16 @@ interface EditCoverDialogProvider {
   @IntoSet
   fun editCoverDialogNavEntryProvider(navigator: Navigator): NavEntryProvider<*> = NavEntryProvider<Destination.EditCover> { key ->
     NavEntry(key, metadata = DialogSceneStrategy.dialog()) {
-      val gridMode by remember { rootGraphAs<EditCoverComponent>().gridModeStore.data }.collectAsState(initial = null)
-      if (gridMode != null) {
+      val component = remember { rootGraphAs<EditCoverComponent>() }
+      val gridMode by remember { component.gridModeStore.data }.collectAsState(initial = null)
+      val coverStyle by remember { component.coverStyleStore.data }.collectAsState(initial = null)
+      if (gridMode != null && coverStyle != null) {
         EditCoverDialog(
           coverUri = key.cover,
           bookId = key.bookId,
           onDismiss = navigator::goBack,
-          initiallyBookShaped = gridMode == GridMode.BOOKS,
+          // Square covers stay square: only the upstream jacket look wants 2:3 by default.
+          initiallyBookShaped = initiallyBookShaped(gridMode, coverStyle),
           editSession = key.editSession,
         )
       }
@@ -204,3 +211,9 @@ fun EditCoverDialog(
     },
   )
 }
+
+/** The crop starts book-shaped (2:3) only in the shelf view with the jacket cover look; the CD look is square. */
+internal fun initiallyBookShaped(
+  gridMode: GridMode?,
+  coverStyle: CoverStyle?,
+): Boolean = gridMode == GridMode.BOOKS && coverStyle == CoverStyle.Book
